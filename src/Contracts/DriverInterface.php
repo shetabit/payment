@@ -20,7 +20,7 @@ interface DriverInterface
      * @param null $value
      * @return $this
      */
-    public function with($key, $value = null);
+    public function detail($key, $value = null);
 
     /**
      * Create new purchase

@@ -30,7 +30,7 @@ class PaymentBuilder
      * @param null $value
      * @return $this
      */
-    public function with($key, $value = null)
+    public function detail($key, $value = null)
     {
         $key = is_array($key) ? $key : [$key => $value];
 
