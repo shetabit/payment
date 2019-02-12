@@ -56,9 +56,10 @@
         }
     ],
     "require": {
+        "php": ">=7.2",
         "illuminate/support": "~5.1",
-        "php": "~5.6|~7.0",
-        "guzzlehttp/guzzle": "~6.2"
+        "guzzlehttp/guzzle": "~6.2",
+        "ramsey/uuid": "~3.8"
     },
     "require-dev": {
         "orchestra/testbench": "~3.1",

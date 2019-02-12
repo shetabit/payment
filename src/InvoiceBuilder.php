@@ -2,14 +2,25 @@
 
 namespace Shetabit\Payment;
 
-class PaymentBuilder
+use Ramsey\Uuid\Uuid;
+
+class InvoiceBuilder
 {
+    protected $uuid;
+
     /**
      * Amount
      *
      * @var int
      */
     protected $amount = 0;
+
+    /**
+     * invoice's transaction id
+     *
+     * @var string
+     */
+    protected $transactionId;
 
     /**
      * Payment details
@@ -22,6 +33,35 @@ class PaymentBuilder
      * @var string
      */
     protected $driver;
+
+    /**
+     * InvoiceBuilder constructor.
+     *
+     * @throws \Exception
+     */
+    public function __construct()
+    {
+        $this->setUuid(Uuid::uuid4()->toString());
+    }
+
+    /**
+     * Set invoice uuid
+     *
+     * @param $uuid
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    /**
+     * Get invoice uuid
+     *
+     * @return string
+     */
+    public function getUuid() {
+        return $this->uuid;
+    }
 
     /**
      * Set a piece of data to the details.
@@ -50,32 +90,40 @@ class PaymentBuilder
     }
 
     /**
-     * Set the value of recipients
+     * Set the amount of invoice
      *
      * @param $amount
      * @return $this
+     * @throws \Exception
      */
     public function amount($amount)
     {
+        if (! is_int($amount)) {
+            throw new \Exception('Amount value should be an integer.');
+        }
         $this->amount = $amount;
 
         return $this;
     }
 
     /**
-     * Get the value of body
+     * Get the value of invoice
      */
     public function getAmount()
     {
         return $this->amount;
     }
 
-    /**
-     * Get the value of driver
-     */
-    public function getDriver()
+    public function setTransactionId($id)
     {
-        return $this->driver;
+        $this->transactionId = $id;
+
+        return $this;
+    }
+
+    public function getTransactionId()
+    {
+        return $this->transactionId;
     }
 
     /**
@@ -89,5 +137,13 @@ class PaymentBuilder
         $this->driver = $driver;
 
         return $this;
+    }
+
+    /**
+     * Get the value of driver
+     */
+    public function getDriver()
+    {
+        return $this->driver;
     }
 }

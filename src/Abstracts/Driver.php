@@ -3,29 +3,25 @@
 namespace Shetabit\Payment\Abstracts;
 
 use Shetabit\Payment\Contracts\DriverInterface;
+use Shetabit\Payment\InvoiceBuilder;
 
 abstract class Driver implements DriverInterface
 {
     /**
-     * Amount
+     * Invoice
      *
-     * @var int
+     * @var InvoiceBuilder
      */
-    protected $amount = 0;
-
-    /**
-     * Payment details
-     *
-     * @var array
-     */
-    protected $details = [];
+    protected $invoice;
 
     /**
      * Driver constructor.
      *
+     * Driver constructor.
+     * @param InvoiceBuilder $invoice
      * @param $settings
      */
-    abstract public function __construct($settings);
+    abstract public function __construct(InvoiceBuilder $invoice, $settings);
 
     /**
      * Set payment amount.
@@ -36,10 +32,7 @@ abstract class Driver implements DriverInterface
      */
     public function amount($amount)
     {
-        if (! is_int($amount)) {
-            throw new \Exception('Amount value should be an integer.');
-        }
-        $this->body = $amount;
+        $this->invoice->amount($amount);
 
         return $this;
     }
@@ -56,21 +49,26 @@ abstract class Driver implements DriverInterface
         $key = is_array($key) ? $key : [$key => $value];
 
         foreach ($key as $k => $v) {
-            $this->details[$k] = $v;
+            $this->invoice->detail($key, $value);
         }
 
         return $this;
     }
 
+    public function getInvoice()
+    {
+        return $this->invoice;
+    }
+
     /**
-     * Create new purchase
+     * Purchase the invoice
      *
      * @return mixed
      */
     abstract public function purchase();
 
     /**
-     * Pay the purchase
+     * Pay the invoice
      *
      * @return mixed
      */

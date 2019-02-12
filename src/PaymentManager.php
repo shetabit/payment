@@ -28,19 +28,20 @@ class PaymentManager
     protected $driver;
 
     /**
-     * @var PaymentBuilder
+     * @var InvoiceBuilder
      */
-    protected $builder;
+    protected $invoice;
 
     /**
      * PaymentManager constructor.
      *
      * @param $config
+     * @throws \Exception
      */
     public function __construct($config)
     {
         $this->config = $config;
-        $this->setBuilder(new PaymentBuilder());
+        $this->setInvoice(new InvoiceBuilder());
         $this->via($this->config['default']);
     }
 
@@ -52,7 +53,7 @@ class PaymentManager
      */
     public function amount($amount)
     {
-        $this->builder->amount($amount);
+        $this->invoice->amount($amount);
 
         return $this;
     }
@@ -66,7 +67,7 @@ class PaymentManager
      */
     public function detail($key, $value = null)
     {
-        $this->builder->with($key, $value);
+        $this->invoice->detail($key, $value);
 
         return $this;
     }
@@ -82,76 +83,85 @@ class PaymentManager
     {
         $this->driver = $driver;
         $this->validateDriver();
-        $this->builder->via($driver);
+        $this->invoice->via($driver);
         $this->settings = $this->config['drivers'][$driver];
 
         return $this;
     }
 
     /**
-     * Send message.
+     * Purchase the invoice
      *
-     * @param $payment
-     * @param $callback
-     * @return mixed
+     * @param InvoiceBuilder $invoice
+     * @param null $initializeCallback
+     * @param null $finalizeCallback
+     * @return $this
      * @throws \Exception
      */
-    public function send($payment, $callback = null)
+    public function purchase(InvoiceBuilder $invoice, $initializeCallback = null, $finalizeCallback = null)
     {
-        if ($payment instanceof PaymentBuilder) {
-            return $this->setBuilder($payment)->dispatch();
-        }
-
-        $this->builder->send($payment);
-        if (! $callback) {
-            return $this;
-        }
+        $this->setInvoice($invoice);
 
         $driver = $this->getDriverInstance();
-        $driver->amount($payment);
-        call_user_func($callback, $driver);
 
-        return $driver->send();
-    }
+        call_user_func($initializeCallback, $driver);
 
-    /**
-     * @return mixed
-     */
-    public function dispatch()
-    {
-        $this->driver = $this->builder->getDriver() ?: $this->driver;
-        if (empty($this->driver)) {
-            $this->via($this->config['default']);
-        }
-        $driver = $this->getDriverInstance();
-        $driver->with($this->builder->getDetails());
-        $driver->amount($this->builder->getAmount());
+        //purchase the invoice
+        $driver->purchase();
 
-        return $driver->send();
-    }
-
-    /**
-     * @param PaymentBuilder $builder
-     * @return self
-     */
-    protected function setBuilder(PaymentBuilder $builder)
-    {
-        $this->builder = $builder;
+        call_user_func($finalizeCallback, $driver);
 
         return $this;
     }
 
     /**
-     * Generate driver instance.
+     * Pay the purchased invoice.
+     *
+     * @param null $initializeCallback
+     * @param null $finalizeCallback
+     * @return $this
+     */
+    public function pay($initializeCallback = null)
+    {
+        if($initializeCallback)
+            call_user_func($initializeCallback, $this->driver);
+
+        return $this->driver->pay();
+    }
+
+    /**
+     * Verifies the payment
      *
      * @return mixed
+     */
+    public function verify()
+    {
+        return $this->verify();
+    }
+
+    /**
+     * @param InvoiceBuilder $invoice
+     * @return self
+     */
+    protected function setInvoice(InvoiceBuilder $invoice)
+    {
+        $this->invoice = $invoice;
+
+        return $this;
+    }
+
+    /**
+     * Generate a new driver instance.
+     *
+     * @return mixed
+     * @throws \Exception
      */
     protected function getDriverInstance()
     {
         $this->validateDriver();
         $class = $this->config['map'][$this->driver];
 
-        return new $class($this->settings);
+        return new $class($this->invoice,$this->settings);
     }
 
     /**

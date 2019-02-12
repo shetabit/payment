@@ -9,7 +9,7 @@ return [
     | You can switch to a different driver at runtime.
     |
     */
-    'default' => 'irankish',
+    'default' => 'zarinpal',
 
     /*
     |--------------------------------------------------------------------------
@@ -22,10 +22,13 @@ return [
     |
     */
     'drivers' => [
-        'irankish' => [
-            'apiKey' => 'Your Api Key',
-            'from' => 'Your Default From Number',
-        ],
+        'zarinpal' => [ // set urls to https://sandbox.zarinpal.com/pg/rest/WebGate/ for using sandbox
+            'apiPurchaseUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentRequest.json',
+            'apiPaymentUrl' => 'https://www.zarinpal.com/pg/StartPay/',
+            'apiVerificationUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentVerification.json',
+            'merchantId' => '',
+            'callbackUrl' => 'http://yoursite.com/path/to',
+        ]
     ],
 
     /*
@@ -41,6 +44,6 @@ return [
     |
     */
     'map' => [
-        'irankish' => \Shetabit\Payment\Drivers\Irankish::class,
+        'irankish' => \Shetabit\Payment\Drivers\Zarinpal::class,
     ]
 ];
