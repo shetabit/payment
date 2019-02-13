@@ -88,7 +88,8 @@ class PaymentManager
      * @param $id
      * @return $this
      */
-    public function transactionId($id) {
+    public function transactionId($id)
+    {
         $this->invoice->transactionId($id);
 
         return $this;
@@ -210,7 +211,8 @@ class PaymentManager
      * @return mixed
      * @throws \Exception
      */
-    protected function getFreshDriverInstance() {
+    protected function getFreshDriverInstance()
+    {
         $this->validateDriver();
         $class = $this->config['map'][$this->driver];
 
@@ -222,7 +224,8 @@ class PaymentManager
      *
      * @throws InvoiceNotFoundException
      */
-    protected function validateInvoice() {
+    protected function validateInvoice()
+    {
         if (empty($this->invoice)) {
             throw new InvoiceNotFoundException('Invoice not selected or does not exist.');
         }

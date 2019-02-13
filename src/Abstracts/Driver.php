@@ -55,7 +55,8 @@ abstract class Driver implements DriverInterface
         return $this;
     }
 
-    public function setInvoice(Invoice $invoice) {
+    public function setInvoice(Invoice $invoice)
+    {
         $this->invoice = $invoice;
 
         return $this;

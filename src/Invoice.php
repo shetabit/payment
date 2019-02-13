@@ -64,7 +64,8 @@ class Invoice
      *
      * @return string
      */
-    public function getUuid() {
+    public function getUuid()
+    {
         return $this->uuid;
     }
 
