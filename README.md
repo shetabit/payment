@@ -2,6 +2,7 @@
 
 [![Software License][ico-license]](LICENSE.md)
 [![Latest Version on Packagist][ico-version]][link-packagist]
+[![StyleCI](https://github.styleci.io/repos/169948762/shield?branch=master)](https://github.styleci.io/repos/169948762)
 [![Quality Score][ico-code-quality]][link-code-quality]
 
 This is a Laravel Package for Payment Gateway Integration. This package supports `Laravel 5.2+`.
