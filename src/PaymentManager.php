@@ -2,7 +2,9 @@
 
 namespace Shetabit\Payment;
 
+use Shetabit\Payment\Contracts\DriverInterface;
 use Shetabit\Payment\Exceptions\DriverNotFoundException;
+use Shetabit\Payment\Exceptions\InvoiceNotFoundException;
 
 class PaymentManager
 {
@@ -28,6 +30,13 @@ class PaymentManager
     protected $driver;
 
     /**
+     * Payment Driver Instance.
+     *
+     * @var object
+     */
+    protected $driverInstance;
+
+    /**
      * @var InvoiceBuilder
      */
     protected $invoice;
@@ -48,8 +57,9 @@ class PaymentManager
     /**
      * Set payment amount.
      *
-     * @param integer $amount
-     * @return self
+     * @param $amount
+     * @return $this
+     * @throws \Exception
      */
     public function amount($amount)
     {
@@ -68,6 +78,18 @@ class PaymentManager
     public function detail($key, $value = null)
     {
         $this->invoice->detail($key, $value);
+
+        return $this;
+    }
+
+    /**
+     * Set transaction's id
+     *
+     * @param $id
+     * @return $this
+     */
+    public function transactionId($id) {
+        $this->invoice->transactionId($id);
 
         return $this;
     }
@@ -101,15 +123,16 @@ class PaymentManager
     public function purchase(InvoiceBuilder $invoice, $initializeCallback = null, $finalizeCallback = null)
     {
         $this->setInvoice($invoice);
-
-        $driver = $this->getDriverInstance();
-
-        call_user_func($initializeCallback, $driver);
+        $this->driverInstance = $this->getFreshDriverInstance();
+        if(!empty($initializeCallback)) {
+            call_user_func($initializeCallback, $this->driverInstance);
+        }
 
         //purchase the invoice
-        $driver->purchase();
-
-        call_user_func($finalizeCallback, $driver);
+        $body = $this->driverInstance->purchase();
+        if($finalizeCallback) {
+            call_user_func_array($finalizeCallback, [$this->driverInstance, $body]);
+        }
 
         return $this;
     }
@@ -118,25 +141,36 @@ class PaymentManager
      * Pay the purchased invoice.
      *
      * @param null $initializeCallback
-     * @param null $finalizeCallback
-     * @return $this
+     * @return mixed
+     * @throws \Exception
      */
     public function pay($initializeCallback = null)
     {
-        if($initializeCallback)
-            call_user_func($initializeCallback, $this->driver);
+        $this->driverInstance = $this->getDriverInstance();
+        if($initializeCallback) {
+            call_user_func($initializeCallback, $this->driverInstance);
+        }
+        $this->validateInvoice();
 
-        return $this->driver->pay();
+        return $this->driverInstance->pay();
     }
 
     /**
      * Verifies the payment
      *
+     * @param $initializeCallback
      * @return mixed
+     * @throws \Exception
      */
-    public function verify()
+    public function verify($initializeCallback = null)
     {
-        return $this->verify();
+        $this->driverInstance = $this->getDriverInstance();
+        if(!empty($initializeCallback)) {
+            call_user_func($initializeCallback, $this->driverInstance);
+        }
+        $this->validateInvoice();
+
+        return $this->driverInstance->verify();
     }
 
     /**
@@ -151,13 +185,27 @@ class PaymentManager
     }
 
     /**
-     * Generate a new driver instance.
+     * Retrieve current driver instance or generate new one.
      *
      * @return mixed
      * @throws \Exception
      */
     protected function getDriverInstance()
     {
+        if(!empty($this->driverInstance)) {
+            return $this->driverInstance;
+        }
+
+        return $this->getFreshDriverInstance();
+    }
+
+    /**
+     * Get new driver instance
+     *
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function getFreshDriverInstance() {
         $this->validateDriver();
         $class = $this->config['map'][$this->driver];
 
@@ -165,7 +213,18 @@ class PaymentManager
     }
 
     /**
-     * Validate Parameters before sending.
+     * Validate Invoice.
+     *
+     * @throws InvoiceNotFoundException
+     */
+    protected function validateInvoice() {
+        if(empty($this->invoice)) {
+            throw new InvoiceNotFoundException('Invoice not selected or does not exist.');
+        }
+    }
+
+    /**
+     * Validate driver.
      *
      * @throws \Exception
      */

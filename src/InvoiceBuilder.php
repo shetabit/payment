@@ -41,16 +41,21 @@ class InvoiceBuilder
      */
     public function __construct()
     {
-        $this->setUuid(Uuid::uuid4()->toString());
+        $this->uuid();
     }
 
     /**
      * Set invoice uuid
      *
-     * @param $uuid
+     * @param null $uuid
+     * @throws \Exception
      */
-    public function setUuid($uuid)
+    public function uuid($uuid = null)
     {
+        if(empty($uuid)) {
+            $uuid = Uuid::uuid4()->toString();
+        }
+
         $this->uuid = $uuid;
     }
 
@@ -108,19 +113,32 @@ class InvoiceBuilder
 
     /**
      * Get the value of invoice
+     *
+     * @return int
      */
     public function getAmount()
     {
         return $this->amount;
     }
 
-    public function setTransactionId($id)
+    /**
+     * set transaction id
+     *
+     * @param $id
+     * @return $this
+     */
+    public function transactionId($id)
     {
         $this->transactionId = $id;
 
         return $this;
     }
 
+    /**
+     * Get the value of transaction's id
+     *
+     * @return string
+     */
     public function getTransactionId()
     {
         return $this->transactionId;

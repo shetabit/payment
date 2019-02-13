@@ -36,43 +36,68 @@ class Zarinpal extends Driver
      */
     public function __construct(InvoiceBuilder $invoice, $settings)
     {
-        $this->invoice = $invoice;
+        $this->setInvoice($invoice);
         $this->settings = (object) $settings;
         $this->client = new Client();
     }
 
+    /**
+     * Purchase Invoice.
+     *
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function purchase()
     {
+        if (!empty($this->invoice->getDetails()['description'])) {
+            $description = $this->invoice->getDetails()['description'];
+        } else {
+            $description = $this->settings->description;
+        }
+
         $data = array(
             'MerchantID' => $this->settings->merchantId,
             'Amount' => $this->invoice->getAmount(),
             'CallbackURL' => $this->settings->callbackUrl,
-            'Description' => $this->invoice->getDetails(),
+            'Description' => $description,
             'AdditionalData' => $this->invoice->getDetails()
         );
 
         $response = $this->client->request(
             'POST',
-            $this->settings->apiPurchaseUrl,
-            ['json' => $data]
-        );
+            $this->settings->apiPurchaseUrl, [
+                "json" => $data,
+            ]);
         $body = json_decode($response->getBody()->getContents(), true);
 
         if (empty($body['Authority'])) {
             $body['Authority'] = null;
         } else {
-            $this->invoice->setTransactionId($body['Authority']);
+            $this->invoice->transactionId($body['Authority']);
         }
 
         return $body;
     }
 
+    /**
+     * Pay the Invoice
+     *
+     * @return \Illuminate\Http\RedirectResponse|mixed
+     */
     public function pay()
     {
         $payUrl = $this->settings->apiPaymentUrl.$this->invoice->getTransactionId();
-        return redirect()->url($payUrl);
+
+        // redirect using laravel logic
+        return redirect()->to($payUrl);
     }
 
+    /**
+     * Verify payment
+     *
+     * @return array|object
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function verify()
     {
         $data = [

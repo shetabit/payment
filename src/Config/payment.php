@@ -28,7 +28,8 @@ return [
             'apiVerificationUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentVerification.json',
             'merchantId' => '',
             'callbackUrl' => 'http://yoursite.com/path/to',
-        ]
+            'description' => 'payment in '.config('app.name'),
+        ],
     ],
 
     /*
@@ -44,6 +45,6 @@ return [
     |
     */
     'map' => [
-        'irankish' => \Shetabit\Payment\Drivers\Zarinpal::class,
+        'zarinpal' => \Shetabit\Payment\Drivers\Zarinpal::class,
     ]
 ];
