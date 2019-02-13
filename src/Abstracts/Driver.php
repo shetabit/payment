@@ -41,8 +41,8 @@ abstract class Driver implements DriverInterface
      * Set a piece of data to the details.
      *
      * @param $key
-     * @param null $value
-     * @return $this
+     * @param $value|null
+     * @return $this|DriverInterface
      */
     public function detail($key, $value = null)
     {
@@ -83,7 +83,7 @@ abstract class Driver implements DriverInterface
     /**
      * Verify the payment
      *
-     * @return object
+     * @return mixed
      */
     abstract public function verify();
 }

@@ -72,7 +72,7 @@ class PaymentManager
      * Set a piece of data to the details.
      *
      * @param $key
-     * @param null $value
+     * @param $value|null
      * @return $this
      */
     public function detail($key, $value = null)
@@ -115,8 +115,8 @@ class PaymentManager
      * Purchase the invoice
      *
      * @param InvoiceBuilder $invoice
-     * @param null $initializeCallback
-     * @param null $finalizeCallback
+     * @param $initializeCallback|null
+     * @param $finalizeCallback|null
      * @return $this
      * @throws \Exception
      */
@@ -140,7 +140,7 @@ class PaymentManager
     /**
      * Pay the purchased invoice.
      *
-     * @param null $initializeCallback
+     * @param $initializeCallback|null
      * @return mixed
      * @throws \Exception
      */
@@ -158,7 +158,7 @@ class PaymentManager
     /**
      * Verifies the payment
      *
-     * @param $initializeCallback
+     * @param $initializeCallback|null
      * @return mixed
      * @throws \Exception
      */

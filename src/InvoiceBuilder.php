@@ -47,7 +47,7 @@ class InvoiceBuilder
     /**
      * Set invoice uuid
      *
-     * @param null $uuid
+     * @param $uuid|null
      * @throws \Exception
      */
     public function uuid($uuid = null)
@@ -72,7 +72,7 @@ class InvoiceBuilder
      * Set a piece of data to the details.
      *
      * @param $key
-     * @param null $value
+     * @param $value|null
      * @return $this
      */
     public function detail($key, $value = null)
@@ -159,6 +159,8 @@ class InvoiceBuilder
 
     /**
      * Get the value of driver
+     *
+     * @return string
      */
     public function getDriver()
     {

@@ -17,8 +17,8 @@ interface DriverInterface
      * Set a piece of data to the details.
      *
      * @param $key
-     * @param null $value
-     * @return $this
+     * @param $value|null
+     * @return mixed
      */
     public function detail($key, $value = null);
 
@@ -39,7 +39,7 @@ interface DriverInterface
     /**
      * verify the payment
      *
-     * @return object
+     * @return mixed
      */
     public function verify();
 }
