@@ -52,7 +52,7 @@ class InvoiceBuilder
      */
     public function uuid($uuid = null)
     {
-        if(empty($uuid)) {
+        if (empty($uuid)) {
             $uuid = Uuid::uuid4()->toString();
         }
 
@@ -103,7 +103,7 @@ class InvoiceBuilder
      */
     public function amount($amount)
     {
-        if (! is_int($amount)) {
+        if (!is_int($amount)) {
             throw new \Exception('Amount value should be an integer.');
         }
         $this->amount = $amount;
