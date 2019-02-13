@@ -103,10 +103,10 @@ First you have to add the name of your driver, in the drivers array and also you
 ]
 ```
 
-Now you have to create a Driver Map Class that will be used to send the SMS.
-In your driver, You just have to extend `Tzsk\Sms\Abstracts\Driver`.
+Now you have to create a Driver Map Class that will be used to pay invoices.
+In your driver, You just have to extend `Shetabit\Payment\Abstracts\Driver`.
 
-Ex. You created a class : `App\Packages\SMSDriver\MyDriver`.
+Ex. You created a class : `App\Packages\PaymentDriver\MyDriver`.
 
 ```php
 namespace App\Packages\PaymentDriver;
@@ -177,7 +177,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details
 
 ## Security
 
-If you discover any security related issues, please email mailtokmahmed@gmail.com instead of using the issue tracker.
+If you discover any security related issues, please email khanzadimahdi@gmail.com instead of using the issue tracker.
 
 ## Credits
 
