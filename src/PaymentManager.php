@@ -37,7 +37,7 @@ class PaymentManager
     protected $driverInstance;
 
     /**
-     * @var InvoiceBuilder
+     * @var Invoice
      */
     protected $invoice;
 
@@ -50,7 +50,7 @@ class PaymentManager
     public function __construct($config)
     {
         $this->config = $config;
-        $this->setInvoice(new InvoiceBuilder());
+        $this->setInvoice(new Invoice());
         $this->via($this->config['default']);
     }
 
@@ -114,13 +114,13 @@ class PaymentManager
     /**
      * Purchase the invoice
      *
-     * @param InvoiceBuilder $invoice
+     * @param Invoice $invoice
      * @param $initializeCallback|null
      * @param $finalizeCallback|null
      * @return $this
      * @throws \Exception
      */
-    public function purchase(InvoiceBuilder $invoice, $initializeCallback = null, $finalizeCallback = null)
+    public function purchase(Invoice $invoice, $initializeCallback = null, $finalizeCallback = null)
     {
         $this->setInvoice($invoice);
         $this->driverInstance = $this->getFreshDriverInstance();
@@ -159,25 +159,30 @@ class PaymentManager
      * Verifies the payment
      *
      * @param $initializeCallback|null
+     * @param $finalizeCallback|null
      * @return mixed
-     * @throws \Exception
+     * @throws InvoiceNotFoundException
      */
-    public function verify($initializeCallback = null)
+    public function verify($initializeCallback = null, $finalizeCallback = null)
     {
         $this->driverInstance = $this->getDriverInstance();
         if (!empty($initializeCallback)) {
             call_user_func($initializeCallback, $this->driverInstance);
         }
         $this->validateInvoice();
+        $result = $this->driverInstance->verify();
+        if (!empty($finalizeCallback)) {
+            call_user_func($finalizeCallback, $this->driverInstance, $result);
+        }
 
-        return $this->driverInstance->verify();
+        return $result;
     }
 
     /**
-     * @param InvoiceBuilder $invoice
+     * @param Invoice $invoice
      * @return self
      */
-    protected function setInvoice(InvoiceBuilder $invoice)
+    protected function setInvoice(Invoice $invoice)
     {
         $this->invoice = $invoice;
 

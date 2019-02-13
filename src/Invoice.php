@@ -4,7 +4,7 @@ namespace Shetabit\Payment;
 
 use Ramsey\Uuid\Uuid;
 
-class InvoiceBuilder
+class Invoice
 {
     protected $uuid;
 
@@ -35,7 +35,7 @@ class InvoiceBuilder
     protected $driver;
 
     /**
-     * InvoiceBuilder constructor.
+     * Invoice constructor.
      *
      * @throws \Exception
      */

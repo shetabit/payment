@@ -4,7 +4,7 @@ namespace Shetabit\Payment\Drivers;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\InvoiceBuilder;
+use Shetabit\Payment\Invoice;
 
 class Zarinpal extends Driver
 {
@@ -16,7 +16,7 @@ class Zarinpal extends Driver
     protected $client;
 
     /**
-     * @var InvoiceBuilder
+     * @var Invoice
      */
     protected $invoice;
 
@@ -30,11 +30,11 @@ class Zarinpal extends Driver
     /**
      * Construct the class with the relevant settings.
      *
-     * Irankish constructor.
-     * @param InvoiceBuilder $invoice
+     * Zarinpal constructor.
+     * @param Invoice $invoice
      * @param $settings
      */
-    public function __construct(InvoiceBuilder $invoice, $settings)
+    public function __construct(Invoice $invoice, $settings)
     {
         $this->setInvoice($invoice);
         $this->settings = (object) $settings;

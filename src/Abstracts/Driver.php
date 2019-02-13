@@ -3,14 +3,14 @@
 namespace Shetabit\Payment\Abstracts;
 
 use Shetabit\Payment\Contracts\DriverInterface;
-use Shetabit\Payment\InvoiceBuilder;
+use Shetabit\Payment\Invoice;
 
 abstract class Driver implements DriverInterface
 {
     /**
      * Invoice
      *
-     * @var InvoiceBuilder
+     * @var Invoice
      */
     protected $invoice;
 
@@ -18,10 +18,10 @@ abstract class Driver implements DriverInterface
      * Driver constructor.
      *
      * Driver constructor.
-     * @param InvoiceBuilder $invoice
+     * @param Invoice $invoice
      * @param $settings
      */
-    abstract public function __construct(InvoiceBuilder $invoice, $settings);
+    abstract public function __construct(Invoice $invoice, $settings);
 
     /**
      * Set payment amount.
@@ -55,7 +55,7 @@ abstract class Driver implements DriverInterface
         return $this;
     }
 
-    public function setInvoice(InvoiceBuilder $invoice) {
+    public function setInvoice(Invoice $invoice) {
         $this->invoice = $invoice;
 
         return $this;
