@@ -124,13 +124,13 @@ class PaymentManager
     {
         $this->setInvoice($invoice);
         $this->driverInstance = $this->getFreshDriverInstance();
-        if(!empty($initializeCallback)) {
+        if (!empty($initializeCallback)) {
             call_user_func($initializeCallback, $this->driverInstance);
         }
 
         //purchase the invoice
         $body = $this->driverInstance->purchase();
-        if($finalizeCallback) {
+        if ($finalizeCallback) {
             call_user_func_array($finalizeCallback, [$this->driverInstance, $body]);
         }
 
@@ -147,7 +147,7 @@ class PaymentManager
     public function pay($initializeCallback = null)
     {
         $this->driverInstance = $this->getDriverInstance();
-        if($initializeCallback) {
+        if ($initializeCallback) {
             call_user_func($initializeCallback, $this->driverInstance);
         }
         $this->validateInvoice();
@@ -165,7 +165,7 @@ class PaymentManager
     public function verify($initializeCallback = null)
     {
         $this->driverInstance = $this->getDriverInstance();
-        if(!empty($initializeCallback)) {
+        if (!empty($initializeCallback)) {
             call_user_func($initializeCallback, $this->driverInstance);
         }
         $this->validateInvoice();
@@ -192,7 +192,7 @@ class PaymentManager
      */
     protected function getDriverInstance()
     {
-        if(!empty($this->driverInstance)) {
+        if (!empty($this->driverInstance)) {
             return $this->driverInstance;
         }
 
@@ -209,7 +209,7 @@ class PaymentManager
         $this->validateDriver();
         $class = $this->config['map'][$this->driver];
 
-        return new $class($this->invoice,$this->settings);
+        return new $class($this->invoice, $this->settings);
     }
 
     /**
@@ -218,7 +218,7 @@ class PaymentManager
      * @throws InvoiceNotFoundException
      */
     protected function validateInvoice() {
-        if(empty($this->invoice)) {
+        if (empty($this->invoice)) {
             throw new InvoiceNotFoundException('Invoice not selected or does not exist.');
         }
     }
@@ -238,13 +238,13 @@ class PaymentManager
             throw new DriverNotFoundException('Driver not found in config file. Try updating the package.');
         }
 
-        if (! class_exists($this->config['map'][$this->driver])) {
+        if (!class_exists($this->config['map'][$this->driver])) {
             throw new DriverNotFoundException('Driver source not found. Please update the package.');
         }
 
         $reflect = new \ReflectionClass($this->config['map'][$this->driver]);
 
-        if (! $reflect->implementsInterface(Contracts\DriverInterface::class)) {
+        if (!$reflect->implementsInterface(Contracts\DriverInterface::class)) {
             throw new \Exception("Driver must be an instance of Contracts\DriverInterface.");
         }
     }
