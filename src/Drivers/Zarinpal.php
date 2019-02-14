@@ -18,7 +18,7 @@ class Zarinpal extends Driver
 
     /**
      * Invoice
-     * 
+     *
      * @var Invoice
      */
     protected $invoice;
