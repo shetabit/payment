@@ -4,6 +4,7 @@ namespace Shetabit\Payment\Drivers;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
+use Shetabit\Payment\Exceptions\InvalidPaymentException;
 use Shetabit\Payment\Invoice;
 
 class Zarinpal extends Driver
@@ -16,6 +17,8 @@ class Zarinpal extends Driver
     protected $client;
 
     /**
+     * Invoice
+     * 
      * @var Invoice
      */
     protected $invoice;
@@ -28,9 +31,9 @@ class Zarinpal extends Driver
     protected $settings;
 
     /**
+     * Zarinpal constructor.
      * Construct the class with the relevant settings.
      *
-     * Zarinpal constructor.
      * @param Invoice $invoice
      * @param $settings
      */
@@ -65,9 +68,11 @@ class Zarinpal extends Driver
 
         $response = $this->client->request(
             'POST',
-            $this->settings->apiPurchaseUrl, [
+            $this->settings->apiPurchaseUrl,
+            [
                 "json" => $data,
-            ]);
+            ]
+        );
         $body = json_decode($response->getBody()->getContents(), true);
 
         if (empty($body['Authority'])) {
@@ -95,8 +100,8 @@ class Zarinpal extends Driver
     /**
      * Verify payment
      *
-     * @return array|object
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return mixed|void
+     * @throws InvalidPaymentException
      */
     public function verify()
     {
@@ -113,24 +118,11 @@ class Zarinpal extends Driver
         );
         $body = json_decode($response->getBody()->getContents(), true);
 
-        if ($body['Status'] == 100) {
-            return [
-                'Status'      => 'success',
-                'RefID'       => $body['RefID'],
-                'ExtraDetail' => $body['ExtraDetail'],
-            ];
-        } elseif ($body['Status'] == 101) {
-            return [
-                'Status'      => 'verified_before',
-                'RefID'       => $body['RefID'],
-                'ExtraDetail' => $body['ExtraDetail'],
-            ];
+        // throw an exception when payment has some issues!
+        if ($body['Status'] == 101) {
+            throw new InvalidPaymentException('payment has been verified before');
         } else {
-            return [
-                'Status'    => 'error',
-                'error'     => !empty($body['Status']) ? $body['Status'] : null,
-                'errorInfo' => !empty($body['errors']) ? $body['errors'] : null,
-            ];
+            throw new InvalidPaymentException($body['errors']);
         }
     }
 }

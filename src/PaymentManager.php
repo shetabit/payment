@@ -161,7 +161,7 @@ class PaymentManager
      *
      * @param $initializeCallback|null
      * @param $finalizeCallback|null
-     * @return mixed
+     * @return $this
      * @throws InvoiceNotFoundException
      */
     public function verify($initializeCallback = null, $finalizeCallback = null)
@@ -171,12 +171,12 @@ class PaymentManager
             call_user_func($initializeCallback, $this->driverInstance);
         }
         $this->validateInvoice();
-        $result = $this->driverInstance->verify();
+        $this->driverInstance->verify();
         if (!empty($finalizeCallback)) {
-            call_user_func($finalizeCallback, $this->driverInstance, $result);
+            call_user_func($finalizeCallback, $this->driverInstance);
         }
 
-        return $result;
+        return $this;
     }
 
     /**
