@@ -24,7 +24,7 @@ class PaymentServiceProvider extends ServiceProvider
         /**
          * Bind to service container.
          */
-        $this->app->bind('shetabit-payment', function () {
+        $this->app->bind('shetabit-payment', function() {
             return new PaymentManager(config('payment'));
         });
     }
