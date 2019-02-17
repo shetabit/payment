@@ -121,7 +121,7 @@ class MyDriver extends Driver
 
     public function __construct(Invoice $invoice, $settings)
     {
-        $this->setInvoice($invoice); // set the invoice
+        $this->invoice($invoice); // set the invoice
         $this->settings = (object) $settings; // set settings
     }
 

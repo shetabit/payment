@@ -50,7 +50,7 @@ class PaymentManager
     public function __construct($config)
     {
         $this->config = $config;
-        $this->setInvoice(new Invoice());
+        $this->invoice(new Invoice());
         $this->via($this->config['default']);
     }
 
@@ -115,15 +115,18 @@ class PaymentManager
     /**
      * Purchase the invoice
      *
-     * @param Invoice $invoice
+     * @param Invoice $invoice|null
      * @param $initializeCallback|null
      * @param $finalizeCallback|null
      * @return $this
      * @throws \Exception
      */
-    public function purchase(Invoice $invoice, $initializeCallback = null, $finalizeCallback = null)
+    public function purchase(Invoice $invoice = null, $initializeCallback = null, $finalizeCallback = null)
     {
-        $this->setInvoice($invoice);
+        if ($invoice) { // create new invoice
+            $this->invoice($invoice);
+        }
+
         $this->driverInstance = $this->getFreshDriverInstance();
         if (!empty($initializeCallback)) {
             call_user_func($initializeCallback, $this->driverInstance);
@@ -183,7 +186,7 @@ class PaymentManager
      * @param Invoice $invoice
      * @return self
      */
-    protected function setInvoice(Invoice $invoice)
+    protected function invoice(Invoice $invoice)
     {
         $this->invoice = $invoice;
 

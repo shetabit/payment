@@ -15,6 +15,13 @@ abstract class Driver implements DriverInterface
     protected $invoice;
 
     /**
+     * Driver's settings
+     *
+     * @var
+     */
+    protected $settings;
+
+    /**
      * Driver constructor.
      *
      * Driver constructor.
@@ -55,16 +62,44 @@ abstract class Driver implements DriverInterface
         return $this;
     }
 
-    public function setInvoice(Invoice $invoice)
+    /**
+     * Set invoice.
+     *
+     * @param Invoice $invoice
+     * @return $this
+     */
+    public function invoice(Invoice $invoice)
     {
         $this->invoice = $invoice;
 
         return $this;
     }
 
+    /**
+     * Retrieve invoice.
+     *
+     * @return Invoice
+     */
     public function getInvoice()
     {
         return $this->invoice;
+    }
+
+    /**
+     * Set callbackUrl.
+     *
+     * @param $url
+     * @return $this
+     */
+    public function callbackUrl($url)
+    {
+        if (isset($this->settings->callbackUrl)) {
+            $this->settings->callbackUrl = $url;
+        } else {
+            $this->settings['callbackUrl'] = $url;
+        }
+
+        return $this;
     }
 
     /**

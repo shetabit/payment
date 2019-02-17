@@ -10,7 +10,7 @@ use Shetabit\Payment\Invoice;
 class Zarinpal extends Driver
 {
     /**
-     * Irankish Client.
+     * Zarinpal Client.
      *
      * @var object
      */
@@ -39,7 +39,7 @@ class Zarinpal extends Driver
      */
     public function __construct(Invoice $invoice, $settings)
     {
-        $this->setInvoice($invoice);
+        $this->invoice($invoice);
         $this->settings = (object) $settings;
         $this->client = new Client();
     }
