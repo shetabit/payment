@@ -130,7 +130,8 @@ class Zarinpal extends Driver
      * @param $status
      * @throws InvalidPaymentException
      */
-    private function notVerified($status) {
+    private function notVerified($status)
+    {
         $translations = array(
             "-1" => "اطلاعات ارسال شده ناقص است.",
             "-2" => "IP و يا مرچنت كد پذيرنده صحيح نيست",

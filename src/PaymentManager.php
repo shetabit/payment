@@ -162,17 +162,13 @@ class PaymentManager
     /**
      * Verifies the payment
      *
-     * @param $initializeCallback|null
      * @param $finalizeCallback|null
      * @return $this
      * @throws InvoiceNotFoundException
      */
-    public function verify($initializeCallback = null, $finalizeCallback = null)
+    public function verify($finalizeCallback = null)
     {
         $this->driverInstance = $this->getDriverInstance();
-        if (!empty($initializeCallback)) {
-            call_user_func($initializeCallback, $this->driverInstance);
-        }
         $this->validateInvoice();
         $this->driverInstance->verify();
         if (!empty($finalizeCallback)) {
