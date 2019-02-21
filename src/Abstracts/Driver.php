@@ -88,7 +88,7 @@ abstract class Driver implements DriverInterface
     /**
      * Purchase the invoice
      *
-     * @return mixed
+     * @return string
      */
     abstract public function purchase();
 

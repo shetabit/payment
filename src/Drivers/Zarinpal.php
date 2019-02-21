@@ -47,8 +47,7 @@ class Zarinpal extends Driver
     /**
      * Purchase Invoice.
      *
-     * @return mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return string
      */
     public function purchase()
     {
@@ -81,7 +80,8 @@ class Zarinpal extends Driver
             $this->invoice->transactionId($body['Authority']);
         }
 
-        return $body;
+        // return the transaction's id
+        return $this->invoice->getTransactionId();
     }
 
     /**

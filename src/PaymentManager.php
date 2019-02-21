@@ -161,9 +161,9 @@ class PaymentManager
         $this->driverInstance = $this->getFreshDriverInstance();
 
         //purchase the invoice
-        $body = $this->driverInstance->purchase();
+        $transactionId = $this->driverInstance->purchase();
         if ($finalizeCallback) {
-            call_user_func_array($finalizeCallback, [$this->driverInstance, $body]);
+            call_user_func_array($finalizeCallback, [$this->driverInstance, $transactionId]);
         }
 
         return $this;
