@@ -86,23 +86,6 @@ abstract class Driver implements DriverInterface
     }
 
     /**
-     * Set callbackUrl.
-     *
-     * @param $url
-     * @return $this
-     */
-    public function callbackUrl($url)
-    {
-        if (isset($this->settings->callbackUrl)) {
-            $this->settings->callbackUrl = $url;
-        } else {
-            $this->settings['callbackUrl'] = $url;
-        }
-
-        return $this;
-    }
-
-    /**
      * Purchase the invoice
      *
      * @return mixed

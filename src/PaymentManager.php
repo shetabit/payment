@@ -23,6 +23,13 @@ class PaymentManager
     protected $settings;
 
     /**
+     * callbackUrl
+     *
+     * @var string
+     */
+    protected $callbackUrl;
+
+    /**
      * Payment Driver Name.
      *
      * @var string
@@ -52,6 +59,31 @@ class PaymentManager
         $this->config = $config;
         $this->invoice(new Invoice());
         $this->via($this->config['default']);
+    }
+
+    /**
+     * Set callbackUrl.
+     *
+     * @param $url|null
+     * @return $this
+     */
+    public function callbackUrl($url = null)
+    {
+        $this->callbackUrl = $url;
+
+        return $this;
+    }
+
+    /**
+     * Reset the callbackUrl to its original that exists in configs.
+     *
+     * @return $this
+     */
+    public function resetCallbackUrl()
+    {
+        $this->callbackUrl();
+
+        return $this;
     }
 
     /**
@@ -116,21 +148,17 @@ class PaymentManager
      * Purchase the invoice
      *
      * @param Invoice $invoice|null
-     * @param $initializeCallback|null
      * @param $finalizeCallback|null
      * @return $this
      * @throws \Exception
      */
-    public function purchase(Invoice $invoice = null, $initializeCallback = null, $finalizeCallback = null)
+    public function purchase(Invoice $invoice = null, $finalizeCallback = null)
     {
         if ($invoice) { // create new invoice
             $this->invoice($invoice);
         }
 
         $this->driverInstance = $this->getFreshDriverInstance();
-        if (!empty($initializeCallback)) {
-            call_user_func($initializeCallback, $this->driverInstance);
-        }
 
         //purchase the invoice
         $body = $this->driverInstance->purchase();
@@ -151,9 +179,11 @@ class PaymentManager
     public function pay($initializeCallback = null)
     {
         $this->driverInstance = $this->getDriverInstance();
+
         if ($initializeCallback) {
             call_user_func($initializeCallback, $this->driverInstance);
         }
+
         $this->validateInvoice();
 
         return $this->driverInstance->pay();
@@ -171,6 +201,7 @@ class PaymentManager
         $this->driverInstance = $this->getDriverInstance();
         $this->validateInvoice();
         $this->driverInstance->verify();
+
         if (!empty($finalizeCallback)) {
             call_user_func($finalizeCallback, $this->driverInstance);
         }
@@ -214,6 +245,10 @@ class PaymentManager
     {
         $this->validateDriver();
         $class = $this->config['map'][$this->driver];
+
+        if (!empty($this->callbackUrl)) { // use custom callbackUrl if exists
+            $this->settings['callbackUrl'] = $this->callbackUrl;
+        }
 
         return new $class($this->invoice, $this->settings);
     }
