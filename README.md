@@ -10,6 +10,9 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 
 > This packages works with multiple drivers, and you can create custom drivers if there are not available in the [current drivers list](#list-of-available-drivers) (below list).
 
+- [داکیومنت فارسی][link-fa]
+- [english documents][link-en]
+
 # List of contents
 
 - [Available drivers](#list-of-available-drivers)
@@ -386,6 +389,8 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/shetabit/payment.svg?label=Code%20Quality&style=flat-square
 
+[link-fa]: ../../README-FA.md
+[link-en]: ../../README.md
 [link-packagist]: https://packagist.org/packages/shetabit/payment
 [link-code-quality]: https://scrutinizer-ci.com/g/shetabit/payment
 [link-author]: https://github.com/khanzadimahdi

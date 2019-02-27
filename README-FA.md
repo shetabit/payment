@@ -10,6 +10,9 @@
 
 > این پکیج با درگاه های پرداخت مختلفی کار میکنه. در صورتی که درگاه مورد نظرتون رو در لیست درایورهای موجود پیدا نکردید میتونید برای درگاهی که استفاده میکنید درایور مورد نظرتون رو بسازید.
 
+- [داکیومنت فارسی][link-fa]
+- [english documents][link-en]
+
 # لیست محتوا
 
 - [درایور های موجود](#درایورهای-موجود)
@@ -385,6 +388,8 @@ class MyDriver extends Driver
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/shetabit/payment.svg?label=Code%20Quality&style=flat-square
 
+[link-fa]: ../../README-FA.md
+[link-en]: ../../README.md
 [link-packagist]: https://packagist.org/packages/shetabit/payment
 [link-code-quality]: https://scrutinizer-ci.com/g/shetabit/payment
 [link-author]: https://github.com/khanzadimahdi
