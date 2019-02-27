@@ -55,5 +55,6 @@ return [
     */
     'map' => [
         'zarinpal' => \Shetabit\Payment\Drivers\Zarinpal::class,
+        'irankish' => \Shetabit\Payment\Drivers\Irankish::class,
     ]
 ];

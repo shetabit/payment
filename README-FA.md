@@ -57,7 +57,7 @@ $ composer require shetabit/payment
 # In your providers array.
 'providers' => [
     ...
-    Shetabit\payment\Provider\PaymentServiceProvider::class,
+    Shetabit\Payment\Provider\PaymentServiceProvider::class,
 ],
 
 # In your aliases array.

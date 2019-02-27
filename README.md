@@ -57,7 +57,7 @@ In your `config/app.php` file add these two lines.
 # In your providers array.
 'providers' => [
     ...
-    Shetabit\payment\Provider\PaymentServiceProvider::class,
+    Shetabit\Payment\Provider\PaymentServiceProvider::class,
 ],
 
 # In your aliases array.
