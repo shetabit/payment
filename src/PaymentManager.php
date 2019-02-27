@@ -3,6 +3,8 @@
 namespace Shetabit\Payment;
 
 use Shetabit\Payment\Contracts\DriverInterface;
+use Shetabit\Payment\Events\InvoicePurchasedEvent;
+use Shetabit\Payment\Events\InvoiceVerifiedEvent;
 use Shetabit\Payment\Exceptions\DriverNotFoundException;
 use Shetabit\Payment\Exceptions\InvoiceNotFoundException;
 
@@ -166,6 +168,14 @@ class PaymentManager
             call_user_func_array($finalizeCallback, [$this->driverInstance, $transactionId]);
         }
 
+        // dispatch event
+        event(
+            new InvoicePurchasedEvent(
+                $this->driverInstance,
+                $this->driverInstance->getInvoice()
+            )
+        );
+
         return $this;
     }
 
@@ -205,6 +215,14 @@ class PaymentManager
         if (!empty($finalizeCallback)) {
             call_user_func($finalizeCallback, $this->driverInstance);
         }
+
+        // dispatch event
+        event(
+            new InvoiceVerifiedEvent(
+                $this->driverInstance,
+                $this->driverInstance->getInvoice()
+            )
+        );
 
         return $this;
     }
@@ -286,7 +304,7 @@ class PaymentManager
 
         $reflect = new \ReflectionClass($this->config['map'][$this->driver]);
 
-        if (!$reflect->implementsInterface(Contracts\DriverInterface::class)) {
+        if (!$reflect->implementsInterface(DriverInterface::class)) {
             throw new \Exception("Driver must be an instance of Contracts\DriverInterface.");
         }
     }
