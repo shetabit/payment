@@ -388,8 +388,8 @@ class MyDriver extends Driver
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/shetabit/payment.svg?label=Code%20Quality&style=flat-square
 
-[link-fa]: ../../README-FA.md
-[link-en]: ../../README.md
+[link-fa]: README-FA.md
+[link-en]: README.md
 [link-packagist]: https://packagist.org/packages/shetabit/payment
 [link-code-quality]: https://scrutinizer-ci.com/g/shetabit/payment
 [link-author]: https://github.com/khanzadimahdi
