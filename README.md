@@ -93,11 +93,11 @@ Then fill the credentials for that gateway in the drivers array.
 
 ## How to use
 
-your `Invoice` holds your payment details, so we talk about `InvoiceBuilder` class at first. 
+your `Invoice` holds your payment details, so we talk about `Invoice` class at first. 
 
 #### Working with invoices
 
-before doing any thing you to use `Invoice` class to create an invoice.
+before doing any thing you need to use `Invoice` class to create an invoice.
 
 
 In your code, use it like the below:
