@@ -22,11 +22,20 @@ return [
     |
     */
     'drivers' => [
-        'zarinpal' => [// set urls to https://sandbox.zarinpal.com/pg/rest/WebGate/ for using sandbox
+        'zarinpal' => [ // set urls to https://sandbox.zarinpal.com/pg/rest/WebGate/ for using sandbox
             'apiPurchaseUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentRequest.json',
             'apiPaymentUrl' => 'https://www.zarinpal.com/pg/StartPay/',
             'apiVerificationUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentVerification.json',
             'merchantId' => '',
+            'callbackUrl' => 'http://yoursite.com/path/to',
+            'description' => 'payment in '.config('app.name'),
+        ],
+        'irankish' => [
+            'apiPurchaseUrl' => 'https://ikc.shaparak.ir/XToken/Tokens.xml',
+            'apiPaymentUrl' => 'https://ikc.shaparak.ir/TPayment/Payment/index',
+            'apiVerificationUrl' => 'https://ikc.shaparak.ir/XVerify/Verify.xml',
+            'merchantId' => '',
+            'sha1Key' => '',
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],
