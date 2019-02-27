@@ -23,7 +23,7 @@ class Irankish extends Driver
     protected $settings;
 
     /**
-     * Zarinpal constructor.
+     * Irankish constructor.
      * Construct the class with the relevant settings.
      *
      * @param Invoice $invoice
@@ -59,8 +59,7 @@ class Irankish extends Driver
         );
 
         $soap = new \SoapClient(
-            $this->settings->apiPurchaseUrl,
-            array('soap_version'   => SOAP_1_1)
+            $this->settings->apiPurchaseUrl
         );
         $response = $soap->MakeToken($data);
 

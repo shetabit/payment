@@ -25,7 +25,7 @@ interface DriverInterface
     /**
      * Create new purchase
      *
-     * @return $this
+     * @return string
      */
     public function purchase();
 

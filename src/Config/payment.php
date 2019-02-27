@@ -32,7 +32,7 @@ return [
         ],
         'irankish' => [
             'apiPurchaseUrl' => 'https://ikc.shaparak.ir/XToken/Tokens.xml',
-            'apiPaymentUrl' => 'https://ikc.shaparak.ir/TPayment/Payment/index',
+            'apiPaymentUrl' => 'https://ikc.shaparak.ir/TPayment/Payment/index/',
             'apiVerificationUrl' => 'https://ikc.shaparak.ir/XVerify/Verify.xml',
             'merchantId' => '',
             'sha1Key' => '',

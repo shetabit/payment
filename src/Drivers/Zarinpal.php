@@ -68,9 +68,7 @@ class Zarinpal extends Driver
         $response = $this->client->request(
             'POST',
             $this->settings->apiPurchaseUrl,
-            [
-                "json" => $data,
-            ]
+            ["json" => $data]
         );
         $body = json_decode($response->getBody()->getContents(), true);
 
