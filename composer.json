@@ -83,6 +83,7 @@
     ],
     "require": {
         "php": ">=7.2",
+        "illuminate/broadcasting": "~5.1",
         "illuminate/support": "~5.1",
         "guzzlehttp/guzzle": "~6.2",
         "ramsey/uuid": "~3.8"
