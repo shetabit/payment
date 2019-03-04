@@ -49,7 +49,7 @@ class Irankish extends Driver
         }
 
         $data = array(
-            'amount' => $this->invoice->getAmount(),
+            'amount' => $this->invoice->getAmount() * 10, // convert to rial
             'merchantId' => $this->settings->merchantId,
             'description' => $description,
             'revertURL' => $this->settings->callbackUrl,
@@ -72,16 +72,46 @@ class Irankish extends Driver
     }
 
     /**
+     * Create payment redirection form.
+     *
+     * @param $url
+     * @param array $data
+     * @return string
+     */
+    public function createRedirectionForm($url, array $data)
+    {
+        $output = '<html><head><meta charset="utf-8" />';
+        $output .= '<script>function pay() { document.forms["pay"].submit(); }</script>';
+        $output .= '</head><body onload="pay();"><form name="pay" method="post" action="'.$url.'">';
+        if ( !empty($data) ) {
+            foreach ($data as $key => $value) {
+                $output.='<input type="hidden" name="'.$key.'" value="'.$value.'">';
+            }
+        }
+        $output.='<input type="submit" value="doing the payment...">';
+        $output.='</form></body></html>';
+
+        return $output;
+    }
+
+    /**
      * Pay the Invoice
      *
      * @return \Illuminate\Http\RedirectResponse|mixed
      */
     public function pay()
     {
-        $payUrl = $this->settings->apiPaymentUrl.$this->invoice->getTransactionId();
+        $payUrl = $this->settings->apiPaymentUrl;
 
-        // redirect using laravel logic
-        return redirect()->to($payUrl);
+        $redirectionForm = $this->createRedirectionForm(
+            $payUrl,
+            [
+                'token' => $this->invoice->getTransactionId(),
+                'merchantId' => $this->settings->merchantId,
+            ]
+        );
+
+        return $redirectionForm;
     }
 
     /**
@@ -93,18 +123,19 @@ class Irankish extends Driver
     public function verify()
     {
         $data = array(
-            'token' => $this->invoice->getTransactionId(),
-            'referenceNumber' => $this->invoice->getUuid(),
             'merchantId' => $this->settings->merchantId,
             'sha1Key' => $this->settings->sha1Key,
+            'token' => $this->invoice->getTransactionId(),
+            'amount' => $this->invoice->getAmount() * 10, // convert to rial
+            'referenceNumber' => request()->get('referenceId'),
         );
 
         $soap = new \SoapClient($this->settings->apiVerificationUrl);
         $response = $soap->KicccPaymentsVerification($data);
 
-        $status = intval($response->KicccPaymentsVerificationResult);
+        $status = (int) ($response->KicccPaymentsVerificationResult);
 
-        if ($response != 100) {
+        if ($status != $data['amount']) {
             $this->notVerified($status);
         }
     }

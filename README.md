@@ -25,6 +25,7 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
   - [Verify payment](#verify-payment)
   - [Create custom drivers](#create-custom-drivers)
   - [Useful methods](#useful-methods)
+  - [Events](#events)
 - [Change log](#change-log)
 - [Contributing](#contributing)
 - [Security](#security)
@@ -364,6 +365,13 @@ Once you create that class you have to specify it in the `payment.php` config fi
   	}
   );
   ```
+
+#### Events
+
+you can listen for 2 events
+
+- InvoicePurchasedEvent : occures when an invoice is purchased (after purchasing invoice is done successfully).
+- InvoiceVerifiedEvent  : occures when an invoice is verified successfully.
 
 ## Change log
 
