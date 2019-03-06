@@ -88,24 +88,20 @@ abstract class Driver implements DriverInterface
     /**
      * Create payment redirection form.
      *
-     * @param $url
-     * @param array $data
+     * @param $action
+     * @param array $inputs
+     * @param string $method
      * @return string
      */
-    public function createRedirectionForm($url, array $data)
+    public function redirectWithForm($action, array $inputs = [], $method = 'POST')
     {
-        $output = '<html><head><meta charset="utf-8" />';
-        $output .= '<script>function pay() { document.forms["pay"].submit(); }</script>';
-        $output .= '</head><body onload="pay();"><form name="pay" method="post" action="'.$url.'">';
-        if ( !empty($data) ) {
-            foreach ($data as $key => $value) {
-                $output.='<input type="hidden" name="'.$key.'" value="'.$value.'">';
-            }
-        }
-        $output.='<input type="submit" value="doing the payment...">';
-        $output.='</form></body></html>';
-
-        return $output;
+        return view('shetabitPayment::redirectForm')->with(
+            [
+                'action' => $action,
+                'inputs' => $inputs,
+                'method' => $method,
+            ]
+        );
     }
 
     /**

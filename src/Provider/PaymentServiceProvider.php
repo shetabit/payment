@@ -14,19 +14,27 @@ class PaymentServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->loadViewsFrom(__DIR__ . '/resources/views', 'shetabitPayment');
+
         /**
          * Configurations that needs to be done by user.
          */
-        $this->publishes([
-            __DIR__.'/../Config/payment.php' => config_path('payment.php'),
-        ], 'config');
+        $this->publishes(
+            [
+                __DIR__.'/../../Config/payment.php' => config_path('payment.php'),
+            ],
+            'config'
+        );
 
         /**
-         * Bind to service container.
+         * Views that needs to be modified by user.
          */
-        $this->app->bind('shetabit-payment', function () {
-            return new PaymentManager(config('payment'));
-        });
+        $this->publishes(
+            [
+                __DIR__ . '/../../resources/views' => resource_path('views/vendor/shetabitPayment')
+            ],
+            'views'
+        );
     }
 
     /**
@@ -36,6 +44,11 @@ class PaymentServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        /**
+         * Bind to service container.
+         */
+        $this->app->bind('shetabit-payment', function () {
+            return new PaymentManager(config('payment'));
+        });
     }
 }
