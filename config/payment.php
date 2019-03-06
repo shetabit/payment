@@ -22,7 +22,7 @@ return [
     |
     */
     'drivers' => [
-        'zarinpal' => [ // set urls to https://sandbox.zarinpal.com/pg/rest/WebGate/ for using sandbox
+        'zarinpal' => [// set urls to https://sandbox.zarinpal.com/pg/rest/WebGate/ for using sandbox
             'apiPurchaseUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentRequest.json',
             'apiPaymentUrl' => 'https://www.zarinpal.com/pg/StartPay/',
             'apiVerificationUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentVerification.json',
