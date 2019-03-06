@@ -72,29 +72,6 @@ class Irankish extends Driver
     }
 
     /**
-     * Create payment redirection form.
-     *
-     * @param $url
-     * @param array $data
-     * @return string
-     */
-    public function createRedirectionForm($url, array $data)
-    {
-        $output = '<html><head><meta charset="utf-8" />';
-        $output .= '<script>function pay() { document.forms["pay"].submit(); }</script>';
-        $output .= '</head><body onload="pay();"><form name="pay" method="post" action="'.$url.'">';
-        if ( !empty($data) ) {
-            foreach ($data as $key => $value) {
-                $output.='<input type="hidden" name="'.$key.'" value="'.$value.'">';
-            }
-        }
-        $output.='<input type="submit" value="doing the payment...">';
-        $output.='</form></body></html>';
-
-        return $output;
-    }
-
-    /**
      * Pay the Invoice
      *
      * @return \Illuminate\Http\RedirectResponse|mixed
@@ -103,15 +80,14 @@ class Irankish extends Driver
     {
         $payUrl = $this->settings->apiPaymentUrl;
 
-        $redirectionForm = $this->createRedirectionForm(
+        return $this->redirectWithForm(
             $payUrl,
             [
                 'token' => $this->invoice->getTransactionId(),
                 'merchantId' => $this->settings->merchantId,
-            ]
+            ],
+            'POST'
         );
-
-        return $redirectionForm;
     }
 
     /**
