@@ -204,8 +204,9 @@ use Shetabit\Payment\Exceptions\InvalidPaymentException;
 
 # you need to verify the payment to insure the invoice has been paid successfully
 // we use transaction's id to verify payments
+// its a good practice to add invoice's amount.
 try {
-	Payment::transactionId($transaction_id)->verify();
+	Payment::amount(1000)->transactionId($transaction_id)->verify();
     ...
 } catch (InvalidPaymentException $exception) {
     /**
