@@ -21,7 +21,7 @@ class PaymentServiceProvider extends ServiceProvider
          */
         $this->publishes(
             [
-                __DIR__.'/../../Config/payment.php' => config_path('payment.php'),
+                __DIR__.'/../../config/payment.php' => config_path('payment.php'),
             ],
             'config'
         );
