@@ -53,9 +53,9 @@ class Irankish extends Driver
             'merchantId' => $this->settings->merchantId,
             'description' => $description,
             'revertURL' => $this->settings->callbackUrl,
-            'invoiceNo' => $this->invoice->getUuid(),
-            'paymentId' => $this->invoice->getUuid(),
-            'specialPaymentId' => $this->invoice->getUuid(),
+            'invoiceNo' => crc32($this->invoice->getUuid()),
+            'paymentId' => crc32($this->invoice->getUuid()),
+            'specialPaymentId' => crc32($this->invoice->getUuid()),
         );
 
         $soap = new \SoapClient(
