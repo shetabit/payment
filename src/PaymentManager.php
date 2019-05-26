@@ -64,6 +64,29 @@ class PaymentManager
     }
 
     /**
+     * Set custom configs
+     * we can use this method when we want to use dynamic configs
+     *
+     * @param $key
+     * @param $value|null
+     * @return $this
+     */
+    public function config($key, $value = null)
+    {
+        $configs = [];
+
+        $key = is_array($key) ? $key : [$key => $value];
+
+        foreach ($key as $k => $v) {
+            $configs[$k] = $v;
+        }
+
+        $this->settings = array_merge($this->settings, $configs);
+
+        return $this;
+    }
+
+    /**
      * Set callbackUrl.
      *
      * @param $url|null
