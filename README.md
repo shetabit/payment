@@ -23,8 +23,12 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
   - [Purchase invoice](#purchase-invoice)
   - [Pay invoice](#pay-invoice)
   - [Verify payment](#verify-payment)
+  - [Useful methods](#useful-methods)  
+  	- [Set callbackUrl on the fly  (runtime)](#callbackurl--can-be-used-to-change-callbackurl-on-the-runtime)
+  	- [Set payment's amount (invoice amount)](#amount-you-can-set-the-invoice-amount-directly)
+  	- [Change driver's on the fly (runtime)](#via--change-driver-on-the-fly)
+  	- [Change driver's confings on the fly (runtime)](#config--set-driver-configs-on-the-fly)  
   - [Create custom drivers](#create-custom-drivers)
-  - [Useful methods](#useful-methods)
   - [Events](#events)
 - [Change log](#change-log)
 - [Contributing](#contributing)
@@ -221,6 +225,93 @@ try {
 }
 ```
 
+#### Useful methods
+
+- ###### `callbackUrl` : can be used to change callbackUrl on the runtime.
+
+  ```php
+  # On the top of the file.
+  use Shetabit\Payment\Invoice;
+  use Shetabit\Payment\Facade\Payment;
+  ...
+  
+  # create new invoice
+  $invoice = (new Invoice)->amount(1000);
+  
+  # purchase the given invoice
+  Payment::callbackUrl($url)->purchase(
+      $invoice, 
+      function($driver, $transactionId) {
+      // we can store $transactionId in database
+  	}
+  );
+  ```
+
+- ###### `amount`: you can set the invoice amount directly
+
+  ```php
+  # On the top of the file.
+  use Shetabit\Payment\Invoice;
+  use Shetabit\Payment\Facade\Payment;
+  ...
+  
+  # purchase (we set invoice to null)
+  Payment::callbackUrl($url)->amount(1000)->purchase(
+      null, 
+      function($driver, $transactionId) {
+      // we can store $transactionId in database
+  	}
+  );
+  ```
+
+- ###### `via` : change driver on the fly
+
+  ```php
+  # On the top of the file.
+  use Shetabit\Payment\Invoice;
+  use Shetabit\Payment\Facade\Payment;
+  ...
+  
+  # create new invoice
+  $invoice = (new Invoice)->amount(1000);
+  
+  # purchase the given invoice
+  Payment::via('driverName')->purchase(
+      $invoice, 
+      function($driver, $transactionId) {
+      // we can store $transactionId in database
+  	}
+  );
+  ```
+  
+- ###### `config` : set driver configs on the fly
+
+  ```php
+  # On the top of the file.
+  use Shetabit\Payment\Invoice;
+  use Shetabit\Payment\Facade\Payment;
+  ...
+  
+  # create new invoice
+  $invoice = (new Invoice)->amount(1000);
+  
+  # purchase the given invoice with custom driver configs
+  Payment::config('mechandId', 'your mechand id')->purchase(
+      $invoice,
+      function($driver, $transactionId) {
+      // we can store $transactionId in database
+  	}
+  );
+
+  # and we can also change multiple configs together
+  Payment::config(['key1' => 'value1', 'key2' => 'value2'])->purchase(
+      $invoice,
+      function($driver, $transactionId) {
+      // we can store $transactionId in database
+  	}
+  );
+  ```
+
 #### Create custom drivers:
 
 First you have to add the name of your driver, in the drivers array and also you can specify any config parameters you want.
@@ -307,65 +398,6 @@ Once you create that class you have to specify it in the `payment.php` config fi
 ```
 
 **Note:-** You have to make sure that the key of the `map` array is identical to the key of the `drivers` array.
-
-#### Useful methods
-
-- `callbackUrl` : can be used to change callbackUrl on the runtime.
-
-  ```php
-  # On the top of the file.
-  use Shetabit\Payment\Invoice;
-  use Shetabit\Payment\Facade\Payment;
-  ...
-  
-  # create new invoice
-  $invoice = (new Invoice)->amount(1000);
-  
-  # purchase the given invoice
-  Payment::callbackUrl($url)->purchase(
-      $invoice, 
-      function($driver, $transactionId) {
-      // we can store $transactionId in database
-  	}
-  );
-  ```
-
-- `amount`: you can set the invoice amount directly
-
-  ```php
-  # On the top of the file.
-  use Shetabit\Payment\Invoice;
-  use Shetabit\Payment\Facade\Payment;
-  ...
-  
-  # purchase (we set invoice to null)
-  Payment::callbackUrl($url)->amount(1000)->purchase(
-      null, 
-      function($driver, $transactionId) {
-      // we can store $transactionId in database
-  	}
-  );
-  ```
-
-- `via` : change driver on the fly
-
-  ```php
-  # On the top of the file.
-  use Shetabit\Payment\Invoice;
-  use Shetabit\Payment\Facade\Payment;
-  ...
-  
-  # create new invoice
-  $invoice = (new Invoice)->amount(1000);
-  
-  # purchase the given invoice
-  Payment::via('driverName')->purchase(
-      $invoice, 
-      function($driver, $transactionId) {
-      // we can store $transactionId in database
-  	}
-  );
-  ```
 
 #### Events
 
