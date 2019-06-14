@@ -1,3 +1,5 @@
+<p align="center"><img src="resources/images/payment.png?raw=true"></p>
+
 # پکیج درگاه پرداخت برای لاراول
 
 [![Software License][ico-license]](LICENSE.md)
