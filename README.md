@@ -42,6 +42,7 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 
 - [zarinpal](https://www.zarinpal.com)
 - [irankish](http://irankish.com)
+- [saman](https://www.sep.ir)
 - Others are under way.
 
 > you can create your own custom driver if not  exists in the list , read the `Create custom drivers` section.
