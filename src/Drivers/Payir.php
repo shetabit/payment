@@ -51,7 +51,7 @@ class Payir extends Driver
      */
     private function extractDetails($name)
     {
-    	return empty($this->invoice->getDetails()[$name]) ? null : $this->invoice->getDetails()[$name];
+        return empty($this->invoice->getDetails()[$name]) ? null : $this->invoice->getDetails()[$name];
     }
 
     /**
@@ -61,9 +61,9 @@ class Payir extends Driver
      */
     public function purchase()
     {
-    	$mobile = $this->extract('mobile');
-    	$description = $this->extract('description');
-    	$factorNumber = $this->extract('factorNumber');
+        $mobile = $this->extract('mobile');
+        $description = $this->extract('description');
+        $factorNumber = $this->extract('factorNumber');
 
         $data = array(
             'api' => $this->settings->merchantId,
