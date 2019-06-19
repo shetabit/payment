@@ -7,10 +7,10 @@ use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
 use Shetabit\Payment\Invoice;
 
-class Zarinpal extends Driver
+class Payir extends Driver
 {
     /**
-     * Zarinpal Client.
+     * Payir Client.
      *
      * @var object
      */

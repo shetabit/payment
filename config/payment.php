@@ -39,6 +39,14 @@ return [
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],
+        'saman' => [
+            'apiPurchaseUrl' => 'https://sep.shaparak.ir/Payments/InitPayment.asmx?WSDL',
+            'apiPaymentUrl' => 'https://sep.shaparak.ir/payment.aspx',
+            'apiVerificationUrl' => 'https://sep.shaparak.ir/payments/referencepayment.asmx?WSDL',
+            'merchantId' => '',
+            'callbackUrl' => '',
+            'description' => 'payment in '.config('app.name'),
+        ],
     ],
 
     /*
@@ -56,5 +64,6 @@ return [
     'map' => [
         'zarinpal' => \Shetabit\Payment\Drivers\Zarinpal::class,
         'irankish' => \Shetabit\Payment\Drivers\Irankish::class,
+        'saman' => \Shetabit\Payment\Drivers\Saman::class,
     ]
 ];
