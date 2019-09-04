@@ -1,7 +1,7 @@
 {
     "name": "shetabit/payment",
     "type": "library",
-    "description": "Laravel 5 Payment Gateway Integration Package",
+    "description": "Laravel Payment Gateway Integration Package",
     "keywords": [
         "shetabit",
         "gateway",
@@ -83,15 +83,15 @@
     ],
     "require": {
         "php": ">=7.2",
-        "illuminate/broadcasting": "~5.1",
-        "illuminate/support": "~5.1",
-        "guzzlehttp/guzzle": "~6.2",
-        "ramsey/uuid": "~3.8"
+        "illuminate/broadcasting": ">=5.1",
+        "illuminate/support": ">=5.1",
+        "guzzlehttp/guzzle": "^6.3",
+        "ramsey/uuid": "^3.8"
     },
     "require-dev": {
-        "orchestra/testbench": "~3.1",
-        "phpunit/phpunit": ">=5.4.3",
-        "squizlabs/php_codesniffer": "^2.3"
+        "orchestra/testbench": "^4.0",
+        "phpunit/phpunit": ">=7.5",
+        "squizlabs/php_codesniffer": "^3.4"
     },
     "autoload": {
         "psr-4": {

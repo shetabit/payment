@@ -14,7 +14,7 @@
         </whitelist>
     </filter>
     <testsuites>
-        <testsuite name="Sms Test Suite">
+        <testsuite name="Test Suite">
             <directory suffix="Test.php">./tests/</directory>
         </testsuite>
     </testsuites>
