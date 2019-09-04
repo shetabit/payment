@@ -49,5 +49,8 @@ Temporary Items
 # PhpStorm project's cache
 .idea
 
+# VSCode project's cache
+.vscode
+
 # Vendor directory
 vendor/
