@@ -51,6 +51,20 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - [zarinpal](https://www.zarinpal.com/)
 - Others are under way.
 
+**Help me to add below gateways by creating `pull requests`**
+
+- stripe
+- paypal
+- authorize
+- 2checkout
+- braintree
+- skrill
+- payU
+- amazon payments
+- wepay
+- payoneer
+- paysimple
+
 > you can create your own custom driver if not  exists in the list , read the `Create custom drivers` section.
 
 ## Install
