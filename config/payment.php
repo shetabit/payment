@@ -22,10 +22,10 @@ return [
     |
     */
     'drivers' => [
-        'zarinpal' => [// set urls to https://sandbox.zarinpal.com/pg/rest/WebGate/ for using sandbox
-            'apiPurchaseUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentRequest.json',
-            'apiPaymentUrl' => 'https://www.zarinpal.com/pg/StartPay/',
-            'apiVerificationUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentVerification.json',
+        'idpay' => [
+            'apiPurchaseUrl' => 'https://api.idpay.ir/v1.1/payment',
+            'apiPaymentUrl' => 'https://idpay.ir/p/ws-sandbox/',
+            'apiVerificationUrl' => 'https://api.idpay.ir/v1.1/payment/verify',
             'merchantId' => '',
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
@@ -39,12 +39,51 @@ return [
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],
+        'payir' => [
+            'apiPurchaseUrl' => 'https://pay.ir/pg/send/',
+            'apiPaymentUrl' => 'https://pay.ir/pg/',
+            'apiVerificationUrl' => 'https://pay.ir/pg/verify/',
+            'merchantId' => '',
+            'callbackUrl' => 'http://yoursite.com/path/to',
+            'description' => 'payment in '.config('app.name'),
+        ],
+        'payping' => [
+            'apiPurchaseUrl' => 'https://api.payping.ir/v1/pay',
+            'apiPaymentUrl' => 'https://api.payping.ir/v1/pay/gotoipg',
+            'apiVerificationUrl' => 'https://api.payping.ir/v1/pay/verify',
+            'merchantId' => '',
+            'callbackUrl' => 'http://yoursite.com/path/to',
+            'description' => 'payment in '.config('app.name'),
+        ],
+        'poolam' => [
+            'apiPurchaseUrl' => 'https://poolam.ir/invoice/request/',
+            'apiPaymentUrl' => 'https://poolam.ir/invoice/pay/',
+            'apiVerificationUrl' => 'https://poolam.ir/invoice/check/',
+            'merchantId' => '',
+            'callbackUrl' => 'http://yoursite.com/path/to',
+            'description' => 'payment in '.config('app.name'),
+        ],
         'saman' => [
             'apiPurchaseUrl' => 'https://sep.shaparak.ir/Payments/InitPayment.asmx?WSDL',
             'apiPaymentUrl' => 'https://sep.shaparak.ir/payment.aspx',
             'apiVerificationUrl' => 'https://sep.shaparak.ir/payments/referencepayment.asmx?WSDL',
             'merchantId' => '',
             'callbackUrl' => '',
+            'description' => 'payment in '.config('app.name'),
+        ],
+        'yekpay' => [
+            'apiPurchaseAndVerificationUrl' => 'https://gate.yekpay.com/api/payment/server?wsdl',
+            'apiPaymentUrl' => 'https://gate.yekpay.com/api/payment/start/',
+            'merchantId' => '',
+            'callbackUrl' => 'http://yoursite.com/path/to',
+            'description' => 'payment in '.config('app.name'),
+        ],
+        'zarinpal' => [// set urls to https://sandbox.zarinpal.com/pg/rest/WebGate/ for using sandbox
+            'apiPurchaseUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentRequest.json',
+            'apiPaymentUrl' => 'https://www.zarinpal.com/pg/StartPay/',
+            'apiVerificationUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentVerification.json',
+            'merchantId' => '',
+            'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],
     ],
@@ -62,8 +101,13 @@ return [
     |
     */
     'map' => [
-        'zarinpal' => \Shetabit\Payment\Drivers\Zarinpal::class,
+        'idpay' => \Shetabit\Payment\Drivers\Idpay::class,
         'irankish' => \Shetabit\Payment\Drivers\Irankish::class,
+        'payir' => \Shetabit\Payment\Drivers\Payir::class,
+        'payping' => \Shetabit\Payment\Drivers\Payping::class,
+        'poolam' => \Shetabit\Payment\Drivers\Poolam::class,
         'saman' => \Shetabit\Payment\Drivers\Saman::class,
+        'yekpay' => \Shetabit\Payment\Drivers\Yekpay::class,
+        'zarinpal' => \Shetabit\Payment\Drivers\Zarinpal::class,
     ]
 ];

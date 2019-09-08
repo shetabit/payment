@@ -36,9 +36,14 @@
 
 # درایورهای موجود
 
-- [زرین پال](https://www.zarinpal.com)
-- [ایران کیش](http://irankish.com)
-- )[بانک سامان](https://www.sep.ir)
+- [ایدی پی](https://idpay.ir/)
+- [ایران کیش](http://irankish.com/)
+- [پی ای ار](https://pay.ir/)
+- [پی پینگ](https://www.payping.ir/)
+- [پولام](https://poolam.ir/)
+- [بانک سامان](https://www.sep.ir)
+- [یک پی](https://yekpay.com/)
+- [زرین پال](https://www.zarinpal.com/)
 - درایورهای دیگر ساخته خواهند شد یا اینکه بسازید و درخواست `merge` بدید.
 
 > در صورتی که درایور مورد نظرتون موجود نیست, میتونید برای درگاه پرداخت موردنظرتون درایور بسازید.

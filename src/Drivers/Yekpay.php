@@ -7,7 +7,7 @@ use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
 use Shetabit\Payment\Invoice;
 
-class Payir extends Driver
+class Yekpay extends Driver
 {
     /**
      * Payir Client.
@@ -77,12 +77,14 @@ class Payir extends Driver
         $response = $this->client->request(
             'POST',
             $this->settings->apiPurchaseUrl,
-            $data
+            ["json" => $data]
         );
         $body = json_decode($response->getBody()->getContents(), true);
 
-        if ($body['status'] == 1) {
-            $this->invoice->transactionId($body['token']);
+        if (empty($body['Authority'])) {
+            $body['Authority'] = null;
+        } else {
+            $this->invoice->transactionId($body['Authority']);
         }
 
         // return the transaction's id
@@ -119,12 +121,12 @@ class Payir extends Driver
         $response = $this->client->request(
             'POST',
             $this->settings->apiVerificationUrl,
-            $data
+            ['json' => $data]
         );
         $body = json_decode($response->getBody()->getContents(), true);
 
-        if ($body['status'] == 0) {
-            $this->notVerified($body['status']);
+        if (!isset($body['Status']) || $body['Status'] != 100) {
+            $this->notVerified($body['Status']);
         }
     }
 
@@ -137,13 +139,22 @@ class Payir extends Driver
     private function notVerified($status)
     {
         $translations = array(
-            "-1" => "ارسال api الزامی می باشد",
-            "-2" => "کد تراکنش الزامی است",
-            "-3" => "درگاه پرداختی با api ارسالی یافت نشد و یا غیر فعال می باشد",
-            "-4" => "فروشنده غیر فعال می باشد",
-            "-5" => "تراکنش با خطا مواجه شده است",
+            "-1" => "اطلاعات ارسال شده ناقص است.",
+            "-2" => "IP و يا مرچنت كد پذيرنده صحيح نيست",
+            "-3" => "با توجه به محدوديت هاي شاپرك امكان پرداخت با رقم درخواست شده ميسر نمي باشد",
+            "-4" => "سطح تاييد پذيرنده پايين تر از سطح نقره اي است.",
+            "-11" => "درخواست مورد نظر يافت نشد.",
+            "-12" => "امكان ويرايش درخواست ميسر نمي باشد.",
+            "-21" => "هيچ نوع عمليات مالي براي اين تراكنش يافت نشد",
+            "-22" => "تراكنش نا موفق ميباشد",
+            "-33" => "رقم تراكنش با رقم پرداخت شده مطابقت ندارد",
+            "-34" => "سقف تقسيم تراكنش از لحاظ تعداد يا رقم عبور نموده است",
+            "-40" => "اجازه دسترسي به متد مربوطه وجود ندارد.",
+            "-41" => "اطلاعات ارسال شده مربوط به AdditionalData غيرمعتبر ميباشد.",
+            "-42" => "مدت زمان معتبر طول عمر شناسه پرداخت بايد بين 30 دقيه تا 45 روز مي باشد.",
+            "-54" => "درخواست مورد نظر آرشيو شده است",
+            "101" => "عمليات پرداخت موفق بوده و قبلا PaymentVerification تراكنش انجام شده است.",
         );
-
         if (array_key_exists($status, $translations)) {
             throw new InvalidPaymentException($translations[$status]);
         } else {
