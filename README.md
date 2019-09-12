@@ -1,5 +1,4 @@
 <p align="center"><img src="resources/images/payment.png?raw=true"></p>
-
 # Laravel Payment Gateway
 
 [![Software License][ico-license]](LICENSE.md)
@@ -49,6 +48,8 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - [saman](https://www.sep.ir)
 - [yekpay](https://yekpay.com/)
 - [zarinpal](https://www.zarinpal.com/)
+- [bitpay](https://www.jibit.ir/)
+- [jibit](https://bitpay.ir/)
 - Others are under way.
 
 **Help me to add below gateways by creating `pull requests`**
