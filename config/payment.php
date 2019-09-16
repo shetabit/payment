@@ -24,11 +24,13 @@ return [
     'drivers' => [
         'idpay' => [
             'apiPurchaseUrl' => 'https://api.idpay.ir/v1.1/payment',
-            'apiPaymentUrl' => 'https://idpay.ir/p/ws-sandbox/',
+            'apiPaymentUrl' => 'https://idpay.ir/p/ws/',
+            'apiSandboxPaymentUrl' => 'https://idpay.ir/p/ws-sandbox/',
             'apiVerificationUrl' => 'https://api.idpay.ir/v1.1/payment/verify',
             'merchantId' => '',
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
+            'sandbox' => false, // set it to true for test environments
         ],
         'irankish' => [
             'apiPurchaseUrl' => 'https://ikc.shaparak.ir/XToken/Tokens.xml',
