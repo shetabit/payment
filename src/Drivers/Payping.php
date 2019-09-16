@@ -61,30 +61,39 @@ class Payping extends Driver
      */
     public function purchase()
     {
-        $mobile = $this->extract('mobile');
-        $description = $this->extract('description');
-        $factorNumber = $this->extract('factorNumber');
+        $name = $this->extractDetails('name');
+        $mobile = $this->extractDetails('mobile');
+        $email = $this->extractDetails('email');
+        $description = $this->extractDetails('description');
 
         $data = array(
-            'api' => $this->settings->merchantId,
-            'amount' => $this->invoice->getAmount(),
-            'redirect' => $this->settings->callbackUrl,
-            'mobile' => $mobile,
-            'description' => $description,
-            'factorNumber' => $factorNumber,
+            "payerName" => $name,
+            "amount" => $this->invoice->getAmount(),
+            "payerIdentity" => $mobile ?? $email,
+            "returnUrl" => $this->settings->callbackUrl,
+            "description" => $description,
+            "clientRefId" => $this->invoice->getUuid(),
         );
 
         $response = $this->client->request(
             'POST',
             $this->settings->apiPurchaseUrl,
-            ["json" => $data]
+            [
+                "json" => $data,
+                "headers" => [
+                    "Accept" => "application/json",
+                    "Authorization" => "bearer ".$this->settings->merchantId,
+                ],
+                "http_errors" => false,
+            ]
         );
+
         $body = json_decode($response->getBody()->getContents(), true);
 
-        if (empty($body['Authority'])) {
-            $body['Authority'] = null;
+        if (empty($body['code'])) {
+            // an error has happened
         } else {
-            $this->invoice->transactionId($body['Authority']);
+            $this->invoice->transactionId($body['code']);
         }
 
         // return the transaction's id
@@ -114,14 +123,21 @@ class Payping extends Driver
     public function verify()
     {
         $data = [
-            'api' => $this->settings->api,
-            'token'  => $this->invoice->getTransactionId(),
+            'amount' => $this->invoice->getAmount(),
+            'refId'  => $this->invoice->getTransactionId() ?? request()->input('refid'),
         ];
 
         $response = $this->client->request(
             'POST',
             $this->settings->apiVerificationUrl,
-            ['json' => $data]
+            [
+                'json' => $data,
+                "headers" => [
+                    "Accept" => "application/json",
+                    "Authorization" => "bearer ".$this->settings->merchantId,
+                ],
+                "http_errors" => false,
+            ]
         );
         $body = json_decode($response->getBody()->getContents(), true);
 
