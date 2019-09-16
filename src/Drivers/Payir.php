@@ -31,7 +31,7 @@ class Payir extends Driver
     protected $settings;
 
     /**
-     * Zarinpal constructor.
+     * Payir constructor.
      * Construct the class with the relevant settings.
      *
      * @param Invoice $invoice
@@ -61,9 +61,8 @@ class Payir extends Driver
      */
     public function purchase()
     {
-        $mobile = $this->extract('mobile');
-        $description = $this->extract('description');
-        $factorNumber = $this->extract('factorNumber');
+        $mobile = $this->extractDetails('mobile');
+        $description = $this->extractDetails('description');
 
         $data = array(
             'api' => $this->settings->merchantId,
@@ -71,13 +70,16 @@ class Payir extends Driver
             'redirect' => $this->settings->callbackUrl,
             'mobile' => $mobile,
             'description' => $description,
-            'factorNumber' => $factorNumber,
+            'factorNumber' => $this->invoice->getUuid(),
         );
 
         $response = $this->client->request(
             'POST',
             $this->settings->apiPurchaseUrl,
-            $data
+            [
+                "form_params" => $data,
+                "http_errors" => false,
+            ]
         );
         $body = json_decode($response->getBody()->getContents(), true);
 
@@ -112,19 +114,22 @@ class Payir extends Driver
     public function verify()
     {
         $data = [
-            'api' => $this->settings->api,
-            'token'  => $this->invoice->getTransactionId(),
+            'api' => $this->settings->merchantId,
+            'token'  => $this->invoice->getTransactionId() ?? request()->input('token'),
         ];
 
         $response = $this->client->request(
             'POST',
             $this->settings->apiVerificationUrl,
-            $data
+            [
+                "form_params" => $data,
+                "http_errors" => false,
+            ]
         );
         $body = json_decode($response->getBody()->getContents(), true);
 
-        if ($body['status'] == 0) {
-            $this->notVerified($body['status']);
+        if ($body['status'] != 1) {
+            $this->notVerified($body['errorCode']);
         }
     }
 
@@ -138,7 +143,7 @@ class Payir extends Driver
     {
         $translations = array(
             "-1" => "ارسال api الزامی می باشد",
-            "-2" => "کد تراکنش الزامی است",
+            "-2" => "ارسال transId الزامی می باشد",
             "-3" => "درگاه پرداختی با api ارسالی یافت نشد و یا غیر فعال می باشد",
             "-4" => "فروشنده غیر فعال می باشد",
             "-5" => "تراکنش با خطا مواجه شده است",
