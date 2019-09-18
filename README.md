@@ -1,7 +1,6 @@
 <p align="center"><img src="resources/images/payment.png?raw=true"></p>
 
 
-
 # Laravel Payment Gateway
 
 
@@ -50,6 +49,7 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - [irankish](http://irankish.com/)
 - [payir](https://pay.ir/)
 - [payping](https://www.payping.ir/)
+- [paystar](http://paystar.ir/)
 - [poolam](https://poolam.ir/)
 - [saman](https://www.sep.ir)
 - [yekpay](https://yekpay.com/)
