@@ -41,19 +41,19 @@ return [
             'sandbox' => false, // set it to true for test environments
         ],
         'irankish' => [
-            'apiPurchaseUrl' => 'https://api.nextpay.org/gateway/token.http',
-            'apiPaymentUrl' => 'https://api.nextpay.org/gateway/payment/',
-            'apiVerificationUrl' => '‫‪http://api.nextpay.org/gateway/verify.http‬‬',
+            'apiPurchaseUrl' => 'https://ikc.shaparak.ir/XToken/Tokens.xml',
+            'apiPaymentUrl' => 'https://ikc.shaparak.ir/TPayment/Payment/index/',
+            'apiVerificationUrl' => 'https://ikc.shaparak.ir/XVerify/Verify.xml',
             'merchantId' => '',
             'sha1Key' => '',
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],
         'nextpay' => [
-            'apiPurchaseUrl' => '‫‪https://api.nextpay.org/gateway/token.http/‬‬',
-            'apiPaymentUrl' => 'https://pay.ir/pg/',
-            'apiVerificationUrl' => 'https://pay.ir/pg/verify/',
-            'merchantId' => '', // set it to `test` for test environments
+            'apiPurchaseUrl' => 'https://api.nextpay.org/gateway/token.http',
+            'apiPaymentUrl' => 'https://api.nextpay.org/gateway/payment/',
+            'apiVerificationUrl' => 'https://api.nextpay.org/gateway/verify.http',
+            'merchantId' => '',
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],

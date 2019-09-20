@@ -9,26 +9,10 @@ use Shetabit\Payment\Invoice;
 
 class Nextpay extends Driver
 {
-    const TRANSACTION_PENDING = -1;
-    const TRANSACTION_PENDING_TEXT = 'تراکنش ایجاد شد.';
-
-    const TRANSACTION_SUCCEED = 0;
-    const TRANSACTION_SUCCEED_TEXT = 'پرداخت با موفقیت انجام شد.';
-
-    const TRANSACTION_FAILED = -2;
-    const TRANSACTION_FAILED_TEXT = 'عملیات پرداخت با خطا مواجه شد.';
-
-    protected $server_soap = "https://api.nextpay.org/gateway/token.wsdl";
-    //protected $server_soap = "https://api.nextpay.org/gateway/token?wsdl";
-    protected $server_http = "https://api.nextpay.org/gateway/token.http";
-    protected $request_http = "https://api.nextpay.org/gateway/payment";
-    protected $request_verify_soap = "https://api.nextpay.org/gateway/verify.wsdl";
-    //protected $request_verify_soap = "https://api.nextpay.org/gateway/verify?wsdl";
-
     /**
-     * Idpay Client.
+     * Nextpay Client.
      *
-     * @var object
+     * @var Client
      */
     protected $client;
 
@@ -67,17 +51,11 @@ class Nextpay extends Driver
      */
     public function purchase()
     {
-        $details = $this->invoice->getDetails();
-
         $data = array(
-            'order_id' => $this->invoice->getUuid(),
+            'api_key' => $this->settings->merchantId,
+            'order_id' => intval(1, time()).crc32($this->invoice->getUuid()),
             'amount' => $this->invoice->getAmount(),
-            'name' => $details['name'] ?? null,
-            'phone' => $details['mobile'] ?? $details['phone'] ?? null,
-            'mail' => $details['email'] ?? null,
-            'desc' => $details['description'] ?? $this->settings->description,
-            'callback' => $this->settings->callbackUrl,
-            'reseller' => $details['reseller'] ?? null,
+            'callback_uri' => $this->settings->callbackUrl,
         );
 
         $response = $this
@@ -86,22 +64,17 @@ class Nextpay extends Driver
                 'POST',
                 $this->settings->apiPurchaseUrl,
                 [
-                    "json" => $data,
-                    "headers" => [
-                        'X-API-KEY' => $this->settings->merchantId,
-                        'Content-Type' => 'application/json',
-                        'X-SANDBOX' => (int) $this->settings->sandbox,
-                    ],
+                    "form_params" => $data,
                     "http_errors" => false,
                 ]
             );
 
         $body = json_decode($response->getBody()->getContents(), true);
 
-        if (empty($body['id'])) {
+        if (empty($body['code']) || $body['code'] != -1 ) {
             // some error has happened
         } else {
-            $this->invoice->transactionId($body['id']);
+            $this->invoice->transactionId($body['trans_id']);
         }
 
         // return the transaction's id
@@ -115,14 +88,7 @@ class Nextpay extends Driver
      */
     public function pay()
     {
-        $apiUrl =  $this->settings->apiPaymentUrl;
-
-        // use sandbox url if we are in sandbox mode
-        if (!empty($this->settings->sandbox)) {
-            $apiUrl = $this->settings->apiSandboxPaymentUrl;
-        }
-
-        $payUrl = $apiUrl.$this->invoice->getTransactionId();
+        $payUrl = $this->settings->apiPaymentUrl.$this->invoice->getTransactionId();
 
         // redirect using laravel logic
         return redirect()->to($payUrl);
@@ -138,73 +104,40 @@ class Nextpay extends Driver
     public function verify()
     {
         $data = [
-            'id' => $this->invoice->getTransactionId() ?? request()->input('id'),
+            'api_key' => $this->settings->merchantId,
             'order_id' => request()->input('order_id'),
+            'amount' => $this->invoice->getAmount(),
+            'trans_id' => $this->invoice->getTransactionId() ?? request()->input('trans_id'),
         ];
 
-        $response = $this->client->request(
-            'POST',
-            $this->settings->apiVerificationUrl,
-            [
-                'json' => $data,
-                "headers" => [
-                    'X-API-KEY' => $this->settings->merchantId,
-                    'Content-Type' => 'application/json',
-                    'X-SANDBOX' => (int) $this->settings->sandbox,
-                ],
-                "http_errors" => false,
-            ]
-        );
+        $response = $this
+            ->client
+            ->request(
+                'POST',
+                $this->settings->apiVerificationUrl,
+                [
+                    "form_params" => $data,
+                    "http_errors" => false,
+                ]
+            );
+
         $body = json_decode($response->getBody()->getContents(), true);
+dd($body);
+        if (!isset($body['code']) || $body['code'] != 0) {
+            $message = $body['message'] ?? 'خطای ناشناخته ای رخت داده است';
 
-        if (isset($body['error_code']) || $body['status'] != 100) {
-            $errorCode = $body['status'] ?? $body['error_code'];
-
-            $this->notVerified($errorCode);
+            $this->notVerified($message);
         }
     }
 
     /**
      * Trigger an exception
      *
-     * @param $status
+     * @param $message
      * @throws InvalidPaymentException
      */
-    private function notVerified($status)
+    private function notVerified($message)
     {
-        $translations = array(
-            "1" => "پرداخت انجام نشده است.",
-            "2" => "پرداخت ناموفق بوده است.",
-            "3" => "خطا رخ داده است.",
-            "4" => "بلوکه شده.",
-            "5" => "برگشت به پرداخت کننده.",
-            "6" => "برگشت خورده سیستمی.",
-            "10" => "در انتظار تایید پرداخت.",
-            "100" => "پرداخت تایید شده است.",
-            "101" => "پرداخت قبلا تایید شده است.",
-            "200" => "به دریافت کننده واریز شد.",
-            "11" => "کاربر مسدود شده است.",
-            "12" => "API Key یافت نشد.",
-            "13" => "درخواست شما از {ip} ارسال شده است. این IP با IP های ثبت شده در وب سرویس همخوانی ندارد.",
-            "14" => "وب سرویس تایید نشده است.",
-            "21" => "حساب بانکی متصل به وب سرویس تایید نشده است.",
-            "31" => "کد تراکنش id نباید خالی باشد.",
-            "32" => "شماره سفارش order_id نباید خالی باشد.",
-            "33" => "مبلغ amount نباید خالی باشد.",
-            "34" => "مبلغ amount باید بیشتر از {min-amount} ریال باشد.",
-            "35" => "مبلغ amount باید کمتر از {max-amount} ریال باشد.",
-            "36" => "مبلغ amount بیشتر از حد مجاز است.",
-            "37" => "آدرس بازگشت callback نباید خالی باشد.",
-            "38" => "درخواست شما از آدرس {domain} ارسال شده است. دامنه آدرس بازگشت callback با آدرس ثبت شده در وب سرویس همخوانی ندارد.",
-            "51" => "تراکنش ایجاد نشد.",
-            "52" => "استعلام نتیجه ای نداشت.",
-            "53" => "تایید پرداخت امکان پذیر نیست.",
-            "54" => "مدت زمان تایید پرداخت سپری شده است.",
-        );
-        if (array_key_exists($status, $translations)) {
-            throw new InvalidPaymentException($translations[$status]);
-        } else {
-            throw new InvalidPaymentException('خطای ناشناخته ای رخ داده است.');
-        }
+        throw new InvalidPaymentException($message);
     }
 }

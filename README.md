@@ -48,7 +48,7 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - [bitpay](https://www.bitpay.ir/)
 - [idpay](https://idpay.ir/) :heavy_check_mark:
 - [irankish](http://irankish.com/) :heavy_check_mark:
-- [nextpay](https://nextpay.ir/)
+- [nextpay](https://nextpay.ir/) :heavy_check_mark:
 - [payir](https://pay.ir/)
 - [payping](https://www.payping.ir/)
 - [paystar](http://paystar.ir/)
