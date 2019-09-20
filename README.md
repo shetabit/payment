@@ -45,8 +45,10 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 
 # List of available drivers
 
+- [bitpay](https://www.bitpay.ir/)
 - [idpay](https://idpay.ir/)
 - [irankish](http://irankish.com/)
+- [nextpay](https://nextpay.ir/)
 - [payir](https://pay.ir/)
 - [payping](https://www.payping.ir/)
 - [paystar](http://paystar.ir/)
@@ -54,8 +56,6 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - [saman](https://www.sep.ir)
 - [yekpay](https://yekpay.com/)
 - [zarinpal](https://www.zarinpal.com/)
-- [bitpay](https://www.jibit.ir/)
-- [jibit](https://bitpay.ir/)
 - Others are under way.
 
 **Help me to add below gateways by creating `pull requests`**
