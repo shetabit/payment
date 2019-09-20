@@ -47,15 +47,15 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 
 - [bitpay](https://www.bitpay.ir/)
 - [idpay](https://idpay.ir/)
-- [irankish](http://irankish.com/)
+- [irankish](http://irankish.com/) :heavy_check_mark:
 - [nextpay](https://nextpay.ir/)
 - [payir](https://pay.ir/)
 - [payping](https://www.payping.ir/)
 - [paystar](http://paystar.ir/)
 - [poolam](https://poolam.ir/)
-- [saman](https://www.sep.ir)
+- [saman](https://www.sep.ir) :heavy_check_mark:
 - [yekpay](https://yekpay.com/)
-- [zarinpal](https://www.zarinpal.com/)
+- [zarinpal](https://www.zarinpal.com/) :heavy_check_mark:
 - Others are under way.
 
 **Help me to add below gateways by creating `pull requests`**
