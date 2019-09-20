@@ -122,7 +122,7 @@ class Nextpay extends Driver
             );
 
         $body = json_decode($response->getBody()->getContents(), true);
-dd($body);
+
         if (!isset($body['code']) || $body['code'] != 0) {
             $message = $body['message'] ?? 'خطای ناشناخته ای رخت داده است';
 
