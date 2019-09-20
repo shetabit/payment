@@ -129,7 +129,7 @@ class Yekpay extends Driver
         $response = json_decode($client->verify($data));
 
         if ($response->Code != 100) {
-            $this->notVerified( $transaction->message ?? 'payment failed');
+            $this->notVerified($transaction->message ?? 'payment failed');
         } else {
             //"Success Payment with reference: $response->Reference and message: $transaction->message";
         }
