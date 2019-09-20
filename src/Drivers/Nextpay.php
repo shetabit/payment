@@ -71,7 +71,7 @@ class Nextpay extends Driver
 
         $body = json_decode($response->getBody()->getContents(), true);
 
-        if (empty($body['code']) || $body['code'] != -1 ) {
+        if (empty($body['code']) || $body['code'] != -1) {
             // some error has happened
         } else {
             $this->invoice->transactionId($body['trans_id']);
