@@ -23,9 +23,9 @@ return [
     */
     'drivers' => [
         'bitpay' => [
-            'apiPurchaseUrl' => 'https://pay.ir/pg/send/',
-            'apiPaymentUrl' => 'https://pay.ir/pg/',
-            'apiVerificationUrl' => 'https://pay.ir/pg/verify/',
+            'apiPurchaseUrl' => 'https://bitpay.ir/pg/send/',
+            'apiPaymentUrl' => 'https://bitpay.ir/pg/',
+            'apiVerificationUrl' => 'https://bitpay.ir/pg/verify/',
             'merchantId' => '',
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
@@ -74,9 +74,9 @@ return [
             'description' => 'payment in '.config('app.name'),
         ],
         'paystar' => [
-            'apiPurchaseUrl' => 'https://api.payping.ir/v1/pay/',
-            'apiPaymentUrl' => 'https://api.payping.ir/v1/pay/gotoipg/',
-            'apiVerificationUrl' => 'https://api.payping.ir/v1/pay/verify/',
+            'apiPurchaseUrl' => 'https://api.paystar.ir/v1/pay/',
+            'apiPaymentUrl' => 'https://api.paystar.ir/v1/pay/gotoipg/',
+            'apiVerificationUrl' => 'https://api.paystar.ir/v1/pay/verify/',
             'merchantId' => '',
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
@@ -98,8 +98,9 @@ return [
             'description' => 'payment in '.config('app.name'),
         ],
         'yekpay' => [
-            'apiPurchaseAndVerificationUrl' => 'https://gate.yekpay.com/api/payment/server?wsdl',
+            'apiPurchaseUrl' => 'https://gate.yekpay.com/api/payment/server?wsdl',
             'apiPaymentUrl' => 'https://gate.yekpay.com/api/payment/start/',
+            'apiVerificationUrl' => 'https://gate.yekpay.com/api/payment/server?wsdl',
             'merchantId' => '',
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),

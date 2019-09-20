@@ -2,20 +2,12 @@
 
 namespace Shetabit\Payment\Drivers;
 
-use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
 use Shetabit\Payment\Invoice;
 
 class Yekpay extends Driver
 {
-    /**
-     * Payir Client.
-     *
-     * @var object
-     */
-    protected $client;
-
     /**
      * Invoice
      *
@@ -31,7 +23,7 @@ class Yekpay extends Driver
     protected $settings;
 
     /**
-     * Zarinpal constructor.
+     * Yekpay constructor.
      * Construct the class with the relevant settings.
      *
      * @param Invoice $invoice
@@ -41,7 +33,6 @@ class Yekpay extends Driver
     {
         $this->invoice($invoice);
         $this->settings = (object) $settings;
-        $this->client = new Client();
     }
 
     /**
@@ -61,30 +52,44 @@ class Yekpay extends Driver
      */
     public function purchase()
     {
-        $mobile = $this->extract('mobile');
-        $description = $this->extract('description');
-        $factorNumber = $this->extract('factorNumber');
+        $options = array('trace' => true);
+        $client = new \SoapClient($this->settings->apiPurchaseUrl, $options);
 
-        $data = array(
-            'api' => $this->settings->merchantId,
-            'amount' => $this->invoice->getAmount(),
-            'redirect' => $this->settings->callbackUrl,
-            'mobile' => $mobile,
-            'description' => $description,
-            'factorNumber' => $factorNumber,
-        );
+        $data = new \stdClass();
 
-        $response = $this->client->request(
-            'POST',
-            $this->settings->apiPurchaseUrl,
-            ["json" => $data]
-        );
-        $body = json_decode($response->getBody()->getContents(), true);
-
-        if (empty($body['Authority'])) {
-            $body['Authority'] = null;
+        if (!empty($this->invoice->getDetails()['description'])) {
+            $description = $this->invoice->getDetails()['description'];
         } else {
-            $this->invoice->transactionId($body['Authority']);
+            $description = $this->settings->description;
+        }
+
+        $data->merchantId = $this->settings->merchantId;
+        $data->amount = $this->invoice->getAmount();
+        $data->callback = $this->settings->callbackUrl;
+        $data->orderNumber = intval(1, time()).crc32($this->invoice->getUuid());
+
+        $data->fromCurrencyCode = 978;
+        $data->toCurrencyCode = 364;
+
+        $data->firstName = $this->extractDetails('firstName');
+        $data->lastName = $this->extractDetails('lastName');
+        $data->email = $this->extractDetails('email');
+        $data->mobile = $this->extractDetails('mobile');
+
+        $data->address = $this->extractDetails('address');
+        $data->country = $this->extractDetails('country');
+        $data->postalCode = $this->extractDetails('postalCode');
+        $data->city = $this->extractDetails('city');
+
+        $data->description = $description;
+
+        $response = json_decode($client->request($data));
+
+        if ($response->Code == 100) {
+            $this->invoice->transactionId($response->Authority);
+        } else {
+            //"Request failed with Error code: $response->Code and Error message: $response->Description";
+            $this->notVerified($response->Description);
         }
 
         // return the transaction's id
@@ -113,52 +118,35 @@ class Yekpay extends Driver
      */
     public function verify()
     {
-        $data = [
-            'api' => $this->settings->api,
-            'token'  => $this->invoice->getTransactionId(),
-        ];
+        $options = array('trace' => true);
+        $client = new SoapClient($this->settings->apiVerificationUrl, $options);
 
-        $response = $this->client->request(
-            'POST',
-            $this->settings->apiVerificationUrl,
-            ['json' => $data]
-        );
-        $body = json_decode($response->getBody()->getContents(), true);
+        $data = new \stdClass();
 
-        if (!isset($body['Status']) || $body['Status'] != 100) {
-            $this->notVerified($body['Status']);
+        $data->merchantId = $this->settings->merchantId;
+        $data->authority = $this->invoice->getTransactionId() ?? request()->input('authority');
+
+        $response = json_decode($client->verify($data));
+
+        if ($response->Code != 100) {
+            $this->notVerified( $transaction->message ?? 'payment failed');
+        } else {
+            //"Success Payment with reference: $response->Reference and message: $transaction->message";
         }
     }
 
     /**
      * Trigger an exception
      *
-     * @param $status
+     * @param $message
      * @throws InvalidPaymentException
      */
-    private function notVerified($status)
+    private function notVerified($message)
     {
-        $translations = array(
-            "-1" => "اطلاعات ارسال شده ناقص است.",
-            "-2" => "IP و يا مرچنت كد پذيرنده صحيح نيست",
-            "-3" => "با توجه به محدوديت هاي شاپرك امكان پرداخت با رقم درخواست شده ميسر نمي باشد",
-            "-4" => "سطح تاييد پذيرنده پايين تر از سطح نقره اي است.",
-            "-11" => "درخواست مورد نظر يافت نشد.",
-            "-12" => "امكان ويرايش درخواست ميسر نمي باشد.",
-            "-21" => "هيچ نوع عمليات مالي براي اين تراكنش يافت نشد",
-            "-22" => "تراكنش نا موفق ميباشد",
-            "-33" => "رقم تراكنش با رقم پرداخت شده مطابقت ندارد",
-            "-34" => "سقف تقسيم تراكنش از لحاظ تعداد يا رقم عبور نموده است",
-            "-40" => "اجازه دسترسي به متد مربوطه وجود ندارد.",
-            "-41" => "اطلاعات ارسال شده مربوط به AdditionalData غيرمعتبر ميباشد.",
-            "-42" => "مدت زمان معتبر طول عمر شناسه پرداخت بايد بين 30 دقيه تا 45 روز مي باشد.",
-            "-54" => "درخواست مورد نظر آرشيو شده است",
-            "101" => "عمليات پرداخت موفق بوده و قبلا PaymentVerification تراكنش انجام شده است.",
-        );
-        if (array_key_exists($status, $translations)) {
-            throw new InvalidPaymentException($translations[$status]);
+        if ($message) {
+            throw new InvalidPaymentException($message);
         } else {
-            throw new InvalidPaymentException('خطای ناشناخته ای رخ داده است.');
+            throw new InvalidPaymentException('payment failed');
         }
     }
 }

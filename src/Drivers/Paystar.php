@@ -10,7 +10,7 @@ use Shetabit\Payment\Invoice;
 class Paystar extends Driver
 {
     /**
-     * Idpay Client.
+     * Paystar Client.
      *
      * @var object
      */
@@ -31,7 +31,7 @@ class Paystar extends Driver
     protected $settings;
 
     /**
-     * Idpay constructor.
+     * Paystar constructor.
      * Construct the class with the relevant settings.
      *
      * @param Invoice $invoice

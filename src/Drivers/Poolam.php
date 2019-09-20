@@ -10,7 +10,7 @@ use Shetabit\Payment\Invoice;
 class Poolam extends Driver
 {
     /**
-     * Payir Client.
+     * Poolam Client.
      *
      * @var object
      */
@@ -31,7 +31,7 @@ class Poolam extends Driver
     protected $settings;
 
     /**
-     * Zarinpal constructor.
+     * Poolam constructor.
      * Construct the class with the relevant settings.
      *
      * @param Invoice $invoice
@@ -45,46 +45,35 @@ class Poolam extends Driver
     }
 
     /**
-     * Retrieve data from details using its name.
-     *
-     * @return string
-     */
-    private function extractDetails($name)
-    {
-        return empty($this->invoice->getDetails()[$name]) ? null : $this->invoice->getDetails()[$name];
-    }
-
-    /**
      * Purchase Invoice.
      *
      * @return string
      */
     public function purchase()
     {
-        $mobile = $this->extract('mobile');
-        $description = $this->extract('description');
-        $factorNumber = $this->extract('factorNumber');
+        // convert to toman
+        $toman = $this->invoice->getAmount() * 10;
 
         $data = array(
-            'api' => $this->settings->merchantId,
-            'amount' => $this->invoice->getAmount(),
-            'redirect' => $this->settings->callbackUrl,
-            'mobile' => $mobile,
-            'description' => $description,
-            'factorNumber' => $factorNumber,
+            'api_key' => $this->settings->merchantId,
+            'amount' => $toman,
+            'return_url' => $this->settings->callbackUrl,
         );
 
         $response = $this->client->request(
             'POST',
             $this->settings->apiPurchaseUrl,
-            ["json" => $data]
+            [
+                "form_params" => $data,
+                "http_errors" => false,
+            ]
         );
         $body = json_decode($response->getBody()->getContents(), true);
 
-        if (empty($body['Authority'])) {
-            $body['Authority'] = null;
+        if (empty($body['status']) || $body['status'] != 1) {
+            // error has happened
         } else {
-            $this->invoice->transactionId($body['Authority']);
+            $this->invoice->transactionId($body['invoice_key']);
         }
 
         // return the transaction's id
@@ -114,51 +103,38 @@ class Poolam extends Driver
     public function verify()
     {
         $data = [
-            'api' => $this->settings->api,
-            'token'  => $this->invoice->getTransactionId(),
+            'api_key' => $this->settings->merchantId,
         ];
+
+        $transactionId = $this->invoice->getTransactionId() ?? request()->input('invoice_key');
+        $url = $this->settings->apiVerificationUrl.$transactionId;
 
         $response = $this->client->request(
             'POST',
-            $this->settings->apiVerificationUrl,
-            ['json' => $data]
+            $url,
+            ["form_params" => $data, "http_errors" => false]
         );
         $body = json_decode($response->getBody()->getContents(), true);
 
-        if (!isset($body['Status']) || $body['Status'] != 100) {
-            $this->notVerified($body['Status']);
+        if (empty($body['status']) || $body['status'] != 1) {
+            $message = $body['errorDescription'] ?? null;
+
+            $this->notVerified($message);
         }
     }
 
     /**
      * Trigger an exception
      *
-     * @param $status
+     * @param $message
      * @throws InvalidPaymentException
      */
-    private function notVerified($status)
+    private function notVerified($message)
     {
-        $translations = array(
-            "-1" => "اطلاعات ارسال شده ناقص است.",
-            "-2" => "IP و يا مرچنت كد پذيرنده صحيح نيست",
-            "-3" => "با توجه به محدوديت هاي شاپرك امكان پرداخت با رقم درخواست شده ميسر نمي باشد",
-            "-4" => "سطح تاييد پذيرنده پايين تر از سطح نقره اي است.",
-            "-11" => "درخواست مورد نظر يافت نشد.",
-            "-12" => "امكان ويرايش درخواست ميسر نمي باشد.",
-            "-21" => "هيچ نوع عمليات مالي براي اين تراكنش يافت نشد",
-            "-22" => "تراكنش نا موفق ميباشد",
-            "-33" => "رقم تراكنش با رقم پرداخت شده مطابقت ندارد",
-            "-34" => "سقف تقسيم تراكنش از لحاظ تعداد يا رقم عبور نموده است",
-            "-40" => "اجازه دسترسي به متد مربوطه وجود ندارد.",
-            "-41" => "اطلاعات ارسال شده مربوط به AdditionalData غيرمعتبر ميباشد.",
-            "-42" => "مدت زمان معتبر طول عمر شناسه پرداخت بايد بين 30 دقيه تا 45 روز مي باشد.",
-            "-54" => "درخواست مورد نظر آرشيو شده است",
-            "101" => "عمليات پرداخت موفق بوده و قبلا PaymentVerification تراكنش انجام شده است.",
-        );
-        if (array_key_exists($status, $translations)) {
-            throw new InvalidPaymentException($translations[$status]);
-        } else {
+        if (empty($message)) {
             throw new InvalidPaymentException('خطای ناشناخته ای رخ داده است.');
+        } else {
+            throw new InvalidPaymentException($message);
         }
     }
 }

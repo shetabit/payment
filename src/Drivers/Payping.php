@@ -31,7 +31,7 @@ class Payping extends Driver
     protected $settings;
 
     /**
-     * Zarinpal constructor.
+     * Payping constructor.
      * Construct the class with the relevant settings.
      *
      * @param Invoice $invoice

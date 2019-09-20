@@ -10,7 +10,7 @@ use Shetabit\Payment\Invoice;
 class Bitpay extends Driver
 {
     /**
-     * Idpay Client.
+     * Bitpay Client.
      *
      * @var object
      */
@@ -31,7 +31,7 @@ class Bitpay extends Driver
     protected $settings;
 
     /**
-     * Idpay constructor.
+     * Bitpay constructor.
      * Construct the class with the relevant settings.
      *
      * @param Invoice $invoice

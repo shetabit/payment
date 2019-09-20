@@ -16,6 +16,10 @@
 - [داکیومنت فارسی][link-fa]
 - [english documents][link-en]
 
+در صورتی که از این پکیج خوشتون آمده و ازش استفاده میکنید میتونید با پرداخت مبلغ اندکی من رو حمایت کنید تا این پکیج رو بیشتر توسعه بدم و درگاه های جدیدتری بهش اظافه کنم
+
+[به منظور کمک مالی کلیک کنید](https://yekpay.me/mahdikhanzadi) :sunglasses: :bowtie:
+
 # لیست محتوا
 
 - [درایور های موجود](#درایورهای-موجود)
@@ -36,14 +40,17 @@
 
 # درایورهای موجود
 
-- [ایدی پی](https://idpay.ir/)
-- [ایران کیش](http://irankish.com/)
-- [پی ای ار](https://pay.ir/)
-- [پی پینگ](https://www.payping.ir/)
-- [پولام](https://poolam.ir/)
-- [بانک سامان](https://www.sep.ir)
-- [یک پی](https://yekpay.com/)
-- [زرین پال](https://www.zarinpal.com/)
+- [بیت پی](https://www.bitpay.ir/) :soon:
+- [ایدی پی](https://idpay.ir/) :heavy_check_mark:
+- [ایران کیش](http://irankish.com/) :heavy_check_mark:
+- [نکست پی](https://nextpay.ir/) :heavy_check_mark:
+- [پی ای ار](https://pay.ir/) :heavy_check_mark:
+- [پی پینگ](https://www.payping.ir/) :heavy_check_mark:
+- [پی استار](http://paystar.ir/) :soon:
+- [پولام](https://poolam.ir/) :heavy_check_mark:
+- [بانک سامان](https://www.sep.ir) :heavy_check_mark:
+- [یک پی](https://yekpay.com/) :heavy_check_mark:
+- [زرین پال](https://www.zarinpal.com/) :heavy_check_mark:
 - درایورهای دیگر ساخته خواهند شد یا اینکه بسازید و درخواست `merge` بدید.
 
 > در صورتی که درایور مورد نظرتون موجود نیست, میتونید برای درگاه پرداخت موردنظرتون درایور بسازید.

@@ -15,6 +15,8 @@
 
 This is a Laravel Package for Payment Gateway Integration. This package supports `Laravel 5.2+`.
 
+[Donate me](https://yekpay.me/mahdikhanzadi) if you like this package :sunglasses: :bowtie:
+
 > This packages works with multiple drivers, and you can create custom drivers if there are not available in the [current drivers list](#list-of-available-drivers) (below list).
 
 - [داکیومنت فارسی][link-fa]
@@ -45,16 +47,16 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 
 # List of available drivers
 
-- [bitpay](https://www.bitpay.ir/)
+- [bitpay](https://www.bitpay.ir/) :soon:
 - [idpay](https://idpay.ir/) :heavy_check_mark:
 - [irankish](http://irankish.com/) :heavy_check_mark:
 - [nextpay](https://nextpay.ir/) :heavy_check_mark:
 - [payir](https://pay.ir/) :heavy_check_mark:
-- [payping](https://www.payping.ir/)
-- [paystar](http://paystar.ir/)
-- [poolam](https://poolam.ir/)
+- [payping](https://www.payping.ir/) :heavy_check_mark:
+- [paystar](http://paystar.ir/) :soon:
+- [poolam](https://poolam.ir/) :heavy_check_mark:
 - [saman](https://www.sep.ir) :heavy_check_mark:
-- [yekpay](https://yekpay.com/)
+- [yekpay](https://yekpay.com/) :heavy_check_mark:
 - [zarinpal](https://www.zarinpal.com/) :heavy_check_mark:
 - Others are under way.
 

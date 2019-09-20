@@ -31,7 +31,7 @@ class Nextpay extends Driver
     protected $settings;
 
     /**
-     * Idpay constructor.
+     * Nextpay constructor.
      * Construct the class with the relevant settings.
      *
      * @param Invoice $invoice

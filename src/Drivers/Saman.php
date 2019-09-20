@@ -23,7 +23,7 @@ class Saman extends Driver
     protected $settings;
 
     /**
-     * Irankish constructor.
+     * Saman constructor.
      * Construct the class with the relevant settings.
      *
      * @param Invoice $invoice
