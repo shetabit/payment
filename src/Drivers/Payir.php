@@ -63,6 +63,7 @@ class Payir extends Driver
     {
         $mobile = $this->extractDetails('mobile');
         $description = $this->extractDetails('description');
+        $validCardNumber = $this->extractDetails('validCardNumber');
 
         $data = array(
             'api' => $this->settings->merchantId,
@@ -71,6 +72,7 @@ class Payir extends Driver
             'mobile' => $mobile,
             'description' => $description,
             'factorNumber' => $this->invoice->getUuid(),
+            'validCardNumber' => $validCardNumber
         );
 
         $response = $this->client->request(

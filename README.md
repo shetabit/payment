@@ -49,7 +49,7 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - [idpay](https://idpay.ir/) :heavy_check_mark:
 - [irankish](http://irankish.com/) :heavy_check_mark:
 - [nextpay](https://nextpay.ir/) :heavy_check_mark:
-- [payir](https://pay.ir/)
+- [payir](https://pay.ir/) :heavy_check_mark:
 - [payping](https://www.payping.ir/)
 - [paystar](http://paystar.ir/)
 - [poolam](https://poolam.ir/)

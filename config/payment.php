@@ -26,7 +26,7 @@ return [
             'apiPurchaseUrl' => 'https://pay.ir/pg/send/',
             'apiPaymentUrl' => 'https://pay.ir/pg/',
             'apiVerificationUrl' => 'https://pay.ir/pg/verify/',
-            'merchantId' => '', // set it to `test` for test environments
+            'merchantId' => '',
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],
