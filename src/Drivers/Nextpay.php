@@ -9,6 +9,22 @@ use Shetabit\Payment\Invoice;
 
 class Nextpay extends Driver
 {
+    const TRANSACTION_PENDING = -1;
+    const TRANSACTION_PENDING_TEXT = 'تراکنش ایجاد شد.';
+
+    const TRANSACTION_SUCCEED = 0;
+    const TRANSACTION_SUCCEED_TEXT = 'پرداخت با موفقیت انجام شد.';
+
+    const TRANSACTION_FAILED = -2;
+    const TRANSACTION_FAILED_TEXT = 'عملیات پرداخت با خطا مواجه شد.';
+
+    protected $server_soap = "https://api.nextpay.org/gateway/token.wsdl";
+    //protected $server_soap = "https://api.nextpay.org/gateway/token?wsdl";
+    protected $server_http = "https://api.nextpay.org/gateway/token.http";
+    protected $request_http = "https://api.nextpay.org/gateway/payment";
+    protected $request_verify_soap = "https://api.nextpay.org/gateway/verify.wsdl";
+    //protected $request_verify_soap = "https://api.nextpay.org/gateway/verify?wsdl";
+
     /**
      * Idpay Client.
      *

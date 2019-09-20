@@ -22,6 +22,14 @@ return [
     |
     */
     'drivers' => [
+        'bitpay' => [
+            'apiPurchaseUrl' => 'https://pay.ir/pg/send/',
+            'apiPaymentUrl' => 'https://pay.ir/pg/',
+            'apiVerificationUrl' => 'https://pay.ir/pg/verify/',
+            'merchantId' => '', // set it to `test` for test environments
+            'callbackUrl' => 'http://yoursite.com/path/to',
+            'description' => 'payment in '.config('app.name'),
+        ],
         'idpay' => [
             'apiPurchaseUrl' => 'https://api.idpay.ir/v1.1/payment',
             'apiPaymentUrl' => 'https://idpay.ir/p/ws/',
@@ -33,11 +41,19 @@ return [
             'sandbox' => false, // set it to true for test environments
         ],
         'irankish' => [
-            'apiPurchaseUrl' => 'https://ikc.shaparak.ir/XToken/Tokens.xml',
-            'apiPaymentUrl' => 'https://ikc.shaparak.ir/TPayment/Payment/index/',
-            'apiVerificationUrl' => 'https://ikc.shaparak.ir/XVerify/Verify.xml',
+            'apiPurchaseUrl' => 'https://api.nextpay.org/gateway/token.http',
+            'apiPaymentUrl' => 'https://api.nextpay.org/gateway/payment/',
+            'apiVerificationUrl' => '‫‪http://api.nextpay.org/gateway/verify.http‬‬',
             'merchantId' => '',
             'sha1Key' => '',
+            'callbackUrl' => 'http://yoursite.com/path/to',
+            'description' => 'payment in '.config('app.name'),
+        ],
+        'nextpay' => [
+            'apiPurchaseUrl' => '‫‪https://api.nextpay.org/gateway/token.http/‬‬',
+            'apiPaymentUrl' => 'https://pay.ir/pg/',
+            'apiVerificationUrl' => 'https://pay.ir/pg/verify/',
+            'merchantId' => '', // set it to `test` for test environments
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],
@@ -50,6 +66,14 @@ return [
             'description' => 'payment in '.config('app.name'),
         ],
         'payping' => [
+            'apiPurchaseUrl' => 'https://api.payping.ir/v1/pay/',
+            'apiPaymentUrl' => 'https://api.payping.ir/v1/pay/gotoipg/',
+            'apiVerificationUrl' => 'https://api.payping.ir/v1/pay/verify/',
+            'merchantId' => '',
+            'callbackUrl' => 'http://yoursite.com/path/to',
+            'description' => 'payment in '.config('app.name'),
+        ],
+        'paystar' => [
             'apiPurchaseUrl' => 'https://api.payping.ir/v1/pay/',
             'apiPaymentUrl' => 'https://api.payping.ir/v1/pay/gotoipg/',
             'apiVerificationUrl' => 'https://api.payping.ir/v1/pay/verify/',
@@ -103,10 +127,13 @@ return [
     |
     */
     'map' => [
+        'bitpay' => \Shetabit\Payment\Drivers\Bitpay::class,
         'idpay' => \Shetabit\Payment\Drivers\Idpay::class,
         'irankish' => \Shetabit\Payment\Drivers\Irankish::class,
+        'nextpay' => \Shetabit\Payment\Drivers\Nextpay::class,
         'payir' => \Shetabit\Payment\Drivers\Payir::class,
         'payping' => \Shetabit\Payment\Drivers\Payping::class,
+        'paystar' => \Shetabit\Payment\Drivers\Paystar::class,
         'poolam' => \Shetabit\Payment\Drivers\Poolam::class,
         'saman' => \Shetabit\Payment\Drivers\Saman::class,
         'yekpay' => \Shetabit\Payment\Drivers\Yekpay::class,
