@@ -74,9 +74,9 @@ return [
             'description' => 'payment in '.config('app.name'),
         ],
         'paystar' => [
-            'apiPurchaseUrl' => 'https://api.paystar.ir/v1/pay/',
-            'apiPaymentUrl' => 'https://api.paystar.ir/v1/pay/gotoipg/',
-            'apiVerificationUrl' => 'https://api.paystar.ir/v1/pay/verify/',
+            'apiPurchaseUrl' => 'https://paystar.ir/api/create/',
+            'apiPaymentUrl' => 'https://paystar.ir/paying/',
+            'apiVerificationUrl' => 'https://paystar.ir/api/verify/',
             'merchantId' => '',
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
