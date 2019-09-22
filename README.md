@@ -72,6 +72,9 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - wepay
 - payoneer
 - paysimple
+- pasargad
+- melli
+- melat
 
 > you can create your own custom driver if not  exists in the list , read the `Create custom drivers` section.
 
