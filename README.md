@@ -47,7 +47,6 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 
 # List of available drivers
 
-- [bitpay](https://www.bitpay.ir/) :soon:
 - [idpay](https://idpay.ir/) :heavy_check_mark:
 - [irankish](http://irankish.com/) :heavy_check_mark:
 - [nextpay](https://nextpay.ir/) :heavy_check_mark:

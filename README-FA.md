@@ -40,7 +40,6 @@
 
 # درایورهای موجود
 
-- [بیت پی](https://www.bitpay.ir/) :soon:
 - [ایدی پی](https://idpay.ir/) :heavy_check_mark:
 - [ایران کیش](http://irankish.com/) :heavy_check_mark:
 - [نکست پی](https://nextpay.ir/) :heavy_check_mark:

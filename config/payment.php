@@ -22,14 +22,6 @@ return [
     |
     */
     'drivers' => [
-        'bitpay' => [
-            'apiPurchaseUrl' => 'https://bitpay.ir/pg/send/',
-            'apiPaymentUrl' => 'https://bitpay.ir/pg/',
-            'apiVerificationUrl' => 'https://bitpay.ir/pg/verify/',
-            'merchantId' => '',
-            'callbackUrl' => 'http://yoursite.com/path/to',
-            'description' => 'payment in '.config('app.name'),
-        ],
         'idpay' => [
             'apiPurchaseUrl' => 'https://api.idpay.ir/v1.1/payment',
             'apiPaymentUrl' => 'https://idpay.ir/p/ws/',
@@ -128,7 +120,6 @@ return [
     |
     */
     'map' => [
-        'bitpay' => \Shetabit\Payment\Drivers\Bitpay::class,
         'idpay' => \Shetabit\Payment\Drivers\Idpay::class,
         'irankish' => \Shetabit\Payment\Drivers\Irankish::class,
         'nextpay' => \Shetabit\Payment\Drivers\Nextpay::class,
