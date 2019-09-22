@@ -45,7 +45,7 @@
 - [نکست پی](https://nextpay.ir/) :heavy_check_mark:
 - [پی ای ار](https://pay.ir/) :heavy_check_mark:
 - [پی پینگ](https://www.payping.ir/) :heavy_check_mark:
-- [پی استار](http://paystar.ir/) :soon:
+- [پی استار](http://paystar.ir/) :heavy_check_mark:
 - [پولام](https://poolam.ir/) :heavy_check_mark:
 - [بانک سامان](https://www.sep.ir) :heavy_check_mark:
 - [یک پی](https://yekpay.com/) :heavy_check_mark:
