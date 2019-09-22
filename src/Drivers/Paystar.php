@@ -48,20 +48,20 @@ class Paystar extends Driver
      * Purchase Invoice.
      *
      * @return string
+     * @throws InvalidPaymentException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function purchase()
     {
         $details = $this->invoice->getDetails();
 
         $data = array(
-            'order_id' => $this->invoice->getUuid(),
             'amount' => $this->invoice->getAmount(),
-            'name' => $details['name'] ?? null,
+            'email' => $details['email'] ?? null,
             'phone' => $details['mobile'] ?? $details['phone'] ?? null,
-            'mail' => $details['email'] ?? null,
+            'pin' => $this->settings->merchantId,
             'desc' => $details['description'] ?? $this->settings->description,
             'callback' => $this->settings->callbackUrl,
-            'reseller' => $details['reseller'] ?? null,
         );
 
         $response = $this
@@ -70,22 +70,18 @@ class Paystar extends Driver
                 'POST',
                 $this->settings->apiPurchaseUrl,
                 [
-                    "json" => $data,
-                    "headers" => [
-                        'X-API-KEY' => $this->settings->merchantId,
-                        'Content-Type' => 'application/json',
-                        'X-SANDBOX' => (int) $this->settings->sandbox,
-                    ],
+                    "form_params" => $data,
                     "http_errors" => false,
                 ]
             );
 
-        $body = json_decode($response->getBody()->getContents(), true);
+        $body = $response->getBody()->getContents();
 
-        if (empty($body['id'])) {
+        if (is_numeric($body)) {
             // some error has happened
+            $this->triggerError($body);
         } else {
-            $this->invoice->transactionId($body['id']);
+            $this->invoice->transactionId($body);
         }
 
         // return the transaction's id
@@ -100,12 +96,6 @@ class Paystar extends Driver
     public function pay()
     {
         $apiUrl =  $this->settings->apiPaymentUrl;
-
-        // use sandbox url if we are in sandbox mode
-        if (!empty($this->settings->sandbox)) {
-            $apiUrl = $this->settings->apiSandboxPaymentUrl;
-        }
-
         $payUrl = $apiUrl.$this->invoice->getTransactionId();
 
         // redirect using laravel logic
@@ -122,29 +112,23 @@ class Paystar extends Driver
     public function verify()
     {
         $data = [
-            'id' => $this->invoice->getTransactionId() ?? request()->input('id'),
-            'order_id' => request()->input('order_id'),
+            'amount' => $this->invoice->getAmount(),
+            'pin' => $this->settings->merchantId,
+            'transid' => $this->invoice->getTransactionId() ?? request()->input('transid'),
         ];
 
         $response = $this->client->request(
             'POST',
             $this->settings->apiVerificationUrl,
             [
-                'json' => $data,
-                "headers" => [
-                    'X-API-KEY' => $this->settings->merchantId,
-                    'Content-Type' => 'application/json',
-                    'X-SANDBOX' => (int) $this->settings->sandbox,
-                ],
+                'form_params' => $data,
                 "http_errors" => false,
             ]
         );
-        $body = json_decode($response->getBody()->getContents(), true);
+        $body = $response->getBody()->getContents();
 
-        if (isset($body['error_code']) || $body['status'] != 100) {
-            $errorCode = $body['status'] ?? $body['error_code'];
-
-            $this->notVerified($errorCode);
+        if ($body != 1) {
+            $this->triggerError($body);
         }
     }
 
@@ -154,37 +138,27 @@ class Paystar extends Driver
      * @param $status
      * @throws InvalidPaymentException
      */
-    private function notVerified($status)
+    private function triggerError($status)
     {
+        $status = (string) $status;
+
         $translations = array(
-            "1" => "پرداخت انجام نشده است.",
-            "2" => "پرداخت ناموفق بوده است.",
-            "3" => "خطا رخ داده است.",
-            "4" => "بلوکه شده.",
-            "5" => "برگشت به پرداخت کننده.",
-            "6" => "برگشت خورده سیستمی.",
-            "10" => "در انتظار تایید پرداخت.",
-            "100" => "پرداخت تایید شده است.",
-            "101" => "پرداخت قبلا تایید شده است.",
-            "200" => "به دریافت کننده واریز شد.",
-            "11" => "کاربر مسدود شده است.",
-            "12" => "API Key یافت نشد.",
-            "13" => "درخواست شما از {ip} ارسال شده است. این IP با IP های ثبت شده در وب سرویس همخوانی ندارد.",
-            "14" => "وب سرویس تایید نشده است.",
-            "21" => "حساب بانکی متصل به وب سرویس تایید نشده است.",
-            "31" => "کد تراکنش id نباید خالی باشد.",
-            "32" => "شماره سفارش order_id نباید خالی باشد.",
-            "33" => "مبلغ amount نباید خالی باشد.",
-            "34" => "مبلغ amount باید بیشتر از {min-amount} ریال باشد.",
-            "35" => "مبلغ amount باید کمتر از {max-amount} ریال باشد.",
-            "36" => "مبلغ amount بیشتر از حد مجاز است.",
-            "37" => "آدرس بازگشت callback نباید خالی باشد.",
-            "38" => "درخواست شما از آدرس {domain} ارسال شده است. دامنه آدرس بازگشت callback با آدرس ثبت شده در وب سرویس همخوانی ندارد.",
-            "51" => "تراکنش ایجاد نشد.",
-            "52" => "استعلام نتیجه ای نداشت.",
-            "53" => "تایید پرداخت امکان پذیر نیست.",
-            "54" => "مدت زمان تایید پرداخت سپری شده است.",
+            "−1" => "مبلغ پرداخت نمیتواند خالی باشد.",
+            "−2" => "کد پین درگاه(کد مرچند) نمیتواند خالی باشد.",
+            "−3" => "لینک برگشتی (callback) نمیتواند خالی باشد.",
+            "−4" => "مبلغ پرداخت باید عددی باشد.",
+            "−5" => "مبلغ پرداخت باید بزرگتر از ۱۰۰ باشد.",
+            "−6" => "کد پین درگاه (مرچند) اشتباه است.",
+            "−7" => "آیپی سرور با آیپی درگاه مطابقت ندارد",
+            "−8" => "کد تراکنش (transid) نمیتواند خالی باشد.",
+            "−9" => "تراکنش مورد نظر وجود ندارد.",
+            "−10" => "کدپین درگاه با درگاه تراکنش مطابقت ندارد.",
+            "−11" => "مبلغ با مبلغ تراکنش مطابقت ندارد.",
+            "-12" => "بانک انتخابی اشتباه است.",
+            "-13" => "درگاه غیرفعال است.",
+            "-14" => "آیپی مشتری ارسال نشده است.",
         );
+
         if (array_key_exists($status, $translations)) {
             throw new InvalidPaymentException($translations[$status]);
         } else {

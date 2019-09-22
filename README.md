@@ -53,7 +53,7 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - [nextpay](https://nextpay.ir/) :heavy_check_mark:
 - [payir](https://pay.ir/) :heavy_check_mark:
 - [payping](https://www.payping.ir/) :heavy_check_mark:
-- [paystar](http://paystar.ir/) :soon:
+- [paystar](http://paystar.ir/) :heavy_check_mark:
 - [poolam](https://poolam.ir/) :heavy_check_mark:
 - [saman](https://www.sep.ir) :heavy_check_mark:
 - [yekpay](https://yekpay.com/) :heavy_check_mark:
