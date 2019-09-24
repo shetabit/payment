@@ -1,6 +1,8 @@
 <p align="center"><img src="resources/images/payment.png?raw=true"></p>
 
+<div dir=rtl>
 # پکیج درگاه پرداخت برای لاراول
+</div>
 
 [![Software License][ico-license]](LICENSE.md)
 [![Latest Version on Packagist][ico-version]][link-packagist]
@@ -9,16 +11,25 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/e6a80b17298cb4fcb56d/maintainability)](https://codeclimate.com/github/shetabit/payment/maintainability)
 [![Quality Score][ico-code-quality]][link-code-quality]
 
+<div dir=rtl>
 این پکیج برای پرداخت انلاین توسط درگاه های ملختف در لاراول ایجاد شده است.
+</div>
 
+<div dir=rtl>
 > این پکیج با درگاه های پرداخت مختلفی کار میکنه. در صورتی که درگاه مورد نظرتون رو در لیست درایورهای موجود پیدا نکردید میتونید برای درگاهی که استفاده میکنید درایور مورد نظرتون رو بسازید.
+</div>
 
+<div dir=rtl>
 - [داکیومنت فارسی][link-fa]
 - [english documents][link-en]
+</div>
 
+<div dir=rtl>
 در صورتی که از این پکیج خوشتون آمده و ازش استفاده میکنید میتونید با پرداخت مبلغ اندکی من رو حمایت کنید تا این پکیج رو بیشتر توسعه بدم و درگاه های جدیدتری بهش اظافه کنم
 
 [به منظور کمک مالی کلیک کنید](https://yekpay.me/mahdikhanzadi) :sunglasses: :bowtie:
+</div>
+
 
 # لیست محتوا
 
