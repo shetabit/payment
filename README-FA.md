@@ -1,8 +1,9 @@
 <p align="center"><img src="resources/images/payment.png?raw=true"></p>
 
 <div dir=rtl>
+
 # پکیج درگاه پرداخت برای لاراول
-</div>
+
 
 [![Software License][ico-license]](LICENSE.md)
 [![Latest Version on Packagist][ico-version]][link-packagist]
@@ -11,24 +12,19 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/e6a80b17298cb4fcb56d/maintainability)](https://codeclimate.com/github/shetabit/payment/maintainability)
 [![Quality Score][ico-code-quality]][link-code-quality]
 
-<div dir=rtl>
 این پکیج برای پرداخت انلاین توسط درگاه های ملختف در لاراول ایجاد شده است.
-</div>
 
-<div dir=rtl>
+
 > این پکیج با درگاه های پرداخت مختلفی کار میکنه. در صورتی که درگاه مورد نظرتون رو در لیست درایورهای موجود پیدا نکردید میتونید برای درگاهی که استفاده میکنید درایور مورد نظرتون رو بسازید.
-</div>
 
-<div dir=rtl>
+
 - [داکیومنت فارسی][link-fa]
 - [english documents][link-en]
-</div>
 
-<div dir=rtl>
+
 در صورتی که از این پکیج خوشتون آمده و ازش استفاده میکنید میتونید با پرداخت مبلغ اندکی من رو حمایت کنید تا این پکیج رو بیشتر توسعه بدم و درگاه های جدیدتری بهش اظافه کنم
 
 [به منظور کمک مالی کلیک کنید](https://yekpay.me/mahdikhanzadi) :sunglasses: :bowtie:
-</div>
 
 
 # لیست محتوا
@@ -69,15 +65,21 @@
 
 نصب با استفاده از کامپوزر
 
+</div>
+
 ``` bash
 $ composer require shetabit/payment
 ```
+
+<div dir="rtl">
 
 ## تنظیمات
 
 درصورتی که از `Laravel 5.5` یا ورژن های بالاتر استفاده میکنید نیازی به انجام تنظیمات `providers` و `alias` نخواهید داشت.
 
 درون فایل `config/app.php` دستورات زیر را وارد کنید
+
+</div>
 
 ```php
 # In your providers array.
@@ -93,16 +95,25 @@ $ composer require shetabit/payment
 ],
 ```
 
+<div dir="rtl">
+
 سپس دستور `php artisan vendor:publish` را اجرا کنید تا فایل `config/payment.php` درون دایرکتوری تنظیمات لاراول قرار بگیرد.
 
 درون فایل تنظیمات در قسمت `default driver` میتوانید درایوری که قصد استفاده از ان را دارید قرار دهید تا تمامی پرداخت ها از آن طریق انجام شود.
+
+
+</div>
 
 ```php
 // Eg. if you want to use zarinpal.
 'default' => 'zarinpal',
 ```
 
+<div dir="rtl">
+
 سپس تنظیمات مرتبط با درایوری که قصد استفاده از ان را دارید انجام دهید
+
+</div>
 
 ```php
 'drivers' => [
@@ -119,6 +130,8 @@ $ composer require shetabit/payment
 ]
 ```
 
+<div dir="rtl">
+
 ## طریقه استفاده
 
 در تمامی پرداخت ها اطلاعات پرداخت درون صورتحساب شما نگهداری میشود. برای استفاده از پکیج ابتدا نحوه ی استفاده از کلاس `Invoice` به منظور کار با صورتحساب ها را توضیح میدهیم.
@@ -128,6 +141,8 @@ $ composer require shetabit/payment
 قبل از انجام هرکاری نیاز به ایجاد یک صورتحساب دارید. برای ایجاد صورتحساب میتوانید از کلاس `Invoice` استفاده کنید.
 
 درون کد خودتون به شکل زیر عمل کنید:
+
+</div>
 
 ```php
 # On the top of the file.
@@ -153,6 +168,8 @@ $invoice->detail('detailName1','your detail1 goes here')
 
 ```
 
+<div dir="rtl">
+
 متدهای موجود برای کار با صورتحساب ها:
 
 - `uuid` : یک ایدی یونیک برای صورتحساب تنظیم میکند
@@ -169,6 +186,8 @@ $invoice->detail('detailName1','your detail1 goes here')
 #### ثبت درخواست برای پرداخت صورتحساب
 به منظور پرداخت تمامی صورتحساب ها به یک شماره تراکنش بانکی یا `transactionId` نیاز خواهیم داشت.
 با ثبت درخواست به منظور پرداخت میتوان شماره تراکنش بانکی را دریافت کرد:
+
+</div>
 
 ```php
 # On the top of the file.
@@ -190,9 +209,13 @@ Payment::purchase($invoice, function($driver, $transactionId) {
 });
 ```
 
+<div dir="rtl">
+
 #### پرداخت صورتحساب
 
 با استفاده از شماره تراکنش یا `transactionId` میتوانیم کاربر را به صفحه ی پرداخت بانک هدایت کنیم:
+
+</div>
 
 ```php
 # On the top of the file.
@@ -218,9 +241,14 @@ return Payment::purchase(
 )->pay();
 ```
 
+<div dir="rtl">
+
+
 #### اعتبار سنجی پرداخت
 
 بعد از پرداخت شدن صورتحساب توسط کاربر, بانک کاربر را به یکی از صفحات سایت ما برمیگردونه و ما با اعتبار سنجی میتونیم متوجه بشیم کاربر پرداخت رو انجام داده یا نه!
+
+</div>
 
 ```php
 # On the top of the file.
@@ -244,11 +272,16 @@ try {
 }
 ```
 
+<div dir="rtl">
+
+
 در صورتی که پرداخت توسط کاربر به درستی انجام نشده باشه یک استثنا از نوع `InvalidPaymentException` ایجاد میشود که حاوی پیام متناسب با پرداخت انجام شده است.
 
 #### ایجاد درایور دلخواه:
 
  برای ایجاد درایور جدید ابتدا نام (اسم) درایوری که قراره بسازید رو به لیست درایور ها اظافه کنید و لیست تنظیات مورد نیاز را نیز مشخص کنید.
+
+</div>
 
 ```php
 'drivers' => [
@@ -259,9 +292,14 @@ try {
 ]
 ```
 
+<div dir="rtl">
+
+
 کلاس درایوری که قصد ساختنش رو دارید باید کلاس `Shetabit\Payment\Abstracts\Driver` رو به ارث ببره.
 
 به عنوان مثال:
+
+</div>
 
 ```php
 namespace App\Packages\PaymentDriver;
@@ -321,7 +359,12 @@ class MyDriver extends Driver
 }
 ```
 
+<div dir="rtl">
+
+
 بعد از اینکه کلاس درایور خودتون رو ایجاد کردید به فایل `Config/payment.php` برید و درایور خودتون رو در قسمت `map` اظافه کنید.
+
+</div>
 
 ```php
 'map' => [
@@ -330,11 +373,16 @@ class MyDriver extends Driver
 ]
 ```
 
+<div dir="rtl">
+
+
 **نکته:** دقت کنید کلیدی که قسمت `map` قرار میدهید باید همنام با نامی باشد که در قسمت `drivers` قرار داده اید.
 
 #### متدهای سودمند
 
 - `callbackUrl` : با استفاده از این متد به صورت داینامیک میتوانید ادرس صفحه ای که بعد از پرداخت انلاین کاربر به ان هدایت میشود را مشخص کنید
+
+</div>
 
 ```php
   # On the top of the file.
@@ -354,7 +402,11 @@ class MyDriver extends Driver
   );
 ```
 
-- `amount`: به کمک این متد میتوانید به صورت مستقیم هزینه صورتحساب را مشخص کنید
+<div dir="rtl">
+
+- `amount` : به کمک این متد میتوانید به صورت مستقیم هزینه صورتحساب را مشخص کنید
+
+</div>
 
 ```php
   # On the top of the file.
@@ -371,7 +423,11 @@ class MyDriver extends Driver
   );
 ```
 
+<div dir="rtl">
+
 - `via` : به منظور تغییر درایور در هنگام اجرای برنامه مورد استفاده قرار میگیرد
+
+</div>
 
 ```php
   # On the top of the file.
@@ -390,6 +446,8 @@ class MyDriver extends Driver
   	}
   );
 ```
+
+<div dir="rtl">
 
 ## تغییرات
 
@@ -411,6 +469,8 @@ class MyDriver extends Driver
 ## لایسنس
 
 توسعه و تولید تحت لایسنس MIT است. برای اطلاعات بیشتر [فایل لایسنس](LICENSE.md) را مطالعه کنید.
+
+</div>
 
 [ico-version]: https://img.shields.io/packagist/v/shetabit/payment.svg?style=flat-square
 [ico-download]: https://img.shields.io/packagist/dt/shetabit/payment.svg?color=%23F18&style=flat-square
