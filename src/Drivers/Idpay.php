@@ -123,7 +123,7 @@ class Idpay extends Driver
     {
         $data = [
             'id' => $this->invoice->getTransactionId() ?? request()->input('id'),
-            'order_id' => request()->input('order_id'),
+            'order_id' => $this->invoice->getUuid() ?? request()->input('order_id'),
         ];
 
         $response = $this->client->request(
