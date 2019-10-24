@@ -153,6 +153,19 @@ class PaymentManager
     }
 
     /**
+     * Set transaction's uuid
+     *
+     * @param $uuid
+     * @return $this
+     */
+    public function uuid($uuid)
+    {
+        $this->invoice->uuid($uuid);
+
+        return $this;
+    }
+
+    /**
      * Change the driver on the fly.
      *
      * @param $driver
