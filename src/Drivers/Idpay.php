@@ -58,8 +58,8 @@ class Idpay extends Driver
             'amount' => $this->invoice->getAmount(),
             'name' => $details['name'] ?? null,
             'phone' => $details['mobile'] ?? $details['phone'] ?? null,
-            'mail' => $details['email'] ?? null,
-            'desc' => $details['description'] ?? $this->settings->description,
+            'mail' => $details['email'] ?? $details['mail'] ?? null,
+            'desc' => $details['description'] ?? $details['desc'] ?? $this->settings->description,
             'callback' => $this->settings->callbackUrl,
             'reseller' => $details['reseller'] ?? null,
         );
