@@ -40,7 +40,7 @@ class Zarinpal extends Driver
     public function __construct(Invoice $invoice, $settings)
     {
         $this->invoice($invoice);
-        $this->settings = (object) $settings;
+        $this->settings = (object)$settings;
         $this->client = new Client();
     }
 
@@ -89,7 +89,7 @@ class Zarinpal extends Driver
      */
     public function pay()
     {
-        $payUrl = $this->settings->apiPaymentUrl.$this->invoice->getTransactionId();
+        $payUrl = $this->settings->apiPaymentUrl . $this->invoice->getTransactionId();
 
         // redirect using laravel logic
         return redirect()->to($payUrl);
@@ -106,7 +106,7 @@ class Zarinpal extends Driver
     {
         $data = [
             'MerchantID' => $this->settings->merchantId,
-            'Authority'  => $this->invoice->getTransactionId(),
+            'Authority' => $this->invoice->getTransactionId(),
             'Amount' => $this->invoice->getAmount(),
         ];
 
@@ -116,6 +116,8 @@ class Zarinpal extends Driver
             ['json' => $data]
         );
         $body = json_decode($response->getBody()->getContents(), true);
+
+        $this->invoice->refId($body['RefID']);
 
         if (!isset($body['Status']) || $body['Status'] != 100) {
             $this->notVerified($body['Status']);
