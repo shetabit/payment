@@ -23,6 +23,13 @@ class Invoice
     protected $transactionId;
 
     /**
+     * transactions ref id
+     *
+     * @var string
+     */
+    protected $refId;
+
+    /**
      * Payment details
      *
      * @var string
@@ -47,7 +54,7 @@ class Invoice
     /**
      * Set invoice uuid
      *
-     * @param $uuid|null
+     * @param $uuid |null
      * @throws \Exception
      */
     public function uuid($uuid = null)
@@ -73,7 +80,7 @@ class Invoice
      * Set a piece of data to the details.
      *
      * @param $key
-     * @param $value|null
+     * @param $value |null
      * @return $this
      */
     public function detail($key, $value = null)
@@ -143,6 +150,29 @@ class Invoice
     public function getTransactionId()
     {
         return $this->transactionId;
+    }
+
+    /**
+     * set ref id
+     *
+     * @param $id
+     * @return $this
+     */
+    public function refId($id)
+    {
+        $this->refId = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of transaction's ref id
+     *
+     * @return string
+     */
+    public function getRefId()
+    {
+        return $this->refId;
     }
 
     /**

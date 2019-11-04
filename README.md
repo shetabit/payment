@@ -178,6 +178,8 @@ available methods:
 - `getAmount` : retrieve invoice's amount
 - `transactionId` : set invoice's payment transaction id
 - `getTransactionId` : retrieve payment's transaction id
+- `refId` : set invoice's payment transaction id
+- `getRefId` : retrieve payment's transaction id
 - `via` : set a driver we use to pay the invoice
 - `getDriver` : retrieve the driver
 
