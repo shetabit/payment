@@ -48,6 +48,8 @@ class Poolam extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function purchase()
     {
@@ -97,6 +99,7 @@ class Poolam extends Driver
      * Verify payment
      *
      * @return mixed|void
+     *
      * @throws InvalidPaymentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */

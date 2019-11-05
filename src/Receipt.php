@@ -62,4 +62,25 @@ class Receipt
     {
         return $this->date;
     }
+
+    /**
+     * Add given value into details
+     *
+     * @param $name
+     * @param $value
+     */
+    public function __set($name, $value)
+    {
+        $this->detail($name, $value);
+    }
+
+    /**
+     * Retrieve given value from details
+     *
+     * @param $name
+     */
+    public function __get($name)
+    {
+        $this->getDetail($name);
+    }
 }

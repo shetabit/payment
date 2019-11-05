@@ -5,6 +5,7 @@ namespace Shetabit\Payment\Drivers;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
 use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Receipt;
 
 class Irankish extends Driver
 {
@@ -111,11 +112,25 @@ class Irankish extends Driver
 
         $status = (int)($response->KicccPaymentsVerificationResult);
 
-        // TODO: $this->invoice->refId($data['referenceNumber']);
-
         if ($status != $data['amount']) {
             $this->notVerified($status);
         }
+
+        return $this->createReceipt($data['referenceNumber']);
+    }
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('irankish', $referenceId);
+
+        return $receipt;
     }
 
     /**

@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
 use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Receipt;
 
 class Zarinpal extends Driver
 {
@@ -125,11 +126,25 @@ class Zarinpal extends Driver
         );
         $body = json_decode($response->getBody()->getContents(), true);
 
-        // TODO: $this->invoice->refId($body['RefID']);
-
         if (!isset($body['Status']) || $body['Status'] != 100) {
             $this->notVerified($body['Status']);
         }
+
+        return $this->createReceipt($body['RefID']);
+    }
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('zarinpal', $referenceId);
+
+        return $receipt;
     }
 
     /**

@@ -31,9 +31,20 @@ trait HasDetail
     }
 
     /**
+     * Retrieve detail using its name
+     *
+     * @param $name
+     * @return string|null
+     */
+    public function getDetail($name)
+    {
+        return (string) $this->details[$name] ?? null;
+    }
+
+    /**
      * Get the value of details
      */
-    public function getDetails()
+    public function getDetails() : array
     {
         return $this->details;
     }

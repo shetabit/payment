@@ -88,7 +88,9 @@ class Saman extends Driver
      * Verify payment
      *
      * @return mixed|void
+     *
      * @throws InvalidPaymentException
+     * @throws \SoapFault
      */
     public function verify()
     {

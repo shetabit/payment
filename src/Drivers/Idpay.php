@@ -48,6 +48,8 @@ class Idpay extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function purchase()
     {
