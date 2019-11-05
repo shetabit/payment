@@ -109,9 +109,9 @@ return [
             'sandboxApiVerificationUrl' => 'https://sandbox.zarinpal.com/pg/services/WebGate/wsdl',
 
             /* zarinGate api */
-            'zarinGateApiPurchaseUrl' => 'https://ir.zarinpal.com/pg/services/WebGate/wsdl',
-            'zarinGateApiPaymentUrl' => 'https://www.zarinpal.com/pg/StartPay/:authority/ZarinGate',
-            'zarinGateApiVerificationUrl' => 'https://ir.zarinpal.com/pg/services/WebGate/wsdl',
+            'zaringateApiPurchaseUrl' => 'https://ir.zarinpal.com/pg/services/WebGate/wsdl',
+            'zaringateApiPaymentUrl' => 'https://www.zarinpal.com/pg/StartPay/:authority/ZarinGate',
+            'zaringateApiVerificationUrl' => 'https://ir.zarinpal.com/pg/services/WebGate/wsdl',
 
             'mode' => 'normal', // can be normal, sandbox, zaringate
             'merchantId' => '',
