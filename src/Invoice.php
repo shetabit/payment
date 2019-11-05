@@ -3,9 +3,17 @@
 namespace Shetabit\Payment;
 
 use Ramsey\Uuid\Uuid;
+use Shetabit\Payment\Traits\HasDetail;
 
 class Invoice
 {
+    use HasDetail;
+
+    /**
+     * invoice's unique universal id (uuid)
+     *
+     * @var string
+     */
     protected $uuid;
 
     /**
@@ -21,20 +29,6 @@ class Invoice
      * @var string
      */
     protected $transactionId;
-
-    /**
-     * transactions ref id
-     *
-     * @var string
-     */
-    protected $refId;
-
-    /**
-     * Payment details
-     *
-     * @var string
-     */
-    protected $details = [];
 
     /**
      * @var string
@@ -55,6 +49,7 @@ class Invoice
      * Set invoice uuid
      *
      * @param $uuid |null
+     *
      * @throws \Exception
      */
     public function uuid($uuid = null)
@@ -77,36 +72,12 @@ class Invoice
     }
 
     /**
-     * Set a piece of data to the details.
-     *
-     * @param $key
-     * @param $value |null
-     * @return $this
-     */
-    public function detail($key, $value = null)
-    {
-        $key = is_array($key) ? $key : [$key => $value];
-
-        foreach ($key as $k => $v) {
-            $this->details[$k] = $v;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Get the value of details
-     */
-    public function getDetails()
-    {
-        return $this->details;
-    }
-
-    /**
      * Set the amount of invoice
      *
      * @param $amount
+     *
      * @return $this
+     *
      * @throws \Exception
      */
     public function amount($amount)
@@ -133,6 +104,7 @@ class Invoice
      * set transaction id
      *
      * @param $id
+     *
      * @return $this
      */
     public function transactionId($id)
@@ -153,32 +125,10 @@ class Invoice
     }
 
     /**
-     * set ref id
-     *
-     * @param $id
-     * @return $this
-     */
-    public function refId($id)
-    {
-        $this->refId = $id;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of transaction's ref id
-     *
-     * @return string
-     */
-    public function getRefId()
-    {
-        return $this->refId;
-    }
-
-    /**
      * Set the value of driver
      *
      * @param $driver
+     *
      * @return $this
      */
     public function via($driver)
