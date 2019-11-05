@@ -97,10 +97,23 @@ return [
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],
-        'zarinpal' => [// set urls to https://sandbox.zarinpal.com/pg/rest/WebGate/ for using sandbox
-            'apiPurchaseUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentRequest.json',
+        'zarinpal' => [
+            /* normal api */
+            'apiPurchaseUrl' => 'https://ir.zarinpal.com/pg/services/WebGate/wsdl',
             'apiPaymentUrl' => 'https://www.zarinpal.com/pg/StartPay/',
-            'apiVerificationUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentVerification.json',
+            'apiVerificationUrl' => 'https://ir.zarinpal.com/pg/services/WebGate/wsdl',
+
+            /* sandbox api */
+            'sandboxApiPurchaseUrl' => 'https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentRequest.json',
+            'sandboxApiPaymentUrl' => 'https://sandbox.zarinpal.com/pg/StartPay/',
+            'sandboxApiVerificationUrl' => 'https://sandbox.zarinpal.com/pg/services/WebGate/wsdl',
+
+            /* zarinGate api */
+            'zarinGateApiPurchaseUrl' => 'https://ir.zarinpal.com/pg/services/WebGate/wsdl',
+            'zarinGateApiPaymentUrl' => 'https://www.zarinpal.com/pg/StartPay/:authority/ZarinGate',
+            'zarinGateApiVerificationUrl' => 'https://ir.zarinpal.com/pg/services/WebGate/wsdl',
+
+            'mode' => 'normal', // can be normal, sandbox, zaringate
             'merchantId' => '',
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
