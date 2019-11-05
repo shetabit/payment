@@ -111,7 +111,7 @@ class Irankish extends Driver
 
         $status = (int)($response->KicccPaymentsVerificationResult);
 
-        $this->invoice->refId($data['referenceNumber']);
+        // TODO: $this->invoice->refId($data['referenceNumber']);
 
         if ($status != $data['amount']) {
             $this->notVerified($status);

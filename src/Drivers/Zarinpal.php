@@ -49,7 +49,7 @@ class Zarinpal extends Driver
      *
      * @return string
      */
-    public function purchase()
+    public function purchase() : string
     {
         if (!empty($this->invoice->getDetails()['description'])) {
             $description = $this->invoice->getDetails()['description'];
@@ -67,7 +67,7 @@ class Zarinpal extends Driver
 
         $response = $this->client->request(
             'POST',
-            $this->settings->apiPurchaseUrl,
+            $this->getPurchaseUrl(),
             ["json" => $data]
         );
         $body = json_decode($response->getBody()->getContents(), true);
@@ -89,7 +89,14 @@ class Zarinpal extends Driver
      */
     public function pay()
     {
-        $payUrl = $this->settings->apiPaymentUrl . $this->invoice->getTransactionId();
+        $transactionId = $this->invoice->getTransactionId();
+        $paymentUrl = $this->getPaymentUrl();
+
+        if (strtolower($this->getMode()) == 'zaringate') {
+            $payUrl = str_replace(':authority', $transactionId, $paymentUrl);
+        } else {
+            $payUrl = $paymentUrl . $transactionId;
+        }
 
         // redirect using laravel logic
         return redirect()->to($payUrl);
@@ -99,6 +106,7 @@ class Zarinpal extends Driver
      * Verify payment
      *
      * @return mixed|void
+     *
      * @throws InvalidPaymentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -112,12 +120,12 @@ class Zarinpal extends Driver
 
         $response = $this->client->request(
             'POST',
-            $this->settings->apiVerificationUrl,
+            $this->getVerificationUrl(),
             ['json' => $data]
         );
         $body = json_decode($response->getBody()->getContents(), true);
 
-        $this->invoice->refId($body['RefID']);
+        // TODO: $this->invoice->refId($body['RefID']);
 
         if (!isset($body['Status']) || $body['Status'] != 100) {
             $this->notVerified($body['Status']);
@@ -128,6 +136,7 @@ class Zarinpal extends Driver
      * Trigger an exception
      *
      * @param $status
+     *
      * @throws InvalidPaymentException
      */
     private function notVerified($status)
@@ -154,5 +163,87 @@ class Zarinpal extends Driver
         } else {
             throw new InvalidPaymentException('خطای ناشناخته ای رخ داده است.');
         }
+    }
+
+    /**
+     * Retrieve purchase url
+     *
+     * @return string
+     */
+    protected function getPurchaseUrl() : string
+    {
+        $mode = $this->getMode();
+
+        switch($mode) {
+            case 'sandbox':
+                $url = $this->settings->sandboxApiPurchaseUrl;
+                break;
+            case 'zaringate':
+                $url = $this->settings->zaringateApiPurchaseUrl;
+                break;
+            default: // default: normal
+                $url = $this->settings->apiPurchaseUrl;
+                break;
+        }
+
+        return $url;
+    }
+
+    /**
+     * Retrieve Payment url
+     *
+     * @return string
+     */
+    protected function getPaymentUrl() : string
+    {
+        $mode = $this->getMode();
+
+        switch($mode) {
+            case 'sandbox':
+                $url = $this->settings->sandboxApiPaymentUrl;
+                break;
+            case 'zaringate':
+                $url = $this->settings->zaringateApiPaymentUrl;
+                break;
+            default: // default: normal
+                $url = $this->settings->apiPaymentUrl;
+                break;
+        }
+
+        return $url;
+    }
+
+    /**
+     * Retrieve verification url
+     *
+     * @return string
+     */
+    protected function getVerificationUrl() : string
+    {
+        $mode = $this->getMode();
+
+        switch($mode) {
+            case 'sandbox':
+                $url = $this->settings->sandboxApiVerificationUrl;
+                break;
+            case 'zaringate':
+                $url = $this->settings->zaringateApiVerificationUrl;
+                break;
+            default: // default: normal
+                $url = $this->settings->apiVerificationUrl;
+                break;
+        }
+
+        return $url;
+    }
+
+    /**
+     * Retrieve payment mode.
+     *
+     * @return string
+     */
+    protected function getMode() : string
+    {
+        return strtolower($this->settings->mode);
     }
 }
