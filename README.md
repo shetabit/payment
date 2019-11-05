@@ -437,8 +437,8 @@ Once you create that class you have to specify it in the `payment.php` config fi
 
 you can listen for 2 events
 
-- InvoicePurchasedEvent : occures when an invoice is purchased (after purchasing invoice is done successfully).
-- InvoiceVerifiedEvent  : occures when an invoice is verified successfully.
+- **InvoicePurchasedEvent** : occures when an invoice is purchased (after purchasing invoice is done successfully).
+- **InvoiceVerifiedEvent** : occures when an invoice is verified successfully.
 
 ## Change log
 
