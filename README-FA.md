@@ -47,8 +47,8 @@
 
 # درایورهای موجود
 
-- [آسان پرداخت](https://asanpardakht.ir/) :heavy_check_mark
-- [به پرداخت ملت (بانک ملت)](http://www.behpardakht.com/) :heavy_check_mark
+- [آسان پرداخت](https://asanpardakht.ir/) :heavy_check_mark:
+- [به پرداخت ملت (بانک ملت)](http://www.behpardakht.com/) :heavy_check_mark:
 - [ایدی پی](https://idpay.ir/) :heavy_check_mark:
 - [ایران کیش](http://irankish.com/) :heavy_check_mark:
 - [بانک ملی](https://bmi.ir/) :heavy_check_mark:
