@@ -5,6 +5,7 @@ namespace Shetabit\Payment\Drivers;
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\Exceptions\PurchaseFailedException;
 use Shetabit\Payment\Invoice;
 
 class Idpay extends Driver
@@ -86,6 +87,7 @@ class Idpay extends Driver
 
         if (empty($body['id'])) {
             // some error has happened
+            throw new PurchaseFailedException($body['id']);
         } else {
             $this->invoice->transactionId($body['id']);
         }

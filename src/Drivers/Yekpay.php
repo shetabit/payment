@@ -4,6 +4,7 @@ namespace Shetabit\Payment\Drivers;
 
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\Exceptions\PurchaseFailedException;
 use Shetabit\Payment\Invoice;
 
 class Yekpay extends Driver
@@ -89,7 +90,7 @@ class Yekpay extends Driver
             $this->invoice->transactionId($response->Authority);
         } else {
             //"Request failed with Error code: $response->Code and Error message: $response->Description";
-            $this->notVerified($response->Description);
+            throw new PurchaseFailedException($response->Description);
         }
 
         // return the transaction's id

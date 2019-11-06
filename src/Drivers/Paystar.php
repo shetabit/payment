@@ -5,6 +5,7 @@ namespace Shetabit\Payment\Drivers;
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\Exceptions\PurchaseFailedException;
 use Shetabit\Payment\Invoice;
 
 class Paystar extends Driver
@@ -79,7 +80,7 @@ class Paystar extends Driver
 
         if (is_numeric($body)) {
             // some error has happened
-            $this->triggerError($body);
+            throw new PurchaseFailedException($body);
         } else {
             $this->invoice->transactionId($body);
         }

@@ -5,6 +5,7 @@ namespace Shetabit\Payment\Drivers;
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\Exceptions\PurchaseFailedException;
 use Shetabit\Payment\Invoice;
 
 class Nextpay extends Driver
@@ -73,6 +74,7 @@ class Nextpay extends Driver
 
         if (empty($body['code']) || $body['code'] != -1) {
             // some error has happened
+            throw new PurchaseFailedException($body['id']);
         } else {
             $this->invoice->transactionId($body['trans_id']);
         }

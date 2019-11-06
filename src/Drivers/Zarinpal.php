@@ -5,6 +5,7 @@ namespace Shetabit\Payment\Drivers;
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\Exceptions\PurchaseFailedException;
 use Shetabit\Payment\Invoice;
 use Shetabit\Payment\Receipt;
 
@@ -74,7 +75,8 @@ class Zarinpal extends Driver
         $body = json_decode($response->getBody()->getContents(), true);
 
         if (empty($body['Authority'])) {
-            $body['Authority'] = null;
+            // some error has happened
+            throw new PurchaseFailedException('an error has happened');
         } else {
             $this->invoice->transactionId($body['Authority']);
         }

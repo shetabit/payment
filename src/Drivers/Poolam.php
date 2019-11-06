@@ -5,6 +5,7 @@ namespace Shetabit\Payment\Drivers;
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\Exceptions\PurchaseFailedException;
 use Shetabit\Payment\Invoice;
 
 class Poolam extends Driver
@@ -73,7 +74,8 @@ class Poolam extends Driver
         $body = json_decode($response->getBody()->getContents(), true);
 
         if (empty($body['status']) || $body['status'] != 1) {
-            // error has happened
+            // some error has happened
+            throw new PurchaseFailedException($body['status']);
         } else {
             $this->invoice->transactionId($body['invoice_key']);
         }

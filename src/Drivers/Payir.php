@@ -5,6 +5,7 @@ namespace Shetabit\Payment\Drivers;
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\Exceptions\PurchaseFailedException;
 use Shetabit\Payment\Invoice;
 
 class Payir extends Driver
@@ -87,6 +88,9 @@ class Payir extends Driver
 
         if ($body['status'] == 1) {
             $this->invoice->transactionId($body['token']);
+        } else {
+            // some error has happened
+            throw new PurchaseFailedException($body['id']);
         }
 
         // return the transaction's id

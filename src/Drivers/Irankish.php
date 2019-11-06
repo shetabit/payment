@@ -4,6 +4,7 @@ namespace Shetabit\Payment\Drivers;
 
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\Exceptions\PurchaseFailedException;
 use Shetabit\Payment\Invoice;
 use Shetabit\Payment\Receipt;
 
@@ -66,6 +67,9 @@ class Irankish extends Driver
 
         if ($response->MakeTokenResult->result != false) {
             $this->invoice->transactionId($response->MakeTokenResult->token);
+        } else {
+            // some error has happened
+            throw new PurchaseFailedException('an error has happened');
         }
 
         // return the transaction's id

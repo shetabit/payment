@@ -4,6 +4,7 @@ namespace Shetabit\Payment\Drivers;
 
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\Exceptions\PurchaseFailedException;
 use Shetabit\Payment\Invoice;
 
 class Saman extends Driver
@@ -129,9 +130,9 @@ class Saman extends Driver
         );
 
         if (array_key_exists($status, $translations)) {
-            throw new InvalidPaymentException($translations[$status]);
+            throw new PurchaseFailedException($translations[$status]);
         } else {
-            throw new InvalidPaymentException('خطای ناشناخته ای رخ داده است.');
+            throw new PurchaseFailedException('خطای ناشناخته ای رخ داده است.');
         }
     }
 

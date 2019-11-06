@@ -5,6 +5,7 @@ namespace Shetabit\Payment\Drivers;
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\Exceptions\PurchaseFailedException;
 use Shetabit\Payment\Invoice;
 
 class Payping extends Driver
@@ -92,7 +93,8 @@ class Payping extends Driver
         $body = json_decode($response->getBody()->getContents(), true);
 
         if (!empty($body['Error'])) {
-            // an error has happened
+            // some error has happened
+            throw new PurchaseFailedException($body['id']);
         } else {
             $this->invoice->transactionId($body['code']);
         }
