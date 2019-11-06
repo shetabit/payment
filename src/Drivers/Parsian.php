@@ -2,20 +2,12 @@
 
 namespace Shetabit\Payment\Drivers;
 
-use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
 use Shetabit\Payment\{Invoice, Receipt};
 
 class Parsian extends Driver
 {
-    /**
-     * Parsian Client.
-     *
-     * @var object
-     */
-    protected $client;
-
     /**
      * Invoice
      *
@@ -41,42 +33,36 @@ class Parsian extends Driver
     {
         $this->invoice($invoice);
         $this->settings = (object)$settings;
-        $this->client = new Client();
     }
 
     /**
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws PurchaseFailedException
+     * @throws \SoapFault
      */
-    public function purchase() : string
+    public function purchase()
     {
-        if (!empty($this->invoice->getDetails()['description'])) {
-            $description = $this->invoice->getDetails()['description'];
-        } else {
-            $description = $this->settings->description;
+        $soap = new \SoapClient($this->settings->apiPurchaseUrl);
+        $response = $soap->SalePaymentRequest(
+            $this->preparePurchaseData(),
+            $this->settings->apiNamespaceUrl
+        );
+
+        // no response from bank
+        if (empty($response['SalePaymentRequestResult'])) {
+            throw new PurchaseFailedException('bank gateway not response');
         }
 
-        $data = array(
-            'MerchantID' => $this->settings->merchantId,
-            'Amount' => $this->invoice->getAmount(),
-            'CallbackURL' => $this->settings->callbackUrl,
-            'Description' => $description,
-            'AdditionalData' => $this->invoice->getDetails()
-        );
+        $result = $response['SalePaymentRequestResult'];
 
-        $response = $this->client->request(
-            'POST',
-            $this->getPurchaseUrl(),
-            ["json" => $data]
-        );
-        $body = json_decode($response->getBody()->getContents(), true);
-
-        if (empty($body['Authority'])) {
-            // some error has happened
-            throw new PurchaseFailedException('an error has happened');
+        if (isset($result['Status']) && $result['Status'] == 0 && !empty($result['Token'])) {
+            $this->invoice->transactionId($result['Token']);
         } else {
-            $this->invoice->transactionId($body['Authority']);
+            // an error has happened
+            throw new PurchaseFailedException($result['Status']);
         }
 
         // return the transaction's id
@@ -90,47 +76,55 @@ class Parsian extends Driver
      */
     public function pay()
     {
-        $transactionId = $this->invoice->getTransactionId();
-        $paymentUrl = $this->getPaymentUrl();
+        $payUrl = $this->settings->apiPaymentUrl;
 
-        if (strtolower($this->getMode()) == 'zaringate') {
-            $payUrl = str_replace(':authority', $transactionId, $paymentUrl);
-        } else {
-            $payUrl = $paymentUrl . $transactionId;
-        }
-
-        // redirect using laravel logic
-        return redirect()->to($payUrl);
+        return $this->redirectWithForm(
+            $payUrl,
+            [
+                'RefId' => $this->invoice->getTransactionId(),
+            ],
+            'POST'
+        );
     }
 
     /**
      * Verify payment
      *
-     * @return mixed|void
+     * @return mixed|Receipt
      *
      * @throws InvalidPaymentException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \SoapFault
      */
     public function verify()
     {
-        $data = [
-            'MerchantID' => $this->settings->merchantId,
-            'Authority' => $this->invoice->getTransactionId(),
-            'Amount' => $this->invoice->getAmount(),
-        ];
+        $status = request()->get('status');
+        $token = request()->get('Token');
+        $rrn = request()->get('RRN');
 
-        $response = $this->client->request(
-            'POST',
-            $this->getVerificationUrl(),
-            ['json' => $data]
-        );
-        $body = json_decode($response->getBody()->getContents(), true);
-
-        if (!isset($body['Status']) || $body['Status'] != 100) {
-            $this->notVerified($body['Status']);
+        if ($status != 0 || empty($token)) {
+            throw new InvalidPaymentException('تراکنش توسط کاربر کنسل شده است.');
         }
 
-        return $this->createReceipt($body['RefID']);
+        $data = $this->prepareVerificationData();
+        $soap = new \SoapClient($this->settings->apiVerificationUrl);
+
+        $response = $soap->ConfirmPayment(['requestData' => $data]);
+
+        if (empty($response['ConfirmPaymentResult'])) {
+            throw new InvalidPaymentException('از سمت بانک پاسخی دریافت نشد.');
+        }
+
+        $result = $response['ConfirmPaymentResult'];
+
+        if (!isset($result['Status']) || $result['Status'] != 0 || !isset($result['RRN']) || $result['RRN'] <= 0) {
+            $message = 'خطا از سمت بانک با کد ' . $result['Status'] . ' رخ داده است.';
+            throw new InvalidPaymentException($message);
+        }
+
+        $bankReference = (isset($result['RRN']) && $result['RRN'] > 0) ? $result['RRN'] : "";
+        // $cardNumberMasked = !empty($result['CardNumberMasked']) ? $result['CardNumberMasked'] : "";
+
+        return $this->createReceipt($bankReference);
     }
 
     /**
@@ -148,117 +142,39 @@ class Parsian extends Driver
     }
 
     /**
-     * Trigger an exception
+     * Prepare data for payment verification
      *
-     * @param $status
-     *
-     * @throws InvalidPaymentException
+     * @return array
      */
-    private function notVerified($status)
+    public function prepareVerificationData()
     {
-        $translations = array(
-            "-1" => "اطلاعات ارسال شده ناقص است.",
-            "-2" => "IP و يا مرچنت كد پذيرنده صحيح نيست",
-            "-3" => "با توجه به محدوديت هاي شاپرك امكان پرداخت با رقم درخواست شده ميسر نمي باشد",
-            "-4" => "سطح تاييد پذيرنده پايين تر از سطح نقره اي است.",
-            "-11" => "درخواست مورد نظر يافت نشد.",
-            "-12" => "امكان ويرايش درخواست ميسر نمي باشد.",
-            "-21" => "هيچ نوع عمليات مالي براي اين تراكنش يافت نشد",
-            "-22" => "تراكنش نا موفق ميباشد",
-            "-33" => "رقم تراكنش با رقم پرداخت شده مطابقت ندارد",
-            "-34" => "سقف تقسيم تراكنش از لحاظ تعداد يا رقم عبور نموده است",
-            "-40" => "اجازه دسترسي به متد مربوطه وجود ندارد.",
-            "-41" => "اطلاعات ارسال شده مربوط به AdditionalData غيرمعتبر ميباشد.",
-            "-42" => "مدت زمان معتبر طول عمر شناسه پرداخت بايد بين 30 دقيه تا 45 روز مي باشد.",
-            "-54" => "درخواست مورد نظر آرشيو شده است",
-            "101" => "عمليات پرداخت موفق بوده و قبلا PaymentVerification تراكنش انجام شده است.",
+        $transactionId = $this->invoice->getTransactionId() ?? request()->get('Token');
+
+        return array(
+            'LoginAccount' 		=> $this->settings->loginAccount,
+            'Token' 		=> $transactionId,
         );
-        if (array_key_exists($status, $translations)) {
-            throw new InvalidPaymentException($translations[$status]);
+    }
+
+    /**
+     * Prepare data for purchasing invoice
+     *
+     * @return array
+     */
+    protected function preparePurchaseData()
+    {
+        if (!empty($this->invoice->getDetails()['description'])) {
+            $description = $this->invoice->getDetails()['description'];
         } else {
-            throw new InvalidPaymentException('خطای ناشناخته ای رخ داده است.');
-        }
-    }
-
-    /**
-     * Retrieve purchase url
-     *
-     * @return string
-     */
-    protected function getPurchaseUrl() : string
-    {
-        $mode = $this->getMode();
-
-        switch($mode) {
-            case 'sandbox':
-                $url = $this->settings->sandboxApiPurchaseUrl;
-                break;
-            case 'zaringate':
-                $url = $this->settings->zaringateApiPurchaseUrl;
-                break;
-            default: // default: normal
-                $url = $this->settings->apiPurchaseUrl;
-                break;
+            $description = $this->settings->description;
         }
 
-        return $url;
-    }
-
-    /**
-     * Retrieve Payment url
-     *
-     * @return string
-     */
-    protected function getPaymentUrl() : string
-    {
-        $mode = $this->getMode();
-
-        switch($mode) {
-            case 'sandbox':
-                $url = $this->settings->sandboxApiPaymentUrl;
-                break;
-            case 'zaringate':
-                $url = $this->settings->zaringateApiPaymentUrl;
-                break;
-            default: // default: normal
-                $url = $this->settings->apiPaymentUrl;
-                break;
-        }
-
-        return $url;
-    }
-
-    /**
-     * Retrieve verification url
-     *
-     * @return string
-     */
-    protected function getVerificationUrl() : string
-    {
-        $mode = $this->getMode();
-
-        switch($mode) {
-            case 'sandbox':
-                $url = $this->settings->sandboxApiVerificationUrl;
-                break;
-            case 'zaringate':
-                $url = $this->settings->zaringateApiVerificationUrl;
-                break;
-            default: // default: normal
-                $url = $this->settings->apiVerificationUrl;
-                break;
-        }
-
-        return $url;
-    }
-
-    /**
-     * Retrieve payment mode.
-     *
-     * @return string
-     */
-    protected function getMode() : string
-    {
-        return strtolower($this->settings->mode);
+        return array(
+            'LoginAccount' 		=> $this->settings->loginAccount,
+            'Amount' 			=> $this->invoice->getAmount() * 10, // convert to rial
+            'OrderId' 			=> crc32($this->invoice->getUuid()),
+            'CallBackUrl' 		=> $this->settings->callbackUrl,
+            'AdditionalData' 	=> $description,
+        );
     }
 }
