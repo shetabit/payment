@@ -7,10 +7,10 @@ use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
 use Shetabit\Payment\{Invoice, Receipt};
 
-class Zarinpal extends Driver
+class Saderat extends Driver
 {
     /**
-     * Zarinpal Client.
+     * Saderat Client.
      *
      * @var object
      */
@@ -31,7 +31,7 @@ class Zarinpal extends Driver
     protected $settings;
 
     /**
-     * Zarinpal constructor.
+     * Saderat constructor.
      * Construct the class with the relevant settings.
      *
      * @param Invoice $invoice
@@ -93,7 +93,7 @@ class Zarinpal extends Driver
         $transactionId = $this->invoice->getTransactionId();
         $paymentUrl = $this->getPaymentUrl();
 
-        if (strtolower($this->getMode()) == 'zaringate') {
+        if (strtolower($this->getMode()) == 'saderat') {
             $payUrl = str_replace(':authority', $transactionId, $paymentUrl);
         } else {
             $payUrl = $paymentUrl . $transactionId;

@@ -3,10 +3,8 @@
 namespace Shetabit\Payment\Drivers;
 
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
-use Shetabit\Payment\Exceptions\PurchaseFailedException;
-use Shetabit\Payment\Invoice;
-use Shetabit\Payment\Receipt;
+use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
+use Shetabit\Payment\{Invoice, Receipt};
 
 class Irankish extends Driver
 {

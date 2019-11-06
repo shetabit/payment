@@ -4,9 +4,8 @@ namespace Shetabit\Payment\Drivers;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
-use Shetabit\Payment\Exceptions\PurchaseFailedException;
-use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
+use Shetabit\Payment\{Invoice, Receipt};
 
 class Paystar extends Driver
 {

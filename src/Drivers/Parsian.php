@@ -7,10 +7,10 @@ use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
 use Shetabit\Payment\{Invoice, Receipt};
 
-class Zarinpal extends Driver
+class Parsian extends Driver
 {
     /**
-     * Zarinpal Client.
+     * Parsian Client.
      *
      * @var object
      */
@@ -31,7 +31,7 @@ class Zarinpal extends Driver
     protected $settings;
 
     /**
-     * Zarinpal constructor.
+     * Parsian constructor.
      * Construct the class with the relevant settings.
      *
      * @param Invoice $invoice
@@ -142,7 +142,7 @@ class Zarinpal extends Driver
      */
     public function createReceipt($referenceId)
     {
-        $receipt = new Receipt('zarinpal', $referenceId);
+        $receipt = new Receipt('parsian', $referenceId);
 
         return $receipt;
     }
