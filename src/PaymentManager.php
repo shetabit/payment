@@ -222,6 +222,27 @@ class PaymentManager
         return $this->driverInstance->pay();
     }
 
+
+    /**
+     * Pay the purchased invoice.
+     *
+     * @param $initializeCallback|null
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getPayUrl($initializeCallback = null)
+    {
+        $this->driverInstance = $this->getDriverInstance();
+
+        if ($initializeCallback) {
+            call_user_func($initializeCallback, $this->driverInstance);
+        }
+
+        $this->validateInvoice();
+
+        return $this->driverInstance->getPayUrl();
+    }
+
     /**
      * Verifies the payment
      *
