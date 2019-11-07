@@ -85,11 +85,12 @@ class Idpay extends Driver
         $body = json_decode($response->getBody()->getContents(), true);
 
         if (empty($body['id'])) {
-            // some error has happened
-            throw new PurchaseFailedException($body['id']);
-        } else {
-            $this->invoice->transactionId($body['id']);
+            // error has happened
+            $message = 'خطا در هنگام درخواست برای پرداخت با کد '.$body['id'].' رخ داده است.';
+            throw new PurchaseFailedException($message);
         }
+
+        $this->invoice->transactionId($body['id']);
 
         // return the transaction's id
         return $this->invoice->getTransactionId();
@@ -149,6 +150,22 @@ class Idpay extends Driver
 
             $this->notVerified($errorCode);
         }
+
+        return $this->createReceipt($body['track_id']);
+    }
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('behpardakht', $referenceId);
+
+        return $receipt;
     }
 
     /**
