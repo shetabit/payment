@@ -107,6 +107,16 @@ class Payir extends Driver
     }
 
     /**
+     * get payment url
+     *
+     * @return String|url
+     */
+    public function getPayUrl()
+    {
+        return $this->settings->apiPaymentUrl . $this->invoice->getTransactionId();
+    }
+
+    /**
      * Verify payment
      *
      * @return mixed|void

@@ -91,6 +91,16 @@ class Irankish extends Driver
     }
 
     /**
+     * get payment url
+     *
+     * @return exception
+     */
+    public function getPayUrl()
+    {
+        throw new \Exception("This method not supported in this driver", 1);
+    }
+
+    /**
      * Verify payment
      *
      * @return mixed|void

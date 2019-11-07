@@ -113,6 +113,23 @@ class Idpay extends Driver
     }
 
     /**
+     * get payment url
+     *
+     * @return String|url
+     */
+    public function getPayUrl()
+    {
+        $apiUrl =  $this->settings->apiPaymentUrl;
+
+        // use sandbox url if we are in sandbox mode
+        if (!empty($this->settings->sandbox)) {
+            $apiUrl = $this->settings->apiSandboxPaymentUrl;
+        }
+
+        return $apiUrl . $this->invoice->getTransactionId();
+    }
+
+    /**
      * Verify payment
      *
      * @return mixed|void
