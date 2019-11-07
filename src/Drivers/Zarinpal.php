@@ -65,19 +65,16 @@ class Zarinpal extends Driver
             'AdditionalData' => $this->invoice->getDetails()
         );
 
-        $response = $this->client->request(
-            'POST',
-            $this->getPurchaseUrl(),
-            ["json" => $data]
-        );
-        $body = json_decode($response->getBody()->getContents(), true);
+        $client = new \SoapClient($this->getPurchaseUrl(), ['encoding' => 'UTF-8']);
 
-        if (empty($body['Authority'])) {
+        $result = $client->PaymentRequest($data);
+
+        if ($result->Status != 100 || empty($body['Authority'])) {
             // some error has happened
-            throw new PurchaseFailedException('an error has happened');
-        } else {
-            $this->invoice->transactionId($body['Authority']);
+            throw new PurchaseFailedException('خطا در هنگام درخواست برای پرداخت رخ داده است.');
         }
+
+        $this->invoice->transactionId($result->Authority);
 
         // return the transaction's id
         return $this->invoice->getTransactionId();
@@ -113,24 +110,28 @@ class Zarinpal extends Driver
      */
     public function verify()
     {
+        $authority = $this->invoice->getTransactionId() ?? request()->get('Authority');
+        $status = request()->get('Status');
+
         $data = [
             'MerchantID' => $this->settings->merchantId,
-            'Authority' => $this->invoice->getTransactionId(),
+            'Authority' => $authority,
             'Amount' => $this->invoice->getAmount(),
         ];
 
-        $response = $this->client->request(
-            'POST',
-            $this->getVerificationUrl(),
-            ['json' => $data]
-        );
-        $body = json_decode($response->getBody()->getContents(), true);
-
-        if (!isset($body['Status']) || $body['Status'] != 100) {
-            $this->notVerified($body['Status']);
+        if ($status != 'OK') {
+            throw new InvalidPaymentException('عملیات پرداخت توسط کاربر لغو شد.');
         }
 
-        return $this->createReceipt($body['RefID']);
+        $client = new SoapClient('https://zarinpal.com/pg/services/WebGate/wsdl', ['encoding' => 'UTF-8']);
+
+        $result = $client->PaymentVerification($data);
+
+        if ($result->Status != 100) {
+            $this->notVerified($result->Status);
+        }
+
+        return $this->createReceipt($result->RefID);
     }
 
     /**

@@ -163,7 +163,7 @@ return [
             'apiVerificationUrl' => 'https://ir.zarinpal.com/pg/services/WebGate/wsdl',
 
             /* sandbox api */
-            'sandboxApiPurchaseUrl' => 'https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentRequest.json',
+            'sandboxApiPurchaseUrl' => 'https://sandbox.zarinpal.com/pg/services/WebGate/wsdl',
             'sandboxApiPaymentUrl' => 'https://sandbox.zarinpal.com/pg/StartPay/',
             'sandboxApiVerificationUrl' => 'https://sandbox.zarinpal.com/pg/services/WebGate/wsdl',
 
