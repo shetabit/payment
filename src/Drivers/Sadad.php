@@ -6,7 +6,7 @@ use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
 use Shetabit\Payment\{Invoice, Receipt};
 
-class Melli extends Driver
+class Sadad extends Driver
 {
     /**
      * Invoice
@@ -23,7 +23,7 @@ class Melli extends Driver
     protected $settings;
 
     /**
-     * Melli constructor.
+     * Sadad constructor.
      * Construct the class with the relevant settings.
      *
      * @param Invoice $invoice
@@ -139,7 +139,7 @@ class Melli extends Driver
      */
     public function createReceipt($referenceId)
     {
-        $receipt = new Receipt('melli', $referenceId);
+        $receipt = new Receipt('sadad', $referenceId);
 
         return $receipt;
     }

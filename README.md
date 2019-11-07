@@ -50,7 +50,6 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - [behpardakht (mellat)](http://www.behpardakht.com/) :heavy_check_mark:
 - [idpay](https://idpay.ir/) :heavy_check_mark:
 - [irankish](http://irankish.com/) :heavy_check_mark:
-- [melli](https://bmi.ir/) :heavy_check_mark:
 - [nextpay](https://nextpay.ir/) :heavy_check_mark:
 - [parsian](https://www.pec.ir/) :heavy_check_mark:
 - [pasargad](https://www.bpi.ir/) :heavy_check_mark:
@@ -58,6 +57,7 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - [payping](https://www.payping.ir/) :heavy_check_mark:
 - [paystar](http://paystar.ir/) :heavy_check_mark:
 - [poolam](https://poolam.ir/) :heavy_check_mark:
+- [sadad (melli)](https://sadadpsp.ir/) :heavy_check_mark:
 - [saderat](https://www.bsi.ir/) :heavy_check_mark:
 - [saman](https://www.sep.ir) :heavy_check_mark:
 - [yekpay](https://yekpay.com/) :heavy_check_mark:

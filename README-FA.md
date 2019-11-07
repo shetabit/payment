@@ -51,7 +51,6 @@
 - [به پرداخت ملت (بانک ملت)](http://www.behpardakht.com/) :heavy_check_mark:
 - [ایدی پی](https://idpay.ir/) :heavy_check_mark:
 - [ایران کیش](http://irankish.com/) :heavy_check_mark:
-- [بانک ملی](https://bmi.ir/) :heavy_check_mark:
 - [نکست پی](https://nextpay.ir/) :heavy_check_mark:
 - [پی ای ار](https://pay.ir/) :heavy_check_mark:
 - [بانک پارسیان](https://www.pec.ir/) :heavy_check_mark:
@@ -59,6 +58,7 @@
 - [پی پینگ](https://www.payping.ir/) :heavy_check_mark:
 - [پی استار](http://paystar.ir/) :heavy_check_mark:
 - [پولام](https://poolam.ir/) :heavy_check_mark:
+- [سداد (بانک ملی)](https://sadadpsp.ir/) :heavy_check_mark:
 - [بانک صادرات](https://www.bsi.ir) :heavy_check_mark:
 - [بانک سامان](https://www.sep.ir) :heavy_check_mark:
 - [یک پی](https://yekpay.com/) :heavy_check_mark:
