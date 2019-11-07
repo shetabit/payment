@@ -2,12 +2,20 @@
 
 namespace Shetabit\Payment\Drivers;
 
+use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
 use Shetabit\Payment\{Invoice, Receipt};
 
 class Sadad extends Driver
 {
+    /**
+     * Sadad Client.
+     *
+     * @var object
+     */
+    protected $client;
+
     /**
      * Invoice
      *
@@ -33,6 +41,7 @@ class Sadad extends Driver
     {
         $this->invoice($invoice);
         $this->settings = (object)$settings;
+        $this->client = new Client();
     }
 
     /**
@@ -41,34 +50,48 @@ class Sadad extends Driver
      * @return string
      *
      * @throws PurchaseFailedException
-     * @throws \SoapFault
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function purchase()
     {
-        $soap = new \SoapClient($this->settings->apiPurchaseUrl);
-        $response = $soap->bpPayRequest(
-            $this->preparePurchaseData(),
-            $this->settings->apiNamespaceUrl
+        $terminalId = $this->settings->terminalId;
+        $orderId = crc32($this->invoice->getUuid());
+        $amount = $this->invoice->getAmount() * 10; // convert to rial
+        $key = $this->settings->key;
+
+        $signData = $this->encrypt_pkcs7("$terminalId;$orderId;$amount", $key);
+
+        $data = array(
+            'MerchantId' => $this->settings->merchantId,
+            'ReturnUrl' => $this->settings->callbackUrl,
+            'LocalDateTime' => date("m/d/Y g:i:s a"),
+            'SignData' => $signData,
+            'TerminalId' => $terminalId,
+            'Amount' => $amount,
+            'OrderId' => $orderId,
         );
 
-        // fault has happened in bank gateway
-        if ($soap->fault) {
-            throw new PurchaseFailedException('an error has happened');
+        $response = $this
+            ->client
+            ->request(
+                'POST',
+                $this->settings->apiPurchaseUrl,
+                [
+                    "json" => $data,
+                    "headers" => [
+                        'Content-Type' => 'application/json',
+                    ],
+                    "http_errors" => false,
+                ]
+            );
+
+        $body = json_decode($response->getBody()->getContents(), true);
+
+        if ($body->ResCode!=0) {
+            throw new PurchaseFailedException($body->Description);
         }
 
-        // an error has happened
-        if ($error = $soap->getError()) {
-            throw new PurchaseFailedException($error);
-        }
-
-        $data = explode (',', $response);
-
-        // purchase was not successful
-        if ($data[0] != "0") {
-            throw new PurchaseFailedException($response);
-        }
-
-        $this->invoice->transactionId($data[1]);
+        $this->invoice->transactionId($body->Token);
 
         // return the transaction's id
         return $this->invoice->getTransactionId();
@@ -81,15 +104,11 @@ class Sadad extends Driver
      */
     public function pay()
     {
-        $payUrl = $this->settings->apiPaymentUrl;
+        $token = $this->invoice->getTransactionId();
+        $payUrl = $this->settings->apiPaymentUrl.'?Token='.$token;
 
-        return $this->redirectWithForm(
-            $payUrl,
-            [
-                'RefId' => $this->invoice->getTransactionId(),
-            ],
-            'POST'
-        );
+        // redirect using laravel logic
+        return redirect()->to($payUrl);
     }
 
     /**
@@ -98,36 +117,50 @@ class Sadad extends Driver
      * @return mixed|Receipt
      *
      * @throws InvalidPaymentException
-     * @throws \SoapFault
      */
     public function verify()
     {
-        $resCode =  request()->get('ResCode');
-        if ($resCode != '0') {
-            $message = $resCode ?? 'تراکنش نا موفق بوده است.';
+        $key = $this->settings->key;
+        $token = $this->invoice->getTransactionId() ?? request()->get('token');
+        $resCode = request()->get('ResCode');
+        $message = 'تراکنش نا موفق بود در صورت کسر مبلغ از حساب شما حداکثر پس از 72 ساعت مبلغ به حسابتان برمیگردد.';
+
+        if ($resCode==0) {
             throw new InvalidPaymentException($message);
         }
 
-        $data = $this->prepareVerificationData();
-        $soap = new \SoapClient($this->settings->apiVerificationUrl);
+        $data = array(
+            'Token' => $token,
+            'SignData' => $this->encrypt_pkcs7($token, $key)
+        );
 
-        // step1: verify request
-        $verifyResponse = $soap->bpVerifyRequest($data, $this->settings->apiNamespaceUrl);
-        if ($verifyResponse != 0) {
-            // rollback money and throw exception
-            $soap->bpReversalRequest($data, $this->settings->apiNamespaceUrl);
-            throw new InvalidPaymentException($verifyResponse ?? "خطا در عملیات وریفای تراکنش");
+        $response = $this
+            ->client
+            ->request(
+                'POST',
+                $this->settings->apiPurchaseUrl,
+                [
+                    "json" => $data,
+                    "headers" => [
+                        'Content-Type' => 'application/json',
+                    ],
+                    "http_errors" => false,
+                ]
+            );
+
+        $body = json_decode($response->getBody()->getContents(), true);
+
+        if ($body->ResCode == -1) {
+            throw new InvalidPaymentException($message);
         }
 
-        // step2: settle request
-        $settleResponse = $soap->bpSettleRequest($data, $this->settings->apiNamespaceUrl);
-        if ($settleResponse != 0) {
-            // rollback money and throw exception
-            $soap->bpReversalRequest($data, $this->settings->apiNamespaceUrl);
-            throw new InvalidPaymentException($settleResponse ?? "خطا در ثبت درخواست واریز وجه");
-        }
+        /**
+         * شماره سفارش : $orderId = request()->get('OrderId')
+         * شماره پیگیری : $body->SystemTraceNo
+         * شماره مرجع : $body->RetrievalRefNo
+         */
 
-        return $this->createReceipt($data['saleReferenceId']);
+        return $this->createReceipt($body->SystemTraceNo);
     }
 
     /**
@@ -145,52 +178,18 @@ class Sadad extends Driver
     }
 
     /**
-     * Prepare data for payment verification
+     * Create sign data(Tripledes(ECB,PKCS7))
      *
-     * @return array
-     */
-    public function prepareVerificationData()
-    {
-        $orderId = request()->get('SaleOrderId');
-        $verifySaleOrderId = request()->get('SaleOrderId');
-        $verifySaleReferenceId = request()->get('SaleReferenceId');
-
-        return array(
-            'terminalId' 		=> $this->settings->terminalId,
-            'userName' 			=> $this->settings->username,
-            'userPassword' 		=> $this->settings->password,
-            'orderId' 			=> $orderId,
-            'saleOrderId' 		=> $verifySaleOrderId,
-            'saleReferenceId' 	=> $verifySaleReferenceId
-        );
-    }
-
-    /**
-     * Prepare data for purchasing invoice
+     * @param $str
+     * @param $key
      *
-     * @return array
+     * @return string
      */
-    protected function preparePurchaseData()
+    public function encrypt_pkcs7($str, $key)
     {
-        if (!empty($this->invoice->getDetails()['description'])) {
-            $description = $this->invoice->getDetails()['description'];
-        } else {
-            $description = $this->settings->description;
-        }
+        $key = base64_decode($key);
+        $ciphertext = OpenSSL_encrypt($str,"DES-EDE3", $key, OPENSSL_RAW_DATA);
 
-        $payerId = $details['payerId'] ?? 0;
-
-        return array(
-            'terminalId' 		=> $this->settings->terminalId,
-            'userName' 			=> $this->settings->username,
-            'userPassword' 		=> $this->settings->password,
-            'callBackUrl' 		=> $this->settings->callbackUrl,
-            'amount' 			=> $this->invoice->getAmount() * 10, // convert to rial
-            'localDate' 		=> now()->format('Ymd'),
-            'localTime' 		=> now()->format('Gis'),
-            'orderId' 			=> crc32($this->invoice->getUuid()),
-            'additionalData' 	=> $description,
-            'payerId' 			=> $payerId
-        );
+        return base64_encode($ciphertext);
     }
 }

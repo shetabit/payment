@@ -2,20 +2,12 @@
 
 namespace Shetabit\Payment\Drivers;
 
-use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
 use Shetabit\Payment\{Invoice, Receipt};
 
 class Saderat extends Driver
 {
-    /**
-     * Saderat Client.
-     *
-     * @var object
-     */
-    protected $client;
-
     /**
      * Invoice
      *
@@ -41,7 +33,6 @@ class Saderat extends Driver
     {
         $this->invoice($invoice);
         $this->settings = (object)$settings;
-        $this->client = new Client();
     }
 
     /**
@@ -49,7 +40,7 @@ class Saderat extends Driver
      *
      * @return string
      */
-    public function purchase() : string
+    public function purchase()
     {
         if (!empty($this->invoice->getDetails()['description'])) {
             $description = $this->invoice->getDetails()['description'];
@@ -58,26 +49,18 @@ class Saderat extends Driver
         }
 
         $data = array(
-            'MerchantID' => $this->settings->merchantId,
-            'Amount' => $this->invoice->getAmount(),
-            'CallbackURL' => $this->settings->callbackUrl,
-            'Description' => $description,
-            'AdditionalData' => $this->invoice->getDetails()
+            'Amount' => $this->invoice->getAmount() * 10, // convert to rial
+            'TerminalID' => $this->settings->terminalId,
+            'callbackURL' => $this->settings->callbackUrl,
+            'InvoiceID' => crc32($this->invoice->getUuid()),
+            'uuid' => $this->invoice->getUuid(), // we add it to make transactionId to be unique
         );
 
-        $response = $this->client->request(
-            'POST',
-            $this->getPurchaseUrl(),
-            ["json" => $data]
-        );
-        $body = json_decode($response->getBody()->getContents(), true);
+        // convert data to base64 so we can transfer it as transactionId
+        $json = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $transactionId = base64_encode($json);
 
-        if (empty($body['Authority'])) {
-            // some error has happened
-            throw new PurchaseFailedException('an error has happened');
-        } else {
-            $this->invoice->transactionId($body['Authority']);
-        }
+        $this->invoice->transactionId($transactionId);
 
         // return the transaction's id
         return $this->invoice->getTransactionId();
@@ -90,47 +73,89 @@ class Saderat extends Driver
      */
     public function pay()
     {
-        $transactionId = $this->invoice->getTransactionId();
-        $paymentUrl = $this->getPaymentUrl();
+        $payUrl = $this->settings->apiPaymentUrl;
 
-        if (strtolower($this->getMode()) == 'saderat') {
-            $payUrl = str_replace(':authority', $transactionId, $paymentUrl);
-        } else {
-            $payUrl = $paymentUrl . $transactionId;
+        $json = base64_decode($this->invoice->getTransactionId());
+        $data = json_decode($json, true);
+
+        if (!empty($data['uuid'])) { // we dont need uuid any more
+           unset($data['uuid']);
         }
 
-        // redirect using laravel logic
-        return redirect()->to($payUrl);
+        return $this->redirectWithForm($payUrl, $data, 'POST');
     }
 
     /**
      * Verify payment
      *
      * @return mixed|void
-     *
      * @throws InvalidPaymentException
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function verify()
     {
-        $data = [
-            'MerchantID' => $this->settings->merchantId,
-            'Authority' => $this->invoice->getTransactionId(),
-            'Amount' => $this->invoice->getAmount(),
-        ];
+        $digitalReceipt = request()->get('digitalreceipt');
+        $terminalId = $this->settings->terminalId ?? request()->get('terminalid');
+        $rrn = request()->get('rrn');
 
-        $response = $this->client->request(
-            'POST',
-            $this->getVerificationUrl(),
-            ['json' => $data]
-        );
-        $body = json_decode($response->getBody()->getContents(), true);
+        /**
+         * رسید دیجیتال
+         * $digitalreceipt
+         * شماره ترمینال
+         * $terminalid
+         * شماره ارجاع
+         * $rrn
+         **/
 
-        if (!isset($body['Status']) || $body['Status'] != 100) {
-            $this->notVerified($body['Status']);
+        if ( $digitalReceipt && $terminalId != "") {
+            $digitalreceipt = test_input($_POST["digitalreceipt"]);
+            $terminalid = test_input($_POST["terminalid"]);
+
+            $data = array(
+                "digitalreceipt"=>$digitalreceipt,
+                "Tid"=>$terminalid,
+            );
+
+            $dataQuery = http_build_query($data);
+
+            if (request()->get('inject')) {
+                $url="https://mabna.shaparak.ir:8081/V1/PeymentApi/RollBack";
+                $msg="برگشت تراکنش :";
+            } else {
+                $url="https://mabna.shaparak.ir:8081/V1/PeymentApi/Advice";
+                $msg="تایید تراکنش :";
+            }
         }
 
-        return $this->createReceipt($body['RefID']);
+$Ipg_Array = IpgRequest('POST',$dataQuery,$url);
+$decode_Ipg_Array=json_decode($Ipg_Array);
+
+$status=$decode_Ipg_Array->Status;
+$ReturnId=$decode_Ipg_Array->ReturnId;
+$message=$decode_Ipg_Array->Message;
+
+echo "<br><br>".$msg."<br>";
+echo "<br>status : <br>";
+echo $status."<br>";
+echo "<br>ReturnId : <br>";
+echo $ReturnId."<br>";
+echo "<br>message : <br>";
+echo $message."<br><br>";
+
+
+				<form method="POST" action="">
+						<div>
+							<input type="hidden" name="digitalreceipt" value="<?php echo $digitalreceipt; ?>" />
+						</div>
+						<div>
+							<input type="hidden" name="terminalid" value="<?php echo $terminalid; ?>" />
+						</div>
+							<label>&nbsp;</label>
+							<input type="submit" name="inject" value="برگشت تراکنش" class="submit" />
+						</div>
+
+				</form>
+
+        return $this->createReceipt($data['referenceNumber']);
     }
 
     /**
@@ -142,123 +167,8 @@ class Saderat extends Driver
      */
     public function createReceipt($referenceId)
     {
-        $receipt = new Receipt('zarinpal', $referenceId);
+        $receipt = new Receipt('saderat', $referenceId);
 
         return $receipt;
-    }
-
-    /**
-     * Trigger an exception
-     *
-     * @param $status
-     *
-     * @throws InvalidPaymentException
-     */
-    private function notVerified($status)
-    {
-        $translations = array(
-            "-1" => "اطلاعات ارسال شده ناقص است.",
-            "-2" => "IP و يا مرچنت كد پذيرنده صحيح نيست",
-            "-3" => "با توجه به محدوديت هاي شاپرك امكان پرداخت با رقم درخواست شده ميسر نمي باشد",
-            "-4" => "سطح تاييد پذيرنده پايين تر از سطح نقره اي است.",
-            "-11" => "درخواست مورد نظر يافت نشد.",
-            "-12" => "امكان ويرايش درخواست ميسر نمي باشد.",
-            "-21" => "هيچ نوع عمليات مالي براي اين تراكنش يافت نشد",
-            "-22" => "تراكنش نا موفق ميباشد",
-            "-33" => "رقم تراكنش با رقم پرداخت شده مطابقت ندارد",
-            "-34" => "سقف تقسيم تراكنش از لحاظ تعداد يا رقم عبور نموده است",
-            "-40" => "اجازه دسترسي به متد مربوطه وجود ندارد.",
-            "-41" => "اطلاعات ارسال شده مربوط به AdditionalData غيرمعتبر ميباشد.",
-            "-42" => "مدت زمان معتبر طول عمر شناسه پرداخت بايد بين 30 دقيه تا 45 روز مي باشد.",
-            "-54" => "درخواست مورد نظر آرشيو شده است",
-            "101" => "عمليات پرداخت موفق بوده و قبلا PaymentVerification تراكنش انجام شده است.",
-        );
-        if (array_key_exists($status, $translations)) {
-            throw new InvalidPaymentException($translations[$status]);
-        } else {
-            throw new InvalidPaymentException('خطای ناشناخته ای رخ داده است.');
-        }
-    }
-
-    /**
-     * Retrieve purchase url
-     *
-     * @return string
-     */
-    protected function getPurchaseUrl() : string
-    {
-        $mode = $this->getMode();
-
-        switch($mode) {
-            case 'sandbox':
-                $url = $this->settings->sandboxApiPurchaseUrl;
-                break;
-            case 'zaringate':
-                $url = $this->settings->zaringateApiPurchaseUrl;
-                break;
-            default: // default: normal
-                $url = $this->settings->apiPurchaseUrl;
-                break;
-        }
-
-        return $url;
-    }
-
-    /**
-     * Retrieve Payment url
-     *
-     * @return string
-     */
-    protected function getPaymentUrl() : string
-    {
-        $mode = $this->getMode();
-
-        switch($mode) {
-            case 'sandbox':
-                $url = $this->settings->sandboxApiPaymentUrl;
-                break;
-            case 'zaringate':
-                $url = $this->settings->zaringateApiPaymentUrl;
-                break;
-            default: // default: normal
-                $url = $this->settings->apiPaymentUrl;
-                break;
-        }
-
-        return $url;
-    }
-
-    /**
-     * Retrieve verification url
-     *
-     * @return string
-     */
-    protected function getVerificationUrl() : string
-    {
-        $mode = $this->getMode();
-
-        switch($mode) {
-            case 'sandbox':
-                $url = $this->settings->sandboxApiVerificationUrl;
-                break;
-            case 'zaringate':
-                $url = $this->settings->zaringateApiVerificationUrl;
-                break;
-            default: // default: normal
-                $url = $this->settings->apiVerificationUrl;
-                break;
-        }
-
-        return $url;
-    }
-
-    /**
-     * Retrieve payment mode.
-     *
-     * @return string
-     */
-    protected function getMode() : string
-    {
-        return strtolower($this->settings->mode);
     }
 }
