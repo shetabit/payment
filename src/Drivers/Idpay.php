@@ -163,7 +163,7 @@ class Idpay extends Driver
      */
     public function createReceipt($referenceId)
     {
-        $receipt = new Receipt('behpardakht', $referenceId);
+        $receipt = new Receipt('idpay', $referenceId);
 
         return $receipt;
     }

@@ -66,8 +66,8 @@ class Irankish extends Driver
         if ($response->MakeTokenResult->result != false) {
             $this->invoice->transactionId($response->MakeTokenResult->token);
         } else {
-            // some error has happened
-            throw new PurchaseFailedException('an error has happened');
+            // error has happened
+            throw new PurchaseFailedException('خطا در هنگام درخواست برای پرداخت رخ داده است.');
         }
 
         // return the transaction's id

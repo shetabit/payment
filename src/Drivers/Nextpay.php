@@ -72,7 +72,7 @@ class Nextpay extends Driver
         $body = json_decode($response->getBody()->getContents(), true);
 
         if (empty($body['code']) || $body['code'] != -1) {
-            // some error has happened
+            // error has happened
             throw new PurchaseFailedException($body['id']);
         } else {
             $this->invoice->transactionId($body['trans_id']);
@@ -104,11 +104,13 @@ class Nextpay extends Driver
      */
     public function verify()
     {
+        $transactionId = $this->invoice->getTransactionId() ?? request()->input('trans_id');
+
         $data = [
             'api_key' => $this->settings->merchantId,
             'order_id' => request()->input('order_id'),
             'amount' => $this->invoice->getAmount(),
-            'trans_id' => $this->invoice->getTransactionId() ?? request()->input('trans_id'),
+            'trans_id' => $transactionId,
         ];
 
         $response = $this
@@ -129,6 +131,22 @@ class Nextpay extends Driver
 
             $this->notVerified($message);
         }
+
+        return $this->createReceipt($transactionId);
+    }
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('nextpay', $referenceId);
+
+        return $receipt;
     }
 
     /**
