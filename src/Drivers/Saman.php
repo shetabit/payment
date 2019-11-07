@@ -92,7 +92,6 @@ class Saman extends Driver
     public function getPayUrl()
     {
         throw new \Exception("This method not supported in this driver", 1);
-
     }
 
     /**
