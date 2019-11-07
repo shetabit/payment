@@ -136,7 +136,7 @@ Then fill the credentials for that gateway in the drivers array.
 
 ## How to use
 
-your `Invoice` holds your payment details, so we talk about `Invoice` class at first. 
+your `Invoice` holds your payment details, so we talk about `Invoice` class at first.
 
 #### Working with invoices
 
@@ -159,7 +159,7 @@ $invoice->amount(1000);
 # add invoice details : we have 4 syntax
 // 1
 $invoice->detail(['detailName' => 'your detail goes here']);
-// 2 
+// 2
 $invoice->detail('detailName','your detail goes here');
 // 3
 $invoice->detail(['name1' => 'detail1','name2' => 'detail2']);
@@ -173,7 +173,7 @@ available methods:
 - `uuid` : set the invoice's unique id
 - `getUuid` : retriev the invoice's current unique id
 - `detail` : attach some custom details into invoice
-- `getDetails` : retrieve all custom details 
+- `getDetails` : retrieve all custom details
 - `amount` : set the invoice's amount
 - `getAmount` : retrieve invoice's amount
 - `transactionId` : set invoice's payment transaction id
@@ -209,29 +209,63 @@ Payment::purchase($invoice, function($driver, $transactionId) {
 
 after purchasing the invoice, we can redirect user to the bank's payment page:
 
-```php
-# On the top of the file.
-use Shetabit\Payment\Invoice;
-use Shetabit\Payment\Facade\Payment;
-...
 
-# create new invoice
-$invoice = (new Invoice)->amount(1000);
-# purchase and pay the given invoice
-// you should use return statement to redirect user to the bank's page.
-return Payment::purchase($invoice, function($driver, $transactionId) {
-    // store transactionId in database, we need it to verify payment in future.
-})->pay();
+- **pay method** automatically redirect to gateway.
 
-# do all things together a single line
-return Payment::purchase(
-    (new Invoice)->amount(1000), 
-    function($driver, $transactionId) {
-    	// store transactionId in database.
-        // we need the transactionId to verify payment in future
-	}
-)->pay();
-```
+	This method usually use for **View** base applications.
+	```php
+	# On the top of the file.
+	use Shetabit\Payment\Invoice;
+	use Shetabit\Payment\Facade\Payment;
+	...
+
+	# create new invoice
+	$invoice = (new Invoice)->amount(1000);
+	# purchase and pay the given invoice
+	// you should use return statement to redirect user to the bank's page.
+	return Payment::purchase($invoice, function($driver, $transactionId) {
+		// store transactionId in database, we need it to verify payment in future.
+	})->pay();
+
+	# do all things together a single line
+	return Payment::purchase(
+		(new Invoice)->amount(1000),
+		function($driver, $transactionId) {
+			// store transactionId in database.
+			// we need the transactionId to verify payment in future
+		}
+	)->pay();
+	```
+
+- **getPayUrl method** return just payment url.
+
+	This method usually use for **API** base applications.
+	this method not support these drivers yet: `Saman`, `Irankish`
+
+	```php
+	# On the top of the file.
+	use Shetabit\Payment\Invoice;
+	use Shetabit\Payment\Facade\Payment;
+	...
+
+	# create new invoice
+	$invoice = (new Invoice)->amount(1000);
+	# purchase and pay the given invoice
+	// you should use return statement to redirect user to the bank's page.
+	return Payment::purchase($invoice, function($driver, $transactionId) {
+		// store transactionId in database, we need it to verify payment in future.
+	})->getPayUrl();
+
+	# do all things together a single line
+	return Payment::purchase(
+		(new Invoice)->amount(1000),
+		function($driver, $transactionId) {
+			// store transactionId in database.
+			// we need the transactionId to verify payment in future
+		}
+	)->getPayUrl();
+	```
+
 
 #### Verify payment
 
@@ -268,13 +302,13 @@ try {
   use Shetabit\Payment\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
-  
+
   # create new invoice
   $invoice = (new Invoice)->amount(1000);
-  
+
   # purchase the given invoice
   Payment::callbackUrl($url)->purchase(
-      $invoice, 
+      $invoice,
       function($driver, $transactionId) {
       // we can store $transactionId in database
   	}
@@ -288,10 +322,10 @@ try {
   use Shetabit\Payment\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
-  
+
   # purchase (we set invoice to null)
   Payment::callbackUrl($url)->amount(1000)->purchase(
-      null, 
+      null,
       function($driver, $transactionId) {
       // we can store $transactionId in database
   	}
@@ -305,19 +339,19 @@ try {
   use Shetabit\Payment\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
-  
+
   # create new invoice
   $invoice = (new Invoice)->amount(1000);
-  
+
   # purchase the given invoice
   Payment::via('driverName')->purchase(
-      $invoice, 
+      $invoice,
       function($driver, $transactionId) {
       // we can store $transactionId in database
   	}
   );
   ```
-  
+
 - ###### `config` : set driver configs on the fly
 
   ```php
@@ -325,10 +359,10 @@ try {
   use Shetabit\Payment\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
-  
+
   # create new invoice
   $invoice = (new Invoice)->amount(1000);
-  
+
   # purchase the given invoice with custom driver configs
   Payment::config('mechandId', 'your mechand id')->purchase(
       $invoice,
@@ -387,12 +421,12 @@ class MyDriver extends Driver
     public function purchase() {
         // request for a payment transaction id
         ...
-            
+
         $this->invoice->transactionId($transId);
-        
+
         return $transId;
     }
-    
+
     // redirect into bank using transactionId, to complete the payment
     public function pay() {
         // its better to set bankApiUrl in config/payment.php and retrieve it here:
@@ -404,15 +438,15 @@ class MyDriver extends Driver
         // redirect to the bank
         return redirect()->to($payUrl);
     }
-    
+
     // verify the payment (we must verify to insure that user has paid the invoice)
     public function verify() {
         $verifyPayment = $this->settings->verifyApiUrl;
-        
+
         $verifyUrl = $verifyPayment.$this->invoice->getTransactionId();
-        
+
         ...
-        
+
         /**
 			then we send a request to $verifyUrl and if payment is not
 			we throw an InvalidPaymentException with a suitable
