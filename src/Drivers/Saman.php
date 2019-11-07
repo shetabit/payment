@@ -105,6 +105,22 @@ class Saman extends Driver
         if ($status < 0) {
             $this->notVerified($status);
         }
+
+        return $this->createReceipt($data['RefNum']);
+    }
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('saman', $referenceId);
+
+        return $receipt;
     }
 
     public function purchaseFailed($status)

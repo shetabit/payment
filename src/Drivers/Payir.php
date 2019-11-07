@@ -136,6 +136,23 @@ class Payir extends Driver
         if ($body['status'] != 1) {
             $this->notVerified($body['errorCode']);
         }
+
+        return $this->createReceipt($body['transId']);
+    }
+
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('payir', $referenceId);
+
+        return $receipt;
     }
 
     /**

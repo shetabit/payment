@@ -130,9 +130,24 @@ class Yekpay extends Driver
 
         if ($response->Code != 100) {
             $this->notVerified($transaction->message ?? 'payment failed');
-        } else {
-            //"Success Payment with reference: $response->Reference and message: $transaction->message";
         }
+
+        //"Success Payment with reference: $response->Reference and message: $transaction->message";
+        return $this->createReceipt($response->Reference);
+    }
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('yekpay', $referenceId);
+
+        return $receipt;
     }
 
     /**

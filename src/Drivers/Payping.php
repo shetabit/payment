@@ -93,10 +93,10 @@ class Payping extends Driver
 
         if (!empty($body['Error'])) {
             // some error has happened
-            throw new PurchaseFailedException($body['id']);
-        } else {
-            $this->invoice->transactionId($body['code']);
+            throw new PurchaseFailedException($body['Error']);
         }
+
+        $this->invoice->transactionId($body['code']);
 
         // return the transaction's id
         return $this->invoice->getTransactionId();
@@ -146,9 +146,25 @@ class Payping extends Driver
 
         $body = json_decode($responseBody, true);
 
-        if (!empty($body['amount']) || !empty($body['refid']) || !empty($body['error'])) {
+        if (empty($body['amount']) || empty($body['refid']) || !empty($body['error'])) {
             $this->notVerified($body);
         }
+
+        return $this->createReceipt($body['refid']);
+    }
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('payping', $referenceId);
+
+        return $receipt;
     }
 
     /**

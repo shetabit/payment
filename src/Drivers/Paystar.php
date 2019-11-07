@@ -48,6 +48,7 @@ class Paystar extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
      * @throws InvalidPaymentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -79,7 +80,8 @@ class Paystar extends Driver
 
         if (is_numeric($body)) {
             // some error has happened
-            throw new PurchaseFailedException($body);
+            $message = 'خطا در هنگام درخواست برای پرداخت با کد '.$body.' رخ داده است.';
+            throw new PurchaseFailedException($message);
         } else {
             $this->invoice->transactionId($body);
         }
@@ -111,10 +113,12 @@ class Paystar extends Driver
      */
     public function verify()
     {
+        $transId = $this->invoice->getTransactionId() ?? request()->input('transid');
+
         $data = [
             'amount' => $this->invoice->getAmount(),
             'pin' => $this->settings->merchantId,
-            'transid' => $this->invoice->getTransactionId() ?? request()->input('transid'),
+            'transid' => $transId,
         ];
 
         $response = $this->client->request(
@@ -130,6 +134,22 @@ class Paystar extends Driver
         if ($body != 1) {
             $this->triggerError($body);
         }
+
+        $this->createReceipt($transId);
+    }
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('paystar', $referenceId);
+
+        return $receipt;
     }
 
     /**
