@@ -48,7 +48,7 @@ class Invoice
     /**
      * Set invoice uuid
      *
-     * @param $uuid |null
+     * @param $uuid|null
      *
      * @throws \Exception
      */
