@@ -4,8 +4,11 @@ namespace Shetabit\Payment\Drivers\Nextpay;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
+use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\Exceptions\PurchaseFailedException;
+use Shetabit\Payment\Contracts\ReceiptInterface;
+use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Receipt;
 
 class Nextpay extends Driver
 {

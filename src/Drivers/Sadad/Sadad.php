@@ -4,8 +4,11 @@ namespace Shetabit\Payment\Drivers\Sadad;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
+use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\Exceptions\PurchaseFailedException;
+use Shetabit\Payment\Contracts\ReceiptInterface;
+use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Receipt;
 
 class Sadad extends Driver
 {
@@ -189,7 +192,7 @@ class Sadad extends Driver
     public function encrypt_pkcs7($str, $key)
     {
         $key = base64_decode($key);
-        $ciphertext = OpenSSL_encrypt($str,"DES-EDE3", $key, OPENSSL_RAW_DATA);
+        $ciphertext = OpenSSL_encrypt($str, "DES-EDE3", $key, OPENSSL_RAW_DATA);
 
         return base64_encode($ciphertext);
     }

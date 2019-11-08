@@ -3,8 +3,11 @@
 namespace Shetabit\Payment\Drivers\Behpardakht;
 
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
+use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\Exceptions\PurchaseFailedException;
+use Shetabit\Payment\Contracts\ReceiptInterface;
+use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Receipt;
 
 class Behpardakht extends Driver
 {
@@ -61,7 +64,7 @@ class Behpardakht extends Driver
             throw new PurchaseFailedException($error);
         }
 
-        $data = explode (',', $response);
+        $data = explode(',', $response);
 
         // purchase was not successful
         if ($data[0] != "0") {
