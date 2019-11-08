@@ -120,6 +120,24 @@ class Asanpardakht extends Driver
         $params = $this->prepareVerificationData($payGateTranID);
 
         // step1: verify
+        $this->verifyStep($client, $params);
+
+        // step2: settle
+        $this->settleStep($client, $params);
+
+        return $this->createReceipt($payGateTranID);
+    }
+
+    /**
+     * payment verification step
+     *
+     * @param $client
+     * @param $params
+     *
+     * @throws InvalidPaymentException
+     */
+    protected function verifyStep($client, $params)
+    {
         $result = $client->RequestVerification($params);
         if (! $result) {
             throw new InvalidPaymentException("خطای فراخوانی متد وريفای رخ داده است.");
@@ -130,8 +148,18 @@ class Asanpardakht extends Driver
             $message = "خطای شماره: ".$result." در هنگام Verify";
             throw  new InvalidPaymentException($message);
         }
+    }
 
-        // step2: settle
+    /**
+     * payment settlement step.
+     *
+     * @param $client
+     * @param $params
+     *
+     * @throws InvalidPaymentException
+     */
+    protected function settleStep($client, $params)
+    {
         $result = $client->RequestReconciliation($params);
         if (! $result) {
             throw new InvalidPaymentException('خطای فراخوانی متد تسويه رخ داده است.');
@@ -142,8 +170,6 @@ class Asanpardakht extends Driver
             $message = "خطای شماره: ".$result." در هنگام Settlement";
             throw new InvalidPaymentException($message);
         }
-
-        return $this->createReceipt($payGateTranID);
     }
 
     /**
@@ -153,7 +179,7 @@ class Asanpardakht extends Driver
      *
      * @return Receipt
      */
-    public function createReceipt($referenceId)
+    protected function createReceipt($referenceId)
     {
         $receipt = new Receipt('asanpardakht', $referenceId);
 
@@ -169,7 +195,7 @@ class Asanpardakht extends Driver
      *
      * @throws \SoapFault
      */
-    public function prepareVerificationData($payGateTranID)
+    protected function prepareVerificationData($payGateTranID)
     {
         $credentials = array(
             $this->settings->username,
