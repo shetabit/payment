@@ -95,7 +95,7 @@ class Payir extends Driver
             $this->invoice->transactionId($body['token']);
         } else {
             // some error has happened
-            throw new PurchaseFailedException($body['id']);
+            throw new PurchaseFailedException($body['errorMessage']);
         }
 
         // return the transaction's id

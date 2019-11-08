@@ -49,19 +49,11 @@ class Behpardakht extends Driver
     public function purchase()
     {
         $soap = new \SoapClient($this->settings->apiPurchaseUrl);
-        $response = $soap->bpPayRequest(
-            $this->preparePurchaseData(),
-            $this->settings->apiNamespaceUrl
-        );
+        $response = $soap->bpPayRequest($this->preparePurchaseData());
 
         // fault has happened in bank gateway
-        if ($soap->fault) {
-            throw new PurchaseFailedException('an error has happened');
-        }
-
-        // an error has happened
-        if ($error = $soap->getError()) {
-            throw new PurchaseFailedException($error);
+        if ($response->return == 21) {
+            throw new PurchaseFailedException('پذیرنده معتبر نیست.');
         }
 
         $data = explode(',', $response);

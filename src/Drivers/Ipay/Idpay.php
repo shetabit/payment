@@ -90,7 +90,7 @@ class Idpay extends Driver
 
         if (empty($body['id'])) {
             // error has happened
-            $message = 'خطا در هنگام درخواست برای پرداخت با کد '.$body['id'].' رخ داده است.';
+            $message = $body['error_message'] ?? 'خطا در هنگام درخواست برای پرداخت رخ داده است.';
             throw new PurchaseFailedException($message);
         }
 

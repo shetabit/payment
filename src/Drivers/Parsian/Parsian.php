@@ -50,22 +50,21 @@ class Parsian extends Driver
     {
         $soap = new \SoapClient($this->settings->apiPurchaseUrl);
         $response = $soap->SalePaymentRequest(
-            $this->preparePurchaseData(),
-            $this->settings->apiNamespaceUrl
+            ['requestData' => $this->preparePurchaseData()]
         );
 
         // no response from bank
-        if (empty($response['SalePaymentRequestResult'])) {
+        if (empty($response->SalePaymentRequestResult)) {
             throw new PurchaseFailedException('bank gateway not response');
         }
 
-        $result = $response['SalePaymentRequestResult'];
+        $result = $response->SalePaymentRequestResult;
 
-        if (isset($result['Status']) && $result['Status'] == 0 && !empty($result['Token'])) {
-            $this->invoice->transactionId($result['Token']);
+        if (isset($result->Status) && $result->Status == 0 && !empty($result->Token)) {
+            $this->invoice->transactionId($result->Token);
         } else {
             // an error has happened
-            throw new PurchaseFailedException($result['Status']);
+            throw new PurchaseFailedException($result->Message);
         }
 
         // return the transaction's id
@@ -109,19 +108,19 @@ class Parsian extends Driver
         $soap = new \SoapClient($this->settings->apiVerificationUrl);
 
         $response = $soap->ConfirmPayment(['requestData' => $data]);
-        if (empty($response['ConfirmPaymentResult'])) {
+        if (empty($response->ConfirmPaymentResult)) {
             throw new InvalidPaymentException('از سمت بانک پاسخی دریافت نشد.');
         }
-        $result = $response['ConfirmPaymentResult'];
+        $result = $response->ConfirmPaymentResult;
 
-        $hasWrongStatus = (!isset($result['Status']) || $result['Status'] != 0);
-        $hasWrongRRN = (!isset($result['RRN']) || $result['RRN'] <= 0);
+        $hasWrongStatus = (!isset($result->Status) || $result->Status != 0);
+        $hasWrongRRN = (!isset($result->RRN) || $result->RRN <= 0);
         if ($hasWrongStatus || $hasWrongRRN) {
-            $message = 'خطا از سمت بانک با کد '.$result['Status'].' رخ داده است.';
+            $message = 'خطا از سمت بانک با کد '.$result->Status.' رخ داده است.';
             throw new InvalidPaymentException($message);
         }
 
-        return $this->createReceipt($result['RRN']);
+        return $this->createReceipt($result->RRN);
     }
 
     /**
@@ -148,7 +147,7 @@ class Parsian extends Driver
         $transactionId = $this->invoice->getTransactionId() ?? request()->get('Token');
 
         return array(
-            'LoginAccount' 		=> $this->settings->loginAccount,
+            'LoginAccount' 		=> $this->settings->merchantId,
             'Token' 		=> $transactionId,
         );
     }
@@ -167,7 +166,7 @@ class Parsian extends Driver
         }
 
         return array(
-            'LoginAccount' 		=> $this->settings->loginAccount,
+            'LoginAccount' 		=> $this->settings->merchantId,
             'Amount' 			=> $this->invoice->getAmount() * 10, // convert to rial
             'OrderId' 			=> crc32($this->invoice->getUuid()),
             'CallBackUrl' 		=> $this->settings->callbackUrl,

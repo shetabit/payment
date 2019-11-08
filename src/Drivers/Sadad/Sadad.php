@@ -88,9 +88,11 @@ class Sadad extends Driver
                 ]
             );
 
-        $body = json_decode($response->getBody()->getContents(), true);
+        $body = @json_decode($response->getBody()->getContents(), true);
 
-        if ($body->ResCode != 0) {
+        if (empty($body)) {
+            throw new PurchaseFailedException('دسترسی به صفحه مورد نظر امکان پذیر نمی باشد.');
+        } else if ($body->ResCode != 0) {
             throw new PurchaseFailedException($body->Description);
         }
 

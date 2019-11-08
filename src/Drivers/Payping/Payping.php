@@ -131,9 +131,10 @@ class Payping extends Driver
      */
     public function verify() : ReceiptInterface
     {
+        $refId = request()->input('refid');
         $data = [
             'amount' => $this->invoice->getAmount(),
-            'refId'  => request()->input('refid'),
+            'refId'  => $refId,
         ];
 
         $response = $this->client->request(
@@ -150,14 +151,15 @@ class Payping extends Driver
         );
 
         $responseBody = mb_strtolower($response->getBody()->getContents());
+        dd($responseBody);
 
-        $body = json_decode($responseBody, true);
+        $body = @json_decode($responseBody, true);
 
-        if (empty($body['amount']) || empty($body['refid']) || !empty($body['error'])) {
+        if (!empty($body['amount']) || !empty($body['refid']) || !empty($body['error'])) {
             $this->notVerified($body);
         }
 
-        return $this->createReceipt($body['refid']);
+        return $this->createReceipt($refId);
     }
 
     /**

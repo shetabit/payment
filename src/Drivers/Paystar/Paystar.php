@@ -83,8 +83,7 @@ class Paystar extends Driver
 
         if (is_numeric($body)) {
             // some error has happened
-            $message = 'خطا در هنگام درخواست برای پرداخت با کد '.$body.' رخ داده است.';
-            throw new PurchaseFailedException($message);
+            throw new PurchaseFailedException($this->translateStatus($body));
         } else {
             $this->invoice->transactionId($body);
         }
@@ -136,10 +135,10 @@ class Paystar extends Driver
         $body = $response->getBody()->getContents();
 
         if ($body != 1) {
-            $this->triggerError($body);
+            throw new InvalidPaymentException($this->translateStatus($body));
         }
 
-        $this->createReceipt($transId);
+        return $this->createReceipt($transId);
     }
 
     /**
@@ -161,9 +160,9 @@ class Paystar extends Driver
      *
      * @param $status
      *
-     * @throws InvalidPaymentException
+     * @return mixed|string
      */
-    private function triggerError($status)
+    private function translateStatus($status)
     {
         $status = (string) $status;
 
@@ -184,10 +183,8 @@ class Paystar extends Driver
             "-14" => "آیپی مشتری ارسال نشده است.",
         );
 
-        if (array_key_exists($status, $translations)) {
-            throw new InvalidPaymentException($translations[$status]);
-        } else {
-            throw new InvalidPaymentException('خطای ناشناخته ای رخ داده است.');
-        }
+        $unknownError = 'خطای ناشناخته رخ داده است.';
+
+        return array_key_exists($status, $translations) ? $translations[$status] : $unknownError;
     }
 }
