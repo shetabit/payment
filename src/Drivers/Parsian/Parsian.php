@@ -75,7 +75,7 @@ class Parsian extends Driver
     /**
      * Pay the Invoice
      *
-     * @return \Illuminate\Http\RedirectResponse|mixed
+     * @return mixed|string
      */
     public function pay()
     {
@@ -83,9 +83,7 @@ class Parsian extends Driver
 
         return $this->redirectWithForm(
             $payUrl,
-            [
-                'RefId' => $this->invoice->getTransactionId(),
-            ],
+            ['RefId' => $this->invoice->getTransactionId()],
             'POST'
         );
     }
@@ -102,7 +100,7 @@ class Parsian extends Driver
     {
         $status = request()->get('status');
         $token = request()->get('Token');
-        $rrn = request()->get('RRN');
+        // $rrn = request()->get('RRN');
 
         if ($status != 0 || empty($token)) {
             throw new InvalidPaymentException('تراکنش توسط کاربر کنسل شده است.');
@@ -112,14 +110,15 @@ class Parsian extends Driver
         $soap = new \SoapClient($this->settings->apiVerificationUrl);
 
         $response = $soap->ConfirmPayment(['requestData' => $data]);
-
         if (empty($response['ConfirmPaymentResult'])) {
             throw new InvalidPaymentException('از سمت بانک پاسخی دریافت نشد.');
         }
 
         $result = $response['ConfirmPaymentResult'];
+        $hasBankError =
+            (!isset($result['Status']) || $result['Status'] != 0) || (!isset($result['RRN']) || $result['RRN'] <= 0);
 
-        if (!isset($result['Status']) || $result['Status'] != 0 || !isset($result['RRN']) || $result['RRN'] <= 0) {
+        if ($hasBankError) {
             $message = 'خطا از سمت بانک با کد ' . $result['Status'] . ' رخ داده است.';
             throw new InvalidPaymentException($message);
         }
