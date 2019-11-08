@@ -43,7 +43,7 @@ class Zarinpal extends Driver
     public function __construct(Invoice $invoice, $settings)
     {
         $this->invoice($invoice);
-        $this->settings = (object)$settings;
+        $this->settings = (object) $settings;
         $this->client = new Client();
     }
 
@@ -99,7 +99,7 @@ class Zarinpal extends Driver
         if (strtolower($this->getMode()) == 'zaringate') {
             $payUrl = str_replace(':authority', $transactionId, $paymentUrl);
         } else {
-            $payUrl = $paymentUrl . $transactionId;
+            $payUrl = $paymentUrl.$transactionId;
         }
 
         // redirect using laravel logic

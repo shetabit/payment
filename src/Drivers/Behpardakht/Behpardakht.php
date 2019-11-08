@@ -35,7 +35,7 @@ class Behpardakht extends Driver
     public function __construct(Invoice $invoice, $settings)
     {
         $this->invoice($invoice);
-        $this->settings = (object)$settings;
+        $this->settings = (object) $settings;
     }
 
     /**
@@ -105,7 +105,7 @@ class Behpardakht extends Driver
      */
     public function verify() : ReceiptInterface
     {
-        $resCode =  request()->get('ResCode');
+        $resCode = request()->get('ResCode');
         if ($resCode != '0') {
             $message = $resCode ?? 'تراکنش نا موفق بوده است.';
             throw new InvalidPaymentException($message);

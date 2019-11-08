@@ -100,8 +100,8 @@ class Paystar extends Driver
      */
     public function pay()
     {
-        $apiUrl =  $this->settings->apiPaymentUrl;
-        $payUrl = $apiUrl . $this->invoice->getTransactionId();
+        $apiUrl = $this->settings->apiPaymentUrl;
+        $payUrl = $apiUrl.$this->invoice->getTransactionId();
 
         // redirect using laravel logic
         return redirect()->to($payUrl);

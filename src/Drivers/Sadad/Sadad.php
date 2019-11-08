@@ -43,7 +43,7 @@ class Sadad extends Driver
     public function __construct(Invoice $invoice, $settings)
     {
         $this->invoice($invoice);
-        $this->settings = (object)$settings;
+        $this->settings = (object) $settings;
         $this->client = new Client();
     }
 
@@ -90,7 +90,7 @@ class Sadad extends Driver
 
         $body = json_decode($response->getBody()->getContents(), true);
 
-        if ($body->ResCode!=0) {
+        if ($body->ResCode != 0) {
             throw new PurchaseFailedException($body->Description);
         }
 
@@ -129,7 +129,7 @@ class Sadad extends Driver
         $resCode = request()->get('ResCode');
         $message = 'تراکنش نا موفق بود در صورت کسر مبلغ از حساب شما حداکثر پس از 72 ساعت مبلغ به حسابتان برمیگردد.';
 
-        if ($resCode==0) {
+        if ($resCode == 0) {
             throw new InvalidPaymentException($message);
         }
 

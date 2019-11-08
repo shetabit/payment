@@ -35,7 +35,7 @@ class Parsian extends Driver
     public function __construct(Invoice $invoice, $settings)
     {
         $this->invoice($invoice);
-        $this->settings = (object)$settings;
+        $this->settings = (object) $settings;
     }
 
     /**
@@ -117,7 +117,7 @@ class Parsian extends Driver
         $hasWrongStatus = (!isset($result['Status']) || $result['Status'] != 0);
         $hasWrongRRN = (!isset($result['RRN']) || $result['RRN'] <= 0);
         if ($hasWrongStatus || $hasWrongRRN) {
-            $message = 'خطا از سمت بانک با کد ' . $result['Status'] . ' رخ داده است.';
+            $message = 'خطا از سمت بانک با کد '.$result['Status'].' رخ داده است.';
             throw new InvalidPaymentException($message);
         }
 

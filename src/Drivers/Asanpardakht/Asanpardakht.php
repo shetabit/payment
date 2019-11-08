@@ -35,7 +35,7 @@ class Asanpardakht extends Driver
     public function __construct(Invoice $invoice, $settings)
     {
         $this->invoice($invoice);
-        $this->settings = (object)$settings;
+        $this->settings = (object) $settings;
     }
 
     /**
@@ -52,7 +52,7 @@ class Asanpardakht extends Driver
 
         $params = $this->preparePurchaseData();
         $result = $client->RequestOperation($params);
-        if (! $result) {
+        if (!$result) {
             throw  new PurchaseFailedException('خطای فراخوانی متد درخواست تراکنش.');
         }
 
@@ -106,13 +106,13 @@ class Asanpardakht extends Driver
          *   $resMessage = $returningParams[4];
          *   $rrn = $returningParams[6];
          *   $lastFourDigitOfPAN = $returningParams[7];
-        **/
+         **/
 
         $resCode = $returningParams[3];
         $payGateTranID = $returningParams[5];
 
         if ($resCode != '0' && $resCode != '00') {
-            $message =  "خطای شماره " . $resCode . " رخ داده و تراکنش ناموفق بوده است.";
+            $message = "خطای شماره ".$resCode." رخ داده و تراکنش ناموفق بوده است.";
             throw new InvalidPaymentException($message);
         }
 
@@ -139,7 +139,7 @@ class Asanpardakht extends Driver
     protected function verifyStep($client, $params)
     {
         $result = $client->RequestVerification($params);
-        if (! $result) {
+        if (!$result) {
             throw new InvalidPaymentException("خطای فراخوانی متد وريفای رخ داده است.");
         }
 
@@ -161,7 +161,7 @@ class Asanpardakht extends Driver
     protected function settleStep($client, $params)
     {
         $result = $client->RequestReconciliation($params);
-        if (! $result) {
+        if (!$result) {
             throw new InvalidPaymentException('خطای فراخوانی متد تسويه رخ داده است.');
         }
 
