@@ -1,10 +1,10 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Saman;
 
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Invoice, Receipt};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Saman extends Driver
 {
@@ -39,6 +39,9 @@ class Saman extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws PurchaseFailedException
+     * @throws \SoapFault
      */
     public function purchase()
     {
@@ -87,12 +90,12 @@ class Saman extends Driver
     /**
      * Verify payment
      *
-     * @return mixed|void
+     * @return ReceiptInterface
      *
      * @throws InvalidPaymentException
      * @throws \SoapFault
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $data = array(
             'RefNum' => request()->input('RefNum'),

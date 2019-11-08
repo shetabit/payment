@@ -1,10 +1,10 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Asanpardakht;
 
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Invoice, Receipt};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Asanpardakht extends Driver
 {
@@ -63,8 +63,10 @@ class Asanpardakht extends Driver
         }
 
         $result = $result->RequestOperationResult;
+
         if ($result{0} != '0') {
-            echo "<div class=\"error\">خطای شماره: {$result}</div>";
+            $message = "خطای شماره ".$result." رخ داده است.";
+            throw  new PurchaseFailedException($message);
         }
 
         $this->invoice->transactionId(substr($result,2));
@@ -97,7 +99,7 @@ class Asanpardakht extends Driver
      * @throws InvalidPaymentException
      * @throws \SoapFault
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $encryptedReturningParamsString = request()->get('ReturningParams');
         $returningParamsString = decrypt($encryptedReturningParamsString);
@@ -182,6 +184,8 @@ class Asanpardakht extends Driver
      * @param $payGateTranID
      *
      * @return array
+     *
+     * @throws \SoapFault
      */
     public function prepareVerificationData($payGateTranID)
     {
@@ -203,6 +207,8 @@ class Asanpardakht extends Driver
      * Prepare data for purchasing invoice
      *
      * @return array
+     *
+     * @throws \SoapFault
      */
     protected function preparePurchaseData()
     {

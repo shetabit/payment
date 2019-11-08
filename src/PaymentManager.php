@@ -3,6 +3,7 @@
 namespace Shetabit\Payment;
 
 use Shetabit\Payment\Contracts\DriverInterface;
+use Shetabit\Payment\Contracts\ReceiptInterface;
 use Shetabit\Payment\Events\InvoicePurchasedEvent;
 use Shetabit\Payment\Events\InvoiceVerifiedEvent;
 use Shetabit\Payment\Exceptions\DriverNotFoundException;
@@ -225,29 +226,32 @@ class PaymentManager
     /**
      * Verifies the payment
      *
-     * @param $finalizeCallback|null
-     * @return $this
+     * @param null $finalizeCallback
+     *
+     * @return ReceiptInterface
+     *
      * @throws InvoiceNotFoundException
      */
-    public function verify($finalizeCallback = null)
+    public function verify($finalizeCallback = null) : ReceiptInterface
     {
         $this->driverInstance = $this->getDriverInstance();
         $this->validateInvoice();
-        $this->driverInstance->verify();
+        $receipt = $this->driverInstance->verify();
 
         if (!empty($finalizeCallback)) {
-            call_user_func($finalizeCallback, $this->driverInstance);
+            call_user_func($finalizeCallback, $receipt, $this->driverInstance);
         }
 
         // dispatch event
         event(
             new InvoiceVerifiedEvent(
+                $receipt,
                 $this->driverInstance,
                 $this->driverInstance->getInvoice()
             )
         );
 
-        return $this;
+        return $receipt;
     }
 
     /**

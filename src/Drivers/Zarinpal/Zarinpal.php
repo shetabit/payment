@@ -1,11 +1,11 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Zarinpal;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Invoice, Receipt};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Zarinpal extends Driver
 {
@@ -48,8 +48,11 @@ class Zarinpal extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws PurchaseFailedException
+     * @throws \SoapFault
      */
-    public function purchase() : string
+    public function purchase()
     {
         if (!empty($this->invoice->getDetails()['description'])) {
             $description = $this->invoice->getDetails()['description'];
@@ -108,7 +111,7 @@ class Zarinpal extends Driver
      * @throws InvalidPaymentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $authority = $this->invoice->getTransactionId() ?? request()->get('Authority');
         $status = request()->get('Status');

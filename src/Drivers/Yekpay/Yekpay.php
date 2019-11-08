@@ -1,10 +1,10 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Yekpay;
 
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Invoice, Receipt};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Yekpay extends Driver
 {
@@ -49,11 +49,13 @@ class Yekpay extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws PurchaseFailedException
+     * @throws \SoapFault
      */
     public function purchase()
     {
-        $options = array('trace' => true);
-        $client = new \SoapClient($this->settings->apiPurchaseUrl, $options);
+        $client = new \SoapClient($this->settings->apiPurchaseUrl, array('trace' => true));
 
         $data = new \stdClass();
 
@@ -113,10 +115,11 @@ class Yekpay extends Driver
      * Verify payment
      *
      * @return mixed|void
+     *
      * @throws InvalidPaymentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $options = array('trace' => true);
         $client = new SoapClient($this->settings->apiVerificationUrl, $options);

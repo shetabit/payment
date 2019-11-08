@@ -1,11 +1,11 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Payir;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Invoice, Receipt};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Payir extends Driver
 {
@@ -58,6 +58,9 @@ class Payir extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws PurchaseFailedException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function purchase()
     {
@@ -112,11 +115,12 @@ class Payir extends Driver
     /**
      * Verify payment
      *
-     * @return mixed|void
+     * @return ReceiptInterface
+     *
      * @throws InvalidPaymentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $data = [
             'api' => $this->settings->merchantId,
@@ -159,6 +163,7 @@ class Payir extends Driver
      * Trigger an exception
      *
      * @param $status
+     *
      * @throws InvalidPaymentException
      */
     private function notVerified($status)

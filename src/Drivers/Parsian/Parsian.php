@@ -1,10 +1,10 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Parsian;
 
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Invoice, Receipt};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Parsian extends Driver
 {
@@ -90,12 +90,12 @@ class Parsian extends Driver
     /**
      * Verify payment
      *
-     * @return mixed|Receipt
+     * @return ReceiptInterface
      *
      * @throws InvalidPaymentException
      * @throws \SoapFault
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $status = request()->get('status');
         $token = request()->get('Token');

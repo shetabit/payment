@@ -1,10 +1,10 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Irankish;
 
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Invoice, Receipt};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Irankish extends Driver
 {
@@ -39,6 +39,9 @@ class Irankish extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws PurchaseFailedException
+     * @throws \SoapFault
      */
     public function purchase()
     {
@@ -96,10 +99,12 @@ class Irankish extends Driver
     /**
      * Verify payment
      *
-     * @return mixed|void
+     * @return ReceiptInterface
+     *
      * @throws InvalidPaymentException
+     * @throws \SoapFault
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $data = array(
             'merchantId' => $this->settings->merchantId,

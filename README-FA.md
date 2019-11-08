@@ -59,7 +59,6 @@
 - [پی استار](http://paystar.ir/) :heavy_check_mark:
 - [پولام](https://poolam.ir/) :heavy_check_mark:
 - [سداد (بانک ملی)](https://sadadpsp.ir/) :heavy_check_mark:
-- [بانک صادرات](https://www.bsi.ir) :heavy_check_mark:
 - [بانک سامان](https://www.sep.ir) :heavy_check_mark:
 - [یک پی](https://yekpay.com/) :heavy_check_mark:
 - [زرین پال](https://www.zarinpal.com/) :heavy_check_mark:
@@ -213,6 +212,14 @@ Payment::purchase($invoice,function($driver, $transactionId) {
 Payment::purchase($invoice, function($driver, $transactionId) {
     // we can store $transactionId in database
 });
+
+# you can specify callbackUrl
+Payment::callbackUrl('http://yoursite.com/verify')->purchase(
+    $invoice, 
+    function($driver, $transactionId) {
+    	// we can store $transactionId in database
+	}
+);
 ```
 
 <div dir="rtl">
@@ -266,7 +273,11 @@ use Shetabit\Payment\Exceptions\InvalidPaymentException;
 // we use transaction's id to verify payments
 // its a good practice to add invoice's amount.
 try {
-	Payment::amount(1000)->transactionId($transaction_id)->verify();
+	$receipt = Payment::amount(1000)->transactionId($transaction_id)->verify();
+
+    // you can show payment's referenceId to user
+    echo $receipt->getReferenceId();    
+
     ...
 } catch (InvalidPaymentException $exception) {
     /**
@@ -310,9 +321,9 @@ try {
 ```php
 namespace App\Packages\PaymentDriver;
 
-use Shetabit\Payment\Invoice;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class MyDriver extends Driver
 {
@@ -349,7 +360,7 @@ class MyDriver extends Driver
     }
     
     // verify the payment (we must verify to insure that user has paid the invoice)
-    public function verify() {
+    public function verify() : ReceiptInterface {
         $verifyPayment = $this->settings->verifyApiUrl;
         
         $verifyUrl = $verifyPayment.$this->invoice->getTransactionId();
@@ -361,6 +372,11 @@ class MyDriver extends Driver
 			we throw an InvalidPaymentException with a suitable
         **/
         throw new InvalidPaymentException('a suitable message');
+        
+        /**
+        	we create a receipt for this payment if everything goes normally.
+        **/
+        return new Receipt('driverName', 'payment_receipt_number');        
     }
 }
 ```
@@ -454,6 +470,15 @@ class MyDriver extends Driver
 ```
 
 <div dir="rtl">
+
+
+#### رویدادها
+
+شما میتوانید درون برنامه خود دو رویداد را ثبت و ضبط کنید
+
+- **InvoicePurchasedEvent** : هنگامی که یک پرداخت به درستی ثبت شود این رویداد اتفاق میافتد.
+- **InvoiceVerifiedEvent** : هنگامی که یک پرداخت به درستی وریفای شود این رویداد اتفاق میافتد
+
 
 ## تغییرات
 

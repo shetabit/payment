@@ -8,7 +8,9 @@ interface DriverInterface
      * Set payment amount.
      *
      * @param $amount
+     *
      * @return $this
+     *
      * @throws \Exception
      */
     public function amount($amount);
@@ -18,6 +20,7 @@ interface DriverInterface
      *
      * @param $key
      * @param $value|null
+     *
      * @return mixed
      */
     public function detail($key, $value = null);
@@ -39,7 +42,7 @@ interface DriverInterface
     /**
      * verify the payment
      *
-     * @return mixed
+     * @return ReceiptInterface
      */
-    public function verify();
+    public function verify() : ReceiptInterface;
 }

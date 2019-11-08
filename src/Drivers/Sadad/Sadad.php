@@ -1,11 +1,11 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Sadad;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Invoice, Receipt};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Sadad extends Driver
 {
@@ -114,11 +114,12 @@ class Sadad extends Driver
     /**
      * Verify payment
      *
-     * @return mixed|Receipt
+     * @return ReceiptInterface
      *
      * @throws InvalidPaymentException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $key = $this->settings->key;
         $token = $this->invoice->getTransactionId() ?? request()->get('token');

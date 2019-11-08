@@ -1,18 +1,18 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Poolam;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Invoice, Receipt};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
-class Nextpay extends Driver
+class Poolam extends Driver
 {
     /**
-     * Nextpay Client.
+     * Poolam Client.
      *
-     * @var Client
+     * @var object
      */
     protected $client;
 
@@ -31,7 +31,7 @@ class Nextpay extends Driver
     protected $settings;
 
     /**
-     * Nextpay constructor.
+     * Poolam constructor.
      * Construct the class with the relevant settings.
      *
      * @param Invoice $invoice
@@ -48,34 +48,35 @@ class Nextpay extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function purchase()
     {
+        // convert to toman
+        $toman = $this->invoice->getAmount() * 10;
+
         $data = array(
             'api_key' => $this->settings->merchantId,
-            'order_id' => intval(1, time()).crc32($this->invoice->getUuid()),
-            'amount' => $this->invoice->getAmount(),
-            'callback_uri' => $this->settings->callbackUrl,
+            'amount' => $toman,
+            'return_url' => $this->settings->callbackUrl,
         );
 
-        $response = $this
-            ->client
-            ->request(
-                'POST',
-                $this->settings->apiPurchaseUrl,
-                [
-                    "form_params" => $data,
-                    "http_errors" => false,
-                ]
-            );
-
+        $response = $this->client->request(
+            'POST',
+            $this->settings->apiPurchaseUrl,
+            [
+                "form_params" => $data,
+                "http_errors" => false,
+            ]
+        );
         $body = json_decode($response->getBody()->getContents(), true);
 
-        if (empty($body['code']) || $body['code'] != -1) {
-            // error has happened
-            throw new PurchaseFailedException($body['id']);
+        if (empty($body['status']) || $body['status'] != 1) {
+            // some error has happened
+            throw new PurchaseFailedException($body['status']);
         } else {
-            $this->invoice->transactionId($body['trans_id']);
+            $this->invoice->transactionId($body['invoice_key']);
         }
 
         // return the transaction's id
@@ -99,40 +100,33 @@ class Nextpay extends Driver
      * Verify payment
      *
      * @return mixed|void
+     *
      * @throws InvalidPaymentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
-        $transactionId = $this->invoice->getTransactionId() ?? request()->input('trans_id');
-
         $data = [
             'api_key' => $this->settings->merchantId,
-            'order_id' => request()->input('order_id'),
-            'amount' => $this->invoice->getAmount(),
-            'trans_id' => $transactionId,
         ];
 
-        $response = $this
-            ->client
-            ->request(
-                'POST',
-                $this->settings->apiVerificationUrl,
-                [
-                    "form_params" => $data,
-                    "http_errors" => false,
-                ]
-            );
+        $transactionId = $this->invoice->getTransactionId() ?? request()->input('invoice_key');
+        $url = $this->settings->apiVerificationUrl.$transactionId;
 
+        $response = $this->client->request(
+            'POST',
+            $url,
+            ["form_params" => $data, "http_errors" => false]
+        );
         $body = json_decode($response->getBody()->getContents(), true);
 
-        if (!isset($body['code']) || $body['code'] != 0) {
-            $message = $body['message'] ?? 'خطای ناشناخته ای رخت داده است';
+        if (empty($body['status']) || $body['status'] != 1) {
+            $message = $body['errorDescription'] ?? null;
 
             $this->notVerified($message);
         }
 
-        return $this->createReceipt($transactionId);
+        return $this->createReceipt($body['bank_code']);
     }
 
     /**
@@ -144,7 +138,7 @@ class Nextpay extends Driver
      */
     public function createReceipt($referenceId)
     {
-        $receipt = new Receipt('nextpay', $referenceId);
+        $receipt = new Receipt('poolam', $referenceId);
 
         return $receipt;
     }
@@ -157,6 +151,10 @@ class Nextpay extends Driver
      */
     private function notVerified($message)
     {
-        throw new InvalidPaymentException($message);
+        if (empty($message)) {
+            throw new InvalidPaymentException('خطای ناشناخته ای رخ داده است.');
+        } else {
+            throw new InvalidPaymentException($message);
+        }
     }
 }

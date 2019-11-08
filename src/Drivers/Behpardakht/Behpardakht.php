@@ -1,12 +1,12 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Behpardakht;
 
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Invoice, Receipt};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
-class Pasargad extends Driver
+class Behpardakht extends Driver
 {
     /**
      * Invoice
@@ -23,7 +23,7 @@ class Pasargad extends Driver
     protected $settings;
 
     /**
-     * Pasargad constructor.
+     * Behpardakht constructor.
      * Construct the class with the relevant settings.
      *
      * @param Invoice $invoice
@@ -100,7 +100,7 @@ class Pasargad extends Driver
      * @throws InvalidPaymentException
      * @throws \SoapFault
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $resCode =  request()->get('ResCode');
         if ($resCode != '0') {
@@ -139,7 +139,7 @@ class Pasargad extends Driver
      */
     public function createReceipt($referenceId)
     {
-        $receipt = new Receipt('pasargad', $referenceId);
+        $receipt = new Receipt('behpardakht', $referenceId);
 
         return $receipt;
     }

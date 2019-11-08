@@ -2,7 +2,7 @@
 
 namespace Shetabit\Payment\Abstracts;
 
-use Shetabit\Payment\Contracts\DriverInterface;
+use Shetabit\Payment\Contracts\{DriverInterface, ReceiptInterface};
 use Shetabit\Payment\Invoice;
 
 abstract class Driver implements DriverInterface
@@ -24,7 +24,6 @@ abstract class Driver implements DriverInterface
     /**
      * Driver constructor.
      *
-     * Driver constructor.
      * @param Invoice $invoice
      * @param $settings
      */
@@ -34,7 +33,9 @@ abstract class Driver implements DriverInterface
      * Set payment amount.
      *
      * @param $amount
+     *
      * @return $this
+     *
      * @throws \Exception
      */
     public function amount($amount)
@@ -49,6 +50,7 @@ abstract class Driver implements DriverInterface
      *
      * @param $key
      * @param $value|null
+     *
      * @return $this|DriverInterface
      */
     public function detail($key, $value = null)
@@ -66,6 +68,7 @@ abstract class Driver implements DriverInterface
      * Set invoice.
      *
      * @param Invoice $invoice
+     *
      * @return $this
      */
     public function invoice(Invoice $invoice)
@@ -91,6 +94,7 @@ abstract class Driver implements DriverInterface
      * @param $action
      * @param array $inputs
      * @param string $method
+     *
      * @return string
      */
     public function redirectWithForm($action, array $inputs = [], $method = 'POST')
@@ -121,7 +125,7 @@ abstract class Driver implements DriverInterface
     /**
      * Verify the payment
      *
-     * @return mixed
+     * @return ReceiptInterface
      */
-    abstract public function verify();
+    abstract public function verify() : ReceiptInterface;
 }

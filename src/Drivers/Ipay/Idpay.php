@@ -1,11 +1,11 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Idpay;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Invoice, Receipt};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Idpay extends Driver
 {
@@ -49,6 +49,7 @@ class Idpay extends Driver
      *
      * @return string
      *
+     * @throws PurchaseFailedException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function purchase()
@@ -120,10 +121,11 @@ class Idpay extends Driver
      * Verify payment
      *
      * @return mixed|void
+     *
      * @throws InvalidPaymentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $data = [
             'id' => $this->invoice->getTransactionId() ?? request()->input('id'),
@@ -172,6 +174,7 @@ class Idpay extends Driver
      * Trigger an exception
      *
      * @param $status
+     *
      * @throws InvalidPaymentException
      */
     private function notVerified($status)

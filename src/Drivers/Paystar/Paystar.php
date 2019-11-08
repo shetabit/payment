@@ -1,11 +1,11 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Paystar;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Invoice, Receipt};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Paystar extends Driver
 {
@@ -49,7 +49,7 @@ class Paystar extends Driver
      *
      * @return string
      *
-     * @throws InvalidPaymentException
+     * @throws PurchaseFailedException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function purchase()
@@ -108,10 +108,11 @@ class Paystar extends Driver
      * Verify payment
      *
      * @return mixed|void
+     *
      * @throws InvalidPaymentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $transId = $this->invoice->getTransactionId() ?? request()->input('transid');
 
@@ -156,6 +157,7 @@ class Paystar extends Driver
      * Trigger an exception
      *
      * @param $status
+     *
      * @throws InvalidPaymentException
      */
     private function triggerError($status)
