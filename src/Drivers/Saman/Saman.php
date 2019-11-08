@@ -122,14 +122,21 @@ class Saman extends Driver
      *
      * @return Receipt
      */
-    public function createReceipt($referenceId)
+    protected function createReceipt($referenceId)
     {
         $receipt = new Receipt('saman', $referenceId);
 
         return $receipt;
     }
 
-    public function purchaseFailed($status)
+    /**
+     * Trigger an exception
+     *
+     * @param $status
+     *
+     * @throws PurchaseFailedException
+     */
+    protected function purchaseFailed($status)
     {
         $translations = array(
             -1 => 'خطا در پردازش اطلاعات ارسالی (مشکل در یکی از ورودی ها و ناموفق بودن فراخوانی متد برگشت تراکنش)',
@@ -161,6 +168,7 @@ class Saman extends Driver
      * Trigger an exception
      *
      * @param $status
+     * 
      * @throws InvalidPaymentException
      */
     private function notVerified($status)

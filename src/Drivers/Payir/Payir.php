@@ -155,7 +155,7 @@ class Payir extends Driver
      *
      * @return Receipt
      */
-    public function createReceipt($referenceId)
+    protected function createReceipt($referenceId)
     {
         $receipt = new Receipt('payir', $referenceId);
 

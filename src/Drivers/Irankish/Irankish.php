@@ -136,7 +136,7 @@ class Irankish extends Driver
      *
      * @return Receipt
      */
-    public function createReceipt($referenceId)
+    protected function createReceipt($referenceId)
     {
         $receipt = new Receipt('irankish', $referenceId);
 

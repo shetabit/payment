@@ -174,7 +174,7 @@ class Sadad extends Driver
      *
      * @return Receipt
      */
-    public function createReceipt($referenceId)
+    protected function createReceipt($referenceId)
     {
         $receipt = new Receipt('sadad', $referenceId);
 
@@ -189,7 +189,7 @@ class Sadad extends Driver
      *
      * @return string
      */
-    public function encrypt_pkcs7($str, $key)
+    protected function encrypt_pkcs7($str, $key)
     {
         $key = base64_decode($key);
         $ciphertext = OpenSSL_encrypt($str, "DES-EDE3", $key, OPENSSL_RAW_DATA);

@@ -140,7 +140,7 @@ class Behpardakht extends Driver
      *
      * @return Receipt
      */
-    public function createReceipt($referenceId)
+    protected function createReceipt($referenceId)
     {
         $receipt = new Receipt('behpardakht', $referenceId);
 
@@ -152,7 +152,7 @@ class Behpardakht extends Driver
      *
      * @return array
      */
-    public function prepareVerificationData()
+    protected function prepareVerificationData()
     {
         $orderId = request()->get('SaleOrderId');
         $verifySaleOrderId = request()->get('SaleOrderId');

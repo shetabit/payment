@@ -166,7 +166,7 @@ class Idpay extends Driver
      *
      * @return Receipt
      */
-    public function createReceipt($referenceId)
+    protected function createReceipt($referenceId)
     {
         $receipt = new Receipt('idpay', $referenceId);
 

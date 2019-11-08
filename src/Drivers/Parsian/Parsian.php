@@ -136,7 +136,7 @@ class Parsian extends Driver
      *
      * @return Receipt
      */
-    public function createReceipt($referenceId)
+    protected function createReceipt($referenceId)
     {
         $receipt = new Receipt('parsian', $referenceId);
 
@@ -148,7 +148,7 @@ class Parsian extends Driver
      *
      * @return array
      */
-    public function prepareVerificationData()
+    protected function prepareVerificationData()
     {
         $transactionId = $this->invoice->getTransactionId() ?? request()->get('Token');
 
