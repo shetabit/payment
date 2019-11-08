@@ -1,11 +1,11 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Paystar;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
-use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Paystar extends Driver
 {
@@ -48,7 +48,8 @@ class Paystar extends Driver
      * Purchase Invoice.
      *
      * @return string
-     * @throws InvalidPaymentException
+     *
+     * @throws PurchaseFailedException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function purchase()
@@ -79,7 +80,8 @@ class Paystar extends Driver
 
         if (is_numeric($body)) {
             // some error has happened
-            $this->triggerError($body);
+            $message = 'خطا در هنگام درخواست برای پرداخت با کد '.$body.' رخ داده است.';
+            throw new PurchaseFailedException($message);
         } else {
             $this->invoice->transactionId($body);
         }
@@ -96,7 +98,7 @@ class Paystar extends Driver
     public function pay()
     {
         $apiUrl =  $this->settings->apiPaymentUrl;
-        $payUrl = $apiUrl.$this->invoice->getTransactionId();
+        $payUrl = $apiUrl . $this->invoice->getTransactionId();
 
         // redirect using laravel logic
         return redirect()->to($payUrl);
@@ -106,15 +108,18 @@ class Paystar extends Driver
      * Verify payment
      *
      * @return mixed|void
+     *
      * @throws InvalidPaymentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
+        $transId = $this->invoice->getTransactionId() ?? request()->input('transid');
+
         $data = [
             'amount' => $this->invoice->getAmount(),
             'pin' => $this->settings->merchantId,
-            'transid' => $this->invoice->getTransactionId() ?? request()->input('transid'),
+            'transid' => $transId,
         ];
 
         $response = $this->client->request(
@@ -130,12 +135,29 @@ class Paystar extends Driver
         if ($body != 1) {
             $this->triggerError($body);
         }
+
+        $this->createReceipt($transId);
+    }
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('paystar', $referenceId);
+
+        return $receipt;
     }
 
     /**
      * Trigger an exception
      *
      * @param $status
+     *
      * @throws InvalidPaymentException
      */
     private function triggerError($status)

@@ -2,12 +2,28 @@
 
 namespace Shetabit\Payment\Contracts;
 
+use Carbon\Carbon;
+
 interface ReceiptInterface
 {
     /**
-     * Retrieve tracking code.
+     * Retrieve driver's name
      *
-     * @return string|integer
+     * @return string
      */
-    public function getTrackingCode();
+    public function getDriver() : string;
+
+    /**
+     * Retrieve payment reference code.
+     *
+     * @return string
+     */
+    public function getReferenceId() : string;
+
+    /**
+     * Retrieve payment date
+     *
+     * @return Carbon|\Illuminate\Support\Carbon
+     */
+    public function getDate() : Carbon;
 }

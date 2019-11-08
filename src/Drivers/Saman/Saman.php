@@ -1,10 +1,10 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Saman;
 
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
-use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Saman extends Driver
 {
@@ -39,6 +39,9 @@ class Saman extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws PurchaseFailedException
+     * @throws \SoapFault
      */
     public function purchase()
     {
@@ -87,10 +90,12 @@ class Saman extends Driver
     /**
      * Verify payment
      *
-     * @return mixed|void
+     * @return ReceiptInterface
+     *
      * @throws InvalidPaymentException
+     * @throws \SoapFault
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $data = array(
             'RefNum' => request()->input('RefNum'),
@@ -103,6 +108,22 @@ class Saman extends Driver
         if ($status < 0) {
             $this->notVerified($status);
         }
+
+        return $this->createReceipt($data['RefNum']);
+    }
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('saman', $referenceId);
+
+        return $receipt;
     }
 
     public function purchaseFailed($status)
@@ -127,9 +148,9 @@ class Saman extends Driver
         );
 
         if (array_key_exists($status, $translations)) {
-            throw new InvalidPaymentException($translations[$status]);
+            throw new PurchaseFailedException($translations[$status]);
         } else {
-            throw new InvalidPaymentException('خطای ناشناخته ای رخ داده است.');
+            throw new PurchaseFailedException('خطای ناشناخته ای رخ داده است.');
         }
     }
 

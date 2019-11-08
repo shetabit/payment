@@ -1,11 +1,11 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Idpay;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
-use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Idpay extends Driver
 {
@@ -48,6 +48,9 @@ class Idpay extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws PurchaseFailedException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function purchase()
     {
@@ -83,10 +86,12 @@ class Idpay extends Driver
         $body = json_decode($response->getBody()->getContents(), true);
 
         if (empty($body['id'])) {
-            // some error has happened
-        } else {
-            $this->invoice->transactionId($body['id']);
+            // error has happened
+            $message = 'خطا در هنگام درخواست برای پرداخت با کد '.$body['id'].' رخ داده است.';
+            throw new PurchaseFailedException($message);
         }
+
+        $this->invoice->transactionId($body['id']);
 
         // return the transaction's id
         return $this->invoice->getTransactionId();
@@ -116,10 +121,11 @@ class Idpay extends Driver
      * Verify payment
      *
      * @return mixed|void
+     *
      * @throws InvalidPaymentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $data = [
             'id' => $this->invoice->getTransactionId() ?? request()->input('id'),
@@ -146,12 +152,29 @@ class Idpay extends Driver
 
             $this->notVerified($errorCode);
         }
+
+        return $this->createReceipt($body['track_id']);
+    }
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('idpay', $referenceId);
+
+        return $receipt;
     }
 
     /**
      * Trigger an exception
      *
      * @param $status
+     *
      * @throws InvalidPaymentException
      */
     private function notVerified($status)

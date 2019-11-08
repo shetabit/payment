@@ -24,7 +24,7 @@
 
 در صورتی که از این پکیج خوشتون آمده و ازش استفاده میکنید میتونید با پرداخت مبلغ اندکی من رو حمایت کنید تا این پکیج رو بیشتر توسعه بدم و درگاه های جدیدتری بهش اظافه کنم
 
-[به منظور کمک مالی کلیک کنید](https://yekpay.me/mahdikhanzadi) :sunglasses: :bowtie:
+[به منظور کمک مالی کلیک کنید](https://zarinp.al/@mahdikhanzadi) :sunglasses: :bowtie:
 
 
 # لیست محتوا
@@ -47,13 +47,18 @@
 
 # درایورهای موجود
 
+- [آسان پرداخت](https://asanpardakht.ir/) :heavy_check_mark:
+- [به پرداخت ملت (بانک ملت)](http://www.behpardakht.com/) :heavy_check_mark:
 - [ایدی پی](https://idpay.ir/) :heavy_check_mark:
 - [ایران کیش](http://irankish.com/) :heavy_check_mark:
 - [نکست پی](https://nextpay.ir/) :heavy_check_mark:
 - [پی ای ار](https://pay.ir/) :heavy_check_mark:
+- [بانک پارسیان](https://www.pec.ir/) :heavy_check_mark:
+- [بانک پاسارگاد](https://www.bpi.ir/) :heavy_check_mark:
 - [پی پینگ](https://www.payping.ir/) :heavy_check_mark:
 - [پی استار](http://paystar.ir/) :heavy_check_mark:
 - [پولام](https://poolam.ir/) :heavy_check_mark:
+- [سداد (بانک ملی)](https://sadadpsp.ir/) :heavy_check_mark:
 - [بانک سامان](https://www.sep.ir) :heavy_check_mark:
 - [یک پی](https://yekpay.com/) :heavy_check_mark:
 - [زرین پال](https://www.zarinpal.com/) :heavy_check_mark:
@@ -207,6 +212,14 @@ Payment::purchase($invoice,function($driver, $transactionId) {
 Payment::purchase($invoice, function($driver, $transactionId) {
     // we can store $transactionId in database
 });
+
+# you can specify callbackUrl
+Payment::callbackUrl('http://yoursite.com/verify')->purchase(
+    $invoice, 
+    function($driver, $transactionId) {
+    	// we can store $transactionId in database
+	}
+);
 ```
 
 <div dir="rtl">
@@ -260,7 +273,11 @@ use Shetabit\Payment\Exceptions\InvalidPaymentException;
 // we use transaction's id to verify payments
 // its a good practice to add invoice's amount.
 try {
-	Payment::amount(1000)->transactionId($transaction_id)->verify();
+	$receipt = Payment::amount(1000)->transactionId($transaction_id)->verify();
+
+    // you can show payment's referenceId to user
+    echo $receipt->getReferenceId();    
+
     ...
 } catch (InvalidPaymentException $exception) {
     /**
@@ -304,9 +321,9 @@ try {
 ```php
 namespace App\Packages\PaymentDriver;
 
-use Shetabit\Payment\Invoice;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class MyDriver extends Driver
 {
@@ -343,7 +360,7 @@ class MyDriver extends Driver
     }
     
     // verify the payment (we must verify to insure that user has paid the invoice)
-    public function verify() {
+    public function verify() : ReceiptInterface {
         $verifyPayment = $this->settings->verifyApiUrl;
         
         $verifyUrl = $verifyPayment.$this->invoice->getTransactionId();
@@ -355,6 +372,11 @@ class MyDriver extends Driver
 			we throw an InvalidPaymentException with a suitable
         **/
         throw new InvalidPaymentException('a suitable message');
+        
+        /**
+        	we create a receipt for this payment if everything goes normally.
+        **/
+        return new Receipt('driverName', 'payment_receipt_number');        
     }
 }
 ```
@@ -448,6 +470,15 @@ class MyDriver extends Driver
 ```
 
 <div dir="rtl">
+
+
+#### رویدادها
+
+شما میتوانید درون برنامه خود دو رویداد را ثبت و ضبط کنید
+
+- **InvoicePurchasedEvent** : هنگامی که یک پرداخت به درستی ثبت شود این رویداد اتفاق میافتد.
+- **InvoiceVerifiedEvent** : هنگامی که یک پرداخت به درستی وریفای شود این رویداد اتفاق میافتد
+
 
 ## تغییرات
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Nextpay;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
-use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Nextpay extends Driver
 {
@@ -48,6 +48,9 @@ class Nextpay extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws PurchaseFailedException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function purchase()
     {
@@ -72,7 +75,8 @@ class Nextpay extends Driver
         $body = json_decode($response->getBody()->getContents(), true);
 
         if (empty($body['code']) || $body['code'] != -1) {
-            // some error has happened
+            // error has happened
+            throw new PurchaseFailedException($body['id']);
         } else {
             $this->invoice->transactionId($body['trans_id']);
         }
@@ -97,17 +101,20 @@ class Nextpay extends Driver
     /**
      * Verify payment
      *
-     * @return mixed|void
+     * @return ReceiptInterface
+     *
      * @throws InvalidPaymentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
+        $transactionId = $this->invoice->getTransactionId() ?? request()->input('trans_id');
+
         $data = [
             'api_key' => $this->settings->merchantId,
             'order_id' => request()->input('order_id'),
             'amount' => $this->invoice->getAmount(),
-            'trans_id' => $this->invoice->getTransactionId() ?? request()->input('trans_id'),
+            'trans_id' => $transactionId,
         ];
 
         $response = $this
@@ -128,12 +135,29 @@ class Nextpay extends Driver
 
             $this->notVerified($message);
         }
+
+        return $this->createReceipt($transactionId);
+    }
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('nextpay', $referenceId);
+
+        return $receipt;
     }
 
     /**
      * Trigger an exception
      *
      * @param $message
+     *
      * @throws InvalidPaymentException
      */
     private function notVerified($message)

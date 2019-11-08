@@ -1,11 +1,11 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Poolam;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
-use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Poolam extends Driver
 {
@@ -48,6 +48,8 @@ class Poolam extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function purchase()
     {
@@ -71,7 +73,8 @@ class Poolam extends Driver
         $body = json_decode($response->getBody()->getContents(), true);
 
         if (empty($body['status']) || $body['status'] != 1) {
-            // error has happened
+            // some error has happened
+            throw new PurchaseFailedException($body['status']);
         } else {
             $this->invoice->transactionId($body['invoice_key']);
         }
@@ -97,10 +100,11 @@ class Poolam extends Driver
      * Verify payment
      *
      * @return mixed|void
+     *
      * @throws InvalidPaymentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $data = [
             'api_key' => $this->settings->merchantId,
@@ -121,6 +125,22 @@ class Poolam extends Driver
 
             $this->notVerified($message);
         }
+
+        return $this->createReceipt($body['bank_code']);
+    }
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('poolam', $referenceId);
+
+        return $receipt;
     }
 
     /**

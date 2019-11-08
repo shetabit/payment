@@ -1,10 +1,10 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Yekpay;
 
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
-use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Yekpay extends Driver
 {
@@ -49,11 +49,13 @@ class Yekpay extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws PurchaseFailedException
+     * @throws \SoapFault
      */
     public function purchase()
     {
-        $options = array('trace' => true);
-        $client = new \SoapClient($this->settings->apiPurchaseUrl, $options);
+        $client = new \SoapClient($this->settings->apiPurchaseUrl, array('trace' => true));
 
         $data = new \stdClass();
 
@@ -89,7 +91,7 @@ class Yekpay extends Driver
             $this->invoice->transactionId($response->Authority);
         } else {
             //"Request failed with Error code: $response->Code and Error message: $response->Description";
-            $this->notVerified($response->Description);
+            throw new PurchaseFailedException($response->Description);
         }
 
         // return the transaction's id
@@ -113,10 +115,11 @@ class Yekpay extends Driver
      * Verify payment
      *
      * @return mixed|void
+     *
      * @throws InvalidPaymentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $options = array('trace' => true);
         $client = new SoapClient($this->settings->apiVerificationUrl, $options);
@@ -130,9 +133,24 @@ class Yekpay extends Driver
 
         if ($response->Code != 100) {
             $this->notVerified($transaction->message ?? 'payment failed');
-        } else {
-            //"Success Payment with reference: $response->Reference and message: $transaction->message";
         }
+
+        //"Success Payment with reference: $response->Reference and message: $transaction->message";
+        return $this->createReceipt($response->Reference);
+    }
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('yekpay', $referenceId);
+
+        return $receipt;
     }
 
     /**

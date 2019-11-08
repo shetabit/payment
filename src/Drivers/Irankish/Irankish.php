@@ -1,10 +1,10 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Irankish;
 
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
-use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Irankish extends Driver
 {
@@ -39,6 +39,9 @@ class Irankish extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws PurchaseFailedException
+     * @throws \SoapFault
      */
     public function purchase()
     {
@@ -65,6 +68,9 @@ class Irankish extends Driver
 
         if ($response->MakeTokenResult->result != false) {
             $this->invoice->transactionId($response->MakeTokenResult->token);
+        } else {
+            // error has happened
+            throw new PurchaseFailedException('خطا در هنگام درخواست برای پرداخت رخ داده است.');
         }
 
         // return the transaction's id
@@ -93,10 +99,12 @@ class Irankish extends Driver
     /**
      * Verify payment
      *
-     * @return mixed|void
+     * @return ReceiptInterface
+     *
      * @throws InvalidPaymentException
+     * @throws \SoapFault
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $data = array(
             'merchantId' => $this->settings->merchantId,
@@ -111,11 +119,25 @@ class Irankish extends Driver
 
         $status = (int)($response->KicccPaymentsVerificationResult);
 
-        $this->invoice->refId($data['referenceNumber']);
-
         if ($status != $data['amount']) {
             $this->notVerified($status);
         }
+
+        return $this->createReceipt($data['referenceNumber']);
+    }
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('irankish', $referenceId);
+
+        return $receipt;
     }
 
     /**

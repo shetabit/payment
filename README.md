@@ -46,14 +46,17 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - [License](#license)
 
 # List of available drivers
-
+- [asanpardakht](https://asanpardakht.ir/) :heavy_check_mark:
+- [behpardakht (mellat)](http://www.behpardakht.com/) :heavy_check_mark:
 - [idpay](https://idpay.ir/) :heavy_check_mark:
 - [irankish](http://irankish.com/) :heavy_check_mark:
 - [nextpay](https://nextpay.ir/) :heavy_check_mark:
+- [parsian](https://www.pec.ir/) :heavy_check_mark:
 - [payir](https://pay.ir/) :heavy_check_mark:
 - [payping](https://www.payping.ir/) :heavy_check_mark:
 - [paystar](http://paystar.ir/) :heavy_check_mark:
 - [poolam](https://poolam.ir/) :heavy_check_mark:
+- [sadad (melli)](https://sadadpsp.ir/) :heavy_check_mark:
 - [saman](https://www.sep.ir) :heavy_check_mark:
 - [yekpay](https://yekpay.com/) :heavy_check_mark:
 - [zarinpal](https://www.zarinpal.com/) :heavy_check_mark:
@@ -72,9 +75,8 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - wepay
 - payoneer
 - paysimple
+- saderat
 - pasargad
-- melli
-- melat
 
 > you can create your own custom driver if not  exists in the list , read the `Create custom drivers` section.
 
@@ -203,6 +205,14 @@ Payment::purchase($invoice,function($driver, $transactionId) {
 Payment::purchase($invoice, function($driver, $transactionId) {
     // we can store $transactionId in database
 });
+
+# you can specify callbackUrl
+Payment::callbackUrl('http://yoursite.com/verify')->purchase(
+    $invoice, 
+    function($driver, $transactionId) {
+    	// we can store $transactionId in database
+	}
+);
 ```
 
 #### Pay invoice
@@ -247,7 +257,11 @@ use Shetabit\Payment\Exceptions\InvalidPaymentException;
 // we use transaction's id to verify payments
 // its a good practice to add invoice's amount.
 try {
-	Payment::amount(1000)->transactionId($transaction_id)->verify();
+	$receipt = Payment::amount(1000)->transactionId($transaction_id)->verify();
+
+    // you can show payment's referenceId to user
+    echo $receipt->getReferenceId();
+
     ...
 } catch (InvalidPaymentException $exception) {
     /**
@@ -367,9 +381,9 @@ Ex. You created a class : `App\Packages\PaymentDriver\MyDriver`.
 ```php
 namespace App\Packages\PaymentDriver;
 
-use Shetabit\Payment\Invoice;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class MyDriver extends Driver
 {
@@ -406,7 +420,7 @@ class MyDriver extends Driver
     }
     
     // verify the payment (we must verify to insure that user has paid the invoice)
-    public function verify() {
+    public function verify() : ReceiptInterface {
         $verifyPayment = $this->settings->verifyApiUrl;
         
         $verifyUrl = $verifyPayment.$this->invoice->getTransactionId();
@@ -418,6 +432,11 @@ class MyDriver extends Driver
 			we throw an InvalidPaymentException with a suitable
         **/
         throw new InvalidPaymentException('a suitable message');
+        
+        /**
+        	we create a receipt for this payment if everything goes normally.
+        **/
+        return new Receipt('driverName', 'payment_receipt_number');
     }
 }
 ```

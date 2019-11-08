@@ -22,6 +22,30 @@ return [
     |
     */
     'drivers' => [
+        'asanpardakht' => [
+            'apiPurchaseUrl' => 'https://services.asanpardakht.net/paygate/merchantservices.asmx?wsdl',
+            'apiPaymentUrl' => 'https://asan.shaparak.ir',
+            'apiVerificationUrl' => 'https://services.asanpardakht.net/paygate/merchantservices.asmx?wsdl',
+            'apiUtilsUrl' => 'https://services.asanpardakht.net/paygate/internalutils.asmx?wsdl',
+            'key' => '',
+            'iv' => '',
+            'username' => '',
+            'password' => '',
+            'merchantId' => '',
+            'callbackUrl' => 'http://yoursite.com/path/to',
+            'description' => 'payment in '.config('app.name'),
+        ],
+        'behpardakht' => [
+            'apiPurchaseUrl' => 'https://bpm.shaparak.ir/pgwchannel/services/pgw?wsdl',
+            'apiPaymentUrl' => 'https://bpm.shaparak.ir/pgwchannel/startpay.mellat',
+            'apiVerificationUrl' => 'https://api.nextpay.org/gateway/verify.http',
+            'apiNamespaceUrl' => 'http://interfaces.core.sw.bps.com/',
+            'terminalId' => '',
+            'username' => '',
+            'password' => '',
+            'callbackUrl' => 'http://yoursite.com/path/to',
+            'description' => 'payment in '.config('app.name'),
+        ],
         'idpay' => [
             'apiPurchaseUrl' => 'https://api.idpay.ir/v1.1/payment',
             'apiPaymentUrl' => 'https://idpay.ir/p/ws/',
@@ -46,6 +70,15 @@ return [
             'apiPaymentUrl' => 'https://api.nextpay.org/gateway/payment/',
             'apiVerificationUrl' => 'https://api.nextpay.org/gateway/verify.http',
             'merchantId' => '',
+            'callbackUrl' => 'http://yoursite.com/path/to',
+            'description' => 'payment in '.config('app.name'),
+        ],
+        'parsian' => [
+            'apiPurchaseUrl' => 'https://pec.shaparak.ir/NewIPGServices/Sale/SaleService.asmx?wsdl',
+            'apiPaymentUrl' => 'https://pec.shaparak.ir/NewIPG/',
+            'apiVerificationUrl' => 'https://pec.shaparak.ir/NewIPGServices/Confirm/ConfirmService.asmx?wsdl',
+            'loginAccount' => '',
+            'orderId' => '',
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],
@@ -81,6 +114,16 @@ return [
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],
+        'sadad' => [
+            'apiPurchaseUrl' => 'https://sadad.shaparak.ir/vpg/api/v0/Request/PaymentRequest',
+            'apiPaymentUrl' => 'https://sadad.shaparak.ir/VPG/Purchase',
+            'apiVerificationUrl' => 'https://sadad.shaparak.ir/VPG/api/v0/Advice/Verify',
+            'key' => '',
+            'merchantId' => '',
+            'terminalId' => '',
+            'callbackUrl' => 'http://yoursite.com/path/to',
+            'description' => 'payment in '.config('app.name'),
+        ],
         'saman' => [
             'apiPurchaseUrl' => 'https://sep.shaparak.ir/Payments/InitPayment.asmx?WSDL',
             'apiPaymentUrl' => 'https://sep.shaparak.ir/payment.aspx',
@@ -97,10 +140,23 @@ return [
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],
-        'zarinpal' => [// set urls to https://sandbox.zarinpal.com/pg/rest/WebGate/ for using sandbox
-            'apiPurchaseUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentRequest.json',
+        'zarinpal' => [
+            /* normal api */
+            'apiPurchaseUrl' => 'https://ir.zarinpal.com/pg/services/WebGate/wsdl',
             'apiPaymentUrl' => 'https://www.zarinpal.com/pg/StartPay/',
-            'apiVerificationUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentVerification.json',
+            'apiVerificationUrl' => 'https://ir.zarinpal.com/pg/services/WebGate/wsdl',
+
+            /* sandbox api */
+            'sandboxApiPurchaseUrl' => 'https://sandbox.zarinpal.com/pg/services/WebGate/wsdl',
+            'sandboxApiPaymentUrl' => 'https://sandbox.zarinpal.com/pg/StartPay/',
+            'sandboxApiVerificationUrl' => 'https://sandbox.zarinpal.com/pg/services/WebGate/wsdl',
+
+            /* zarinGate api */
+            'zaringateApiPurchaseUrl' => 'https://ir.zarinpal.com/pg/services/WebGate/wsdl',
+            'zaringateApiPaymentUrl' => 'https://www.zarinpal.com/pg/StartPay/:authority/ZarinGate',
+            'zaringateApiVerificationUrl' => 'https://ir.zarinpal.com/pg/services/WebGate/wsdl',
+
+            'mode' => 'normal', // can be normal, sandbox, zaringate
             'merchantId' => '',
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
@@ -120,15 +176,19 @@ return [
     |
     */
     'map' => [
-        'idpay' => \Shetabit\Payment\Drivers\Idpay::class,
-        'irankish' => \Shetabit\Payment\Drivers\Irankish::class,
-        'nextpay' => \Shetabit\Payment\Drivers\Nextpay::class,
-        'payir' => \Shetabit\Payment\Drivers\Payir::class,
-        'payping' => \Shetabit\Payment\Drivers\Payping::class,
-        'paystar' => \Shetabit\Payment\Drivers\Paystar::class,
-        'poolam' => \Shetabit\Payment\Drivers\Poolam::class,
-        'saman' => \Shetabit\Payment\Drivers\Saman::class,
-        'yekpay' => \Shetabit\Payment\Drivers\Yekpay::class,
-        'zarinpal' => \Shetabit\Payment\Drivers\Zarinpal::class,
+        'asanpardakht' => \Shetabit\Payment\Drivers\Asanpardakht\Asanpardakht::class,
+        'behpardakht' => \Shetabit\Payment\Drivers\Behpardakht\Behpardakht::class,
+        'idpay' => \Shetabit\Payment\Drivers\Idpay\Idpay::class,
+        'irankish' => \Shetabit\Payment\Drivers\Irankish\Irankish::class,
+        'nextpay' => \Shetabit\Payment\Drivers\Nextpay\Nextpay::class,
+        'parsian' => \Shetabit\Payment\Drivers\Parsian\Parsian::class,
+        'payir' => \Shetabit\Payment\Drivers\Payir\Payir::class,
+        'payping' => \Shetabit\Payment\Drivers\Payping\Payping::class,
+        'paystar' => \Shetabit\Payment\Drivers\Paystar\Paystar::class,
+        'poolam' => \Shetabit\Payment\Drivers\Poolam\Poolam::class,
+        'sadad' => \Shetabit\Payment\Drivers\Sadad\Sadad::class,
+        'saman' => \Shetabit\Payment\Drivers\Saman\Saman::class,
+        'yekpay' => \Shetabit\Payment\Drivers\Yekpay\Yekpay::class,
+        'zarinpal' => \Shetabit\Payment\Drivers\Zarinpal\Zarinpal::class,
     ]
 ];

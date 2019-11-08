@@ -1,11 +1,11 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Payir;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
-use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Payir extends Driver
 {
@@ -58,6 +58,9 @@ class Payir extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws PurchaseFailedException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function purchase()
     {
@@ -87,6 +90,9 @@ class Payir extends Driver
 
         if ($body['status'] == 1) {
             $this->invoice->transactionId($body['token']);
+        } else {
+            // some error has happened
+            throw new PurchaseFailedException($body['id']);
         }
 
         // return the transaction's id
@@ -109,11 +115,12 @@ class Payir extends Driver
     /**
      * Verify payment
      *
-     * @return mixed|void
+     * @return ReceiptInterface
+     *
      * @throws InvalidPaymentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $data = [
             'api' => $this->settings->merchantId,
@@ -133,12 +140,30 @@ class Payir extends Driver
         if ($body['status'] != 1) {
             $this->notVerified($body['errorCode']);
         }
+
+        return $this->createReceipt($body['transId']);
+    }
+
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('payir', $referenceId);
+
+        return $receipt;
     }
 
     /**
      * Trigger an exception
      *
      * @param $status
+     *
      * @throws InvalidPaymentException
      */
     private function notVerified($status)

@@ -1,11 +1,11 @@
 <?php
 
-namespace Shetabit\Payment\Drivers;
+namespace Shetabit\Payment\Drivers\Payping;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
-use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
+use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class Payping extends Driver
 {
@@ -58,6 +58,9 @@ class Payping extends Driver
      * Purchase Invoice.
      *
      * @return string
+     *
+     * @throws PurchaseFailedException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function purchase()
     {
@@ -92,10 +95,11 @@ class Payping extends Driver
         $body = json_decode($response->getBody()->getContents(), true);
 
         if (!empty($body['Error'])) {
-            // an error has happened
-        } else {
-            $this->invoice->transactionId($body['code']);
+            // some error has happened
+            throw new PurchaseFailedException($body['Error']);
         }
+
+        $this->invoice->transactionId($body['code']);
 
         // return the transaction's id
         return $this->invoice->getTransactionId();
@@ -117,11 +121,12 @@ class Payping extends Driver
     /**
      * Verify payment
      *
-     * @return mixed|void
+     * @return ReceiptInterface
+     *
      * @throws InvalidPaymentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function verify()
+    public function verify() : ReceiptInterface
     {
         $data = [
             'amount' => $this->invoice->getAmount(),
@@ -145,9 +150,25 @@ class Payping extends Driver
 
         $body = json_decode($responseBody, true);
 
-        if (!empty($body['amount']) || !empty($body['refid']) || !empty($body['error'])) {
+        if (empty($body['amount']) || empty($body['refid']) || !empty($body['error'])) {
             $this->notVerified($body);
         }
+
+        return $this->createReceipt($body['refid']);
+    }
+
+    /**
+     * Generate the payment's receipt
+     *
+     * @param $referenceId
+     *
+     * @return Receipt
+     */
+    public function createReceipt($referenceId)
+    {
+        $receipt = new Receipt('payping', $referenceId);
+
+        return $receipt;
     }
 
     /**
