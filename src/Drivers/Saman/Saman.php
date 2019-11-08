@@ -168,7 +168,7 @@ class Saman extends Driver
      * Trigger an exception
      *
      * @param $status
-     * 
+     *
      * @throws InvalidPaymentException
      */
     private function notVerified($status)
