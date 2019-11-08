@@ -4,8 +4,11 @@ namespace Shetabit\Payment\Drivers\Zarinpal;
 
 use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
+use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\Exceptions\PurchaseFailedException;
+use Shetabit\Payment\Contracts\ReceiptInterface;
+use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Receipt;
 
 class Zarinpal extends Driver
 {
@@ -193,7 +196,7 @@ class Zarinpal extends Driver
     {
         $mode = $this->getMode();
 
-        switch($mode) {
+        switch ($mode) {
             case 'sandbox':
                 $url = $this->settings->sandboxApiPurchaseUrl;
                 break;
@@ -217,7 +220,7 @@ class Zarinpal extends Driver
     {
         $mode = $this->getMode();
 
-        switch($mode) {
+        switch ($mode) {
             case 'sandbox':
                 $url = $this->settings->sandboxApiPaymentUrl;
                 break;
@@ -241,7 +244,7 @@ class Zarinpal extends Driver
     {
         $mode = $this->getMode();
 
-        switch($mode) {
+        switch ($mode) {
             case 'sandbox':
                 $url = $this->settings->sandboxApiVerificationUrl;
                 break;

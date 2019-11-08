@@ -2,7 +2,8 @@
 
 namespace Shetabit\Payment\Abstracts;
 
-use Shetabit\Payment\Contracts\{DriverInterface, ReceiptInterface};
+use Shetabit\Payment\Contracts\DriverInterface;
+use Shetabit\Payment\Contracts\ReceiptInterface;
 use Shetabit\Payment\Invoice;
 
 abstract class Driver implements DriverInterface

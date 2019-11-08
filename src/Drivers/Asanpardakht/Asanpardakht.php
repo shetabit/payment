@@ -3,8 +3,11 @@
 namespace Shetabit\Payment\Drivers\Asanpardakht;
 
 use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\{InvalidPaymentException, PurchaseFailedException};
-use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
+use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\Exceptions\PurchaseFailedException;
+use Shetabit\Payment\Contracts\ReceiptInterface;
+use Shetabit\Payment\Invoice;
+use Shetabit\Payment\Receipt;
 
 class Asanpardakht extends Driver
 {
@@ -51,7 +54,7 @@ class Asanpardakht extends Driver
                 'verify_peer_name' => false
             )
         );
-        $configs = array ('stream_context' => stream_context_create($opts));
+        $configs = array('stream_context' => stream_context_create($opts));
 
         $client = new \SoapClient($this->settings->apiPurchaseUrl, $configs);
 
@@ -69,7 +72,7 @@ class Asanpardakht extends Driver
             throw  new PurchaseFailedException($message);
         }
 
-        $this->invoice->transactionId(substr($result,2));
+        $this->invoice->transactionId(substr($result, 2));
 
         // return the transaction's id
         return $this->invoice->getTransactionId();
@@ -129,7 +132,7 @@ class Asanpardakht extends Driver
                 'verify_peer_name' => false
             )
         );
-        $configs = array ('stream_context' => stream_context_create($opts));
+        $configs = array('stream_context' => stream_context_create($opts));
 
         $client = new \SoapClient($this->settings->apiVerificationUrl, $configs);
 
@@ -151,7 +154,7 @@ class Asanpardakht extends Driver
         // step2: settle
         $result = $client->RequestReconciliation($params);
 
-        if(! $result) {
+        if (! $result) {
             throw new InvalidPaymentException('خطای فراخوانی متد تسويه رخ داده است.');
         }
 
@@ -248,7 +251,7 @@ class Asanpardakht extends Driver
      *
      * @throws \SoapFault
      */
-    protected  function encrypt($string)
+    protected function encrypt($string)
     {
         $opts = array(
             'ssl' => array(
