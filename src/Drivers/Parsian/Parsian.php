@@ -61,7 +61,6 @@ class Parsian extends Driver
         $result = $response->SalePaymentRequestResult;
 
         if (isset($result->Status) && $result->Status == 0 && !empty($result->Token)) {
-
             $this->invoice->transactionId($result->Token);
         } else {
             // an error has happened
