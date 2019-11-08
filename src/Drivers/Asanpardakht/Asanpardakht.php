@@ -48,25 +48,15 @@ class Asanpardakht extends Driver
      */
     public function purchase()
     {
-        $opts = array(
-            'ssl' => array(
-                'verify_peer' => false,
-                'verify_peer_name' => false
-            )
-        );
-        $configs = array('stream_context' => stream_context_create($opts));
-
-        $client = new \SoapClient($this->settings->apiPurchaseUrl, $configs);
+        $client = $this->createSoapClient($this->settings->apiPurchaseUrl);
 
         $params = $this->preparePurchaseData();
         $result = $client->RequestOperation($params);
-
         if (! $result) {
             throw  new PurchaseFailedException('خطای فراخوانی متد درخواست تراکنش.');
         }
 
         $result = $result->RequestOperationResult;
-
         if ($result{0} != '0') {
             $message = "خطای شماره ".$result." رخ داده است.";
             throw  new PurchaseFailedException($message);
@@ -126,21 +116,11 @@ class Asanpardakht extends Driver
             throw new InvalidPaymentException($message);
         }
 
-        $opts = array(
-            'ssl' => array(
-                'verify_peer' => false,
-                'verify_peer_name' => false
-            )
-        );
-        $configs = array('stream_context' => stream_context_create($opts));
-
-        $client = new \SoapClient($this->settings->apiVerificationUrl, $configs);
-
+        $client = $this->createSoapClient($this->settings->apiVerificationUrl);
         $params = $this->prepareVerificationData($payGateTranID);
 
         // step1: verify
         $result = $client->RequestVerification($params);
-
         if (! $result) {
             throw new InvalidPaymentException("خطای فراخوانی متد وريفای رخ داده است.");
         }
@@ -153,7 +133,6 @@ class Asanpardakht extends Driver
 
         // step2: settle
         $result = $client->RequestReconciliation($params);
-
         if (! $result) {
             throw new InvalidPaymentException('خطای فراخوانی متد تسويه رخ داده است.');
         }
@@ -253,16 +232,7 @@ class Asanpardakht extends Driver
      */
     protected function encrypt($string)
     {
-        $opts = array(
-            'ssl' => array(
-                'verify_peer' => false,
-                'verify_peer_name' => false
-            )
-        );
-
-        $configs = array('stream_context' => stream_context_create($opts));
-
-        $client = new \SoapClient($this->settings->apiUtilsUrl, $configs);
+        $client = $this->createSoapClient($this->settings->apiUtilsUrl);
 
         $params = array(
             'aesKey' => $this->settings->key,
@@ -286,16 +256,7 @@ class Asanpardakht extends Driver
      */
     protected function decrypt($string)
     {
-        $opts = array(
-            'ssl' => array(
-                'verify_peer'=>false,
-                'verify_peer_name'=>false
-            )
-        );
-
-        $configs = array('stream_context' => stream_context_create($opts));
-
-        $client = new \SoapClient($this->settings->apiUtilsUrl, $configs);
+        $client = $this->createSoapClient($this->settings->apiUtilsUrl);
 
         $params = array(
             'aesKey' => $this->settings->key,
@@ -306,5 +267,28 @@ class Asanpardakht extends Driver
         $result = $client->DecryptInAES($params);
 
         return $result->DecryptInAESResult;
+    }
+
+    /**
+     * create a new SoapClient
+     *
+     * @param $url
+     *
+     * @return \SoapClient
+     *
+     * @throws \SoapFault
+     */
+    protected function createSoapClient($url)
+    {
+        $opts = array(
+            'ssl' => array(
+                'verify_peer'=>false,
+                'verify_peer_name'=>false
+            )
+        );
+
+        $configs = array('stream_context' => stream_context_create($opts));
+
+        return new \SoapClient($url, $configs);
     }
 }
