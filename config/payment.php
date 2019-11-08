@@ -136,6 +136,8 @@ return [
             'apiPurchaseUrl' => 'https://gate.yekpay.com/api/payment/server?wsdl',
             'apiPaymentUrl' => 'https://gate.yekpay.com/api/payment/start/',
             'apiVerificationUrl' => 'https://gate.yekpay.com/api/payment/server?wsdl',
+            'fromCurrencyCode' => 978,
+            'toCurrencyCode' => 364,
             'merchantId' => '',
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
