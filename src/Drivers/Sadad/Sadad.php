@@ -92,7 +92,7 @@ class Sadad extends Driver
 
         if (empty($body)) {
             throw new PurchaseFailedException('دسترسی به صفحه مورد نظر امکان پذیر نمی باشد.');
-        } else if ($body->ResCode != 0) {
+        } elseif ($body->ResCode != 0) {
             throw new PurchaseFailedException($body->Description);
         }
 
