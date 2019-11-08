@@ -100,7 +100,6 @@ class Parsian extends Driver
     {
         $status = request()->get('status');
         $token = request()->get('Token');
-        // $rrn = request()->get('RRN');
 
         if ($status != 0 || empty($token)) {
             throw new InvalidPaymentException('تراکنش توسط کاربر کنسل شده است.');
@@ -113,20 +112,16 @@ class Parsian extends Driver
         if (empty($response['ConfirmPaymentResult'])) {
             throw new InvalidPaymentException('از سمت بانک پاسخی دریافت نشد.');
         }
-
         $result = $response['ConfirmPaymentResult'];
-        $hasBankError =
-            (!isset($result['Status']) || $result['Status'] != 0) || (!isset($result['RRN']) || $result['RRN'] <= 0);
 
-        if ($hasBankError) {
+        $hasWrongStatus = (!isset($result['Status']) || $result['Status'] != 0);
+        $hasWrongRRN = (!isset($result['RRN']) || $result['RRN'] <= 0);
+        if ($hasWrongStatus || $hasWrongRRN) {
             $message = 'خطا از سمت بانک با کد ' . $result['Status'] . ' رخ داده است.';
             throw new InvalidPaymentException($message);
         }
 
-        $bankReference = (isset($result['RRN']) && $result['RRN'] > 0) ? $result['RRN'] : "";
-        // $cardNumberMasked = !empty($result['CardNumberMasked']) ? $result['CardNumberMasked'] : "";
-
-        return $this->createReceipt($bankReference);
+        return $this->createReceipt($result['RRN']);
     }
 
     /**
