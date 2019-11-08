@@ -72,12 +72,12 @@ class Zarinpal extends Driver
         );
 
         $client = new \SoapClient($this->getPurchaseUrl(), ['encoding' => 'UTF-8']);
-
         $result = $client->PaymentRequest($data);
 
-        if ($result->Status != 100 || empty($body['Authority'])) {
+        if ($result->Status != 100 || empty($result->Authority)) {
             // some error has happened
-            throw new PurchaseFailedException('خطا در هنگام درخواست برای پرداخت رخ داده است.');
+            $message = $this->translateStatus($result->Status);
+            throw new PurchaseFailedException($message);
         }
 
         $this->invoice->transactionId($result->Authority);
@@ -129,12 +129,12 @@ class Zarinpal extends Driver
             throw new InvalidPaymentException('عملیات پرداخت توسط کاربر لغو شد.');
         }
 
-        $client = new SoapClient('https://zarinpal.com/pg/services/WebGate/wsdl', ['encoding' => 'UTF-8']);
-
+        $client = new \SoapClient($this->getVerificationUrl(), ['encoding' => 'UTF-8']);
         $result = $client->PaymentVerification($data);
 
         if ($result->Status != 100) {
-            $this->notVerified($result->Status);
+            $message = $this->translateStatus($result->Status);
+            throw new InvalidPaymentException($message);
         }
 
         return $this->createReceipt($result->RefID);
@@ -155,13 +155,13 @@ class Zarinpal extends Driver
     }
 
     /**
-     * Trigger an exception
+     * Convert status to a readable message.
      *
      * @param $status
      *
-     * @throws InvalidPaymentException
+     * @return mixed|string
      */
-    private function notVerified($status)
+    private function translateStatus($status)
     {
         $translations = array(
             "-1" => "اطلاعات ارسال شده ناقص است.",
@@ -180,11 +180,10 @@ class Zarinpal extends Driver
             "-54" => "درخواست مورد نظر آرشيو شده است",
             "101" => "عمليات پرداخت موفق بوده و قبلا PaymentVerification تراكنش انجام شده است.",
         );
-        if (array_key_exists($status, $translations)) {
-            throw new InvalidPaymentException($translations[$status]);
-        } else {
-            throw new InvalidPaymentException('خطای ناشناخته ای رخ داده است.');
-        }
+
+        $unknownError = 'خطای ناشناخته رخ داده است.';
+
+        return array_key_exists($status, $translations) ? $translations[$status] : $unknownError;
     }
 
     /**
