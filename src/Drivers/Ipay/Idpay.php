@@ -107,7 +107,7 @@ class Idpay extends Driver
      */
     public function pay()
     {
-        $apiUrl =  $this->settings->apiPaymentUrl;
+        $apiUrl = $this->settings->apiPaymentUrl;
 
         // use sandbox url if we are in sandbox mode
         if (!empty($this->settings->sandbox)) {

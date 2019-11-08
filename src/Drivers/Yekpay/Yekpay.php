@@ -35,7 +35,7 @@ class Yekpay extends Driver
     public function __construct(Invoice $invoice, $settings)
     {
         $this->invoice($invoice);
-        $this->settings = (object)$settings;
+        $this->settings = (object) $settings;
     }
 
     /**
@@ -71,7 +71,7 @@ class Yekpay extends Driver
         $data->merchantId = $this->settings->merchantId;
         $data->amount = $this->invoice->getAmount();
         $data->callback = $this->settings->callbackUrl;
-        $data->orderNumber = intval(1, time()) . crc32($this->invoice->getUuid());
+        $data->orderNumber = intval(1, time()).crc32($this->invoice->getUuid());
 
         $data->fromCurrencyCode = 978;
         $data->toCurrencyCode = 364;
@@ -108,7 +108,7 @@ class Yekpay extends Driver
      */
     public function pay()
     {
-        $payUrl = $this->settings->apiPaymentUrl . $this->invoice->getTransactionId();
+        $payUrl = $this->settings->apiPaymentUrl.$this->invoice->getTransactionId();
 
         // redirect using laravel logic
         return redirect()->to($payUrl);

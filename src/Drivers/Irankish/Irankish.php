@@ -35,7 +35,7 @@ class Irankish extends Driver
     public function __construct(Invoice $invoice, $settings)
     {
         $this->invoice($invoice);
-        $this->settings = (object)$settings;
+        $this->settings = (object) $settings;
     }
 
     /**
@@ -120,7 +120,7 @@ class Irankish extends Driver
         $soap = new \SoapClient($this->settings->apiVerificationUrl);
         $response = $soap->KicccPaymentsVerification($data);
 
-        $status = (int)($response->KicccPaymentsVerificationResult);
+        $status = (int) ($response->KicccPaymentsVerificationResult);
 
         if ($status != $data['amount']) {
             $this->notVerified($status);
