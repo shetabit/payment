@@ -2,7 +2,6 @@
 
 namespace Shetabit\Payment\Drivers\Zarinpal;
 
-use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
 use Shetabit\Payment\Exceptions\PurchaseFailedException;
@@ -12,13 +11,6 @@ use Shetabit\Payment\Receipt;
 
 class Zarinpal extends Driver
 {
-    /**
-     * Zarinpal Client.
-     *
-     * @var object
-     */
-    protected $client;
-
     /**
      * Invoice
      *
@@ -44,7 +36,6 @@ class Zarinpal extends Driver
     {
         $this->invoice($invoice);
         $this->settings = (object) $settings;
-        $this->client = new Client();
     }
 
     /**
@@ -109,10 +100,10 @@ class Zarinpal extends Driver
     /**
      * Verify payment
      *
-     * @return mixed|void
+     * @return ReceiptInterface
      *
      * @throws InvalidPaymentException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \SoapFault
      */
     public function verify() : ReceiptInterface
     {
@@ -149,9 +140,7 @@ class Zarinpal extends Driver
      */
     public function createReceipt($referenceId)
     {
-        $receipt = new Receipt('zarinpal', $referenceId);
-
-        return $receipt;
+        return new Receipt('zarinpal', $referenceId);
     }
 
     /**
