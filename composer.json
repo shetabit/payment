@@ -116,7 +116,7 @@
                 "Shetabit\\Payment\\Provider\\PaymentServiceProvider"
             ],
             "aliases": {
-                "payment": "Shetabit\\Payment\\Facade\\Payment"
+                "Payment": "Shetabit\\Payment\\Facade\\Payment"
             }
         }
     },
