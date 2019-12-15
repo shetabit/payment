@@ -1,6 +1,5 @@
 <p align="center"><img src="resources/images/payment.png?raw=true"></p>
 
-
 # Laravel Payment Gateway
 
 
@@ -13,7 +12,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/e6a80b17298cb4fcb56d/maintainability)](https://codeclimate.com/github/shetabit/payment/maintainability)
 [![Quality Score][ico-code-quality]][link-code-quality]
 
-This is a Laravel Package for Payment Gateway Integration. This package supports `Laravel 5.2+`.
+This is a Laravel Package for Payment Gateway Integration. This package supports `Laravel 5.8+`.
 
 [Donate me](https://yekpay.me/mahdikhanzadi) if you like this package :sunglasses: :bowtie:
 
