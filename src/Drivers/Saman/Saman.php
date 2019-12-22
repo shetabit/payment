@@ -58,9 +58,11 @@ class Saman extends Driver
             $this->settings->apiPurchaseUrl
         );
 
-        $response = (int) $soap->RequestToken($data['MID'], $data['ResNum'], $data['Amount']);
+        $response = $soap->RequestToken($data['MID'], $data['ResNum'], $data['Amount']);
 
-        if ($response < 0) { // if something has done in a wrong way
+        $status = (int) $response;
+
+        if ($status < 0) { // if something has done in a wrong way
             $this->purchaseFailed($response);
         }
 
