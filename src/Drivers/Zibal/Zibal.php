@@ -63,16 +63,16 @@ class Zibal extends Driver
 
         if (!empty($details['orderId'])) {
             $orderId = $details['orderId'];
-        } else if(!empty($details['order_id'])) {
+        } elseif (!empty($details['order_id'])) {
             $orderId = $details['order_id'];
         } else {
             $orderId = crc32($this->invoice->getUuid()).time();
         }
 
         $mobile = null;
-        if(!empty($details['mobile'])) {
+        if (!empty($details['mobile'])) {
             $mobile = $details['mobile'];
-        } else if(!empty($details['phone'])) {
+        } elseif (!empty($details['phone'])) {
             $mobile = $details['phone'];
         }
 

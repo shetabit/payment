@@ -62,21 +62,21 @@ class Idpay extends Driver
         $phone = null;
         if (!empty($details['phone'])) {
             $phone = $details['phone'];
-        } else if (!empty($details['mobile'])) {
+        } elseif (!empty($details['mobile'])) {
             $phone = $details['mobile'];
         }
 
         $mail = null;
         if (!empty($details['mail'])) {
             $mail = $details['mail'];
-        } else if (!empty($details['email'])) {
+        } elseif (!empty($details['email'])) {
             $mail = $details['email'];
         }
 
         $desc = null;
         if (!empty($details['desc'])) {
             $desc = $details['desc'];
-        } else if (!empty($details['description'])) {
+        } elseif (!empty($details['description'])) {
             $desc = $details['description'];
         } else {
             $desc = $this->settings->description;
