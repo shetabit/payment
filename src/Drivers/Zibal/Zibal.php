@@ -96,11 +96,11 @@ class Zibal extends Driver
         );
         $body = json_decode($response->getBody()->getContents(), true);
 
-        if ($response->result != 100) {
+        if ($body->result != 100) {
             // some error has happened
-            throw new PurchaseFailedException($response->message);
+            throw new PurchaseFailedException($body->message);
         } else {
-            $this->invoice->transactionId($response->trackId);
+            $this->invoice->transactionId($body->trackId);
         }
 
         // return the transaction's id
