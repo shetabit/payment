@@ -91,12 +91,12 @@ class Payir extends Driver
         );
         $body = json_decode($response->getBody()->getContents(), true);
 
-        if ($body['status'] == 1) {
-            $this->invoice->transactionId($body['token']);
-        } else {
+        if ($body['status'] != 1) {
             // some error has happened
             throw new PurchaseFailedException($body['errorMessage']);
         }
+
+        $this->invoice->transactionId($body['token']);
 
         // return the transaction's id
         return $this->invoice->getTransactionId();

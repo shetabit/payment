@@ -15,7 +15,7 @@ trait HasDetail
      * Set a piece of data to the details.
      *
      * @param $key
-     * @param $value |null
+     * @param $value|null
      *
      * @return $this
      */

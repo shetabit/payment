@@ -78,9 +78,9 @@ class Poolam extends Driver
         if (empty($body['status']) || $body['status'] != 1) {
             // some error has happened
             throw new PurchaseFailedException($body['status']);
-        } else {
-            $this->invoice->transactionId($body['invoice_key']);
         }
+
+        $this->invoice->transactionId($body['invoice_key']);
 
         // return the transaction's id
         return $this->invoice->getTransactionId();

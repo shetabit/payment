@@ -226,7 +226,7 @@ class PaymentManager
     /**
      * Verifies the payment
      *
-     * @param null $finalizeCallback
+     * @param $finalizeCallback|null
      *
      * @return ReceiptInterface
      *

@@ -90,12 +90,12 @@ class Yekpay extends Driver
 
         $response = json_decode($client->request($data));
 
-        if ($response->Code == 100) {
-            $this->invoice->transactionId($response->Authority);
-        } else {
+        if ($response->Code != 100) {
             //"Request failed with Error code: $response->Code and Error message: $response->Description";
             throw new PurchaseFailedException($response->Description);
         }
+
+        $this->invoice->transactionId($response->Authority);
 
         // return the transaction's id
         return $this->invoice->getTransactionId();

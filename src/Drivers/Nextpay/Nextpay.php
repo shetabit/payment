@@ -80,9 +80,9 @@ class Nextpay extends Driver
         if (empty($body['code']) || $body['code'] != -1) {
             // error has happened
             throw new PurchaseFailedException($body['message']);
-        } else {
-            $this->invoice->transactionId($body['trans_id']);
         }
+
+        $this->invoice->transactionId($body['trans_id']);
 
         // return the transaction's id
         return $this->invoice->getTransactionId();

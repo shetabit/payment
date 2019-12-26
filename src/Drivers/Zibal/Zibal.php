@@ -61,12 +61,11 @@ class Zibal extends Driver
         // convert to toman
         $toman = $this->invoice->getAmount() * 10;
 
+        $orderId = crc32($this->invoice->getUuid()).time();
         if (!empty($details['orderId'])) {
             $orderId = $details['orderId'];
         } elseif (!empty($details['order_id'])) {
             $orderId = $details['order_id'];
-        } else {
-            $orderId = crc32($this->invoice->getUuid()).time();
         }
 
         $mobile = null;
@@ -99,9 +98,9 @@ class Zibal extends Driver
         if ($body->result != 100) {
             // some error has happened
             throw new PurchaseFailedException($body->message);
-        } else {
-            $this->invoice->transactionId($body->trackId);
         }
+
+        $this->invoice->transactionId($body->trackId);
 
         // return the transaction's id
         return $this->invoice->getTransactionId();

@@ -73,13 +73,11 @@ class Idpay extends Driver
             $mail = $details['email'];
         }
 
-        $desc = null;
+        $desc = $this->settings->description;
         if (!empty($details['desc'])) {
             $desc = $details['desc'];
         } elseif (!empty($details['description'])) {
             $desc = $details['description'];
-        } else {
-            $desc = $this->settings->description;
         }
 
         $data = array(
