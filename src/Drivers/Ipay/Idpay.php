@@ -59,13 +59,36 @@ class Idpay extends Driver
     {
         $details = $this->invoice->getDetails();
 
+        $phone = null;
+        if (!empty($details['phone'])) {
+            $phone = $details['phone'];
+        } else if (!empty($details['mobile'])) {
+            $phone = $details['mobile'];
+        }
+
+        $mail = null;
+        if (!empty($details['mail'])) {
+            $mail = $details['mail'];
+        } else if (!empty($details['email'])) {
+            $mail = $details['email'];
+        }
+
+        $desc = null;
+        if (!empty($details['desc'])) {
+            $desc = $details['desc'];
+        } else if (!empty($details['description'])) {
+            $desc = $details['description'];
+        } else {
+            $desc = $this->settings->description;
+        }
+
         $data = array(
             'order_id' => $this->invoice->getUuid(),
             'amount' => $this->invoice->getAmount(),
             'name' => $details['name'] ?? null,
-            'phone' => $details['mobile'] ?? $details['phone'] ?? null,
-            'mail' => $details['email'] ?? $details['mail'] ?? null,
-            'desc' => $details['description'] ?? $details['desc'] ?? $this->settings->description,
+            'phone' => $phone,
+            'mail' => $mail,
+            'desc' => $desc,
             'callback' => $this->settings->callbackUrl,
             'reseller' => $details['reseller'] ?? null,
         );
@@ -87,7 +110,6 @@ class Idpay extends Driver
             );
 
         $body = json_decode($response->getBody()->getContents(), true);
-
         if (empty($body['id'])) {
             // error has happened
             $message = $body['error_message'] ?? 'خطا در هنگام درخواست برای پرداخت رخ داده است.';
