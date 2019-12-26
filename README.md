@@ -59,6 +59,7 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - [saman](https://www.sep.ir) :heavy_check_mark:
 - [yekpay](https://yekpay.com/) :heavy_check_mark:
 - [zarinpal](https://www.zarinpal.com/) :heavy_check_mark:
+- [zibal](https://www.zibal.ir/) :heavy_check_mark:
 - Others are under way.
 
 **Help me to add below gateways by creating `pull requests`**

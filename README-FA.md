@@ -62,6 +62,8 @@
 - [بانک سامان](https://www.sep.ir) :heavy_check_mark:
 - [یک پی](https://yekpay.com/) :heavy_check_mark:
 - [زرین پال](https://www.zarinpal.com/) :heavy_check_mark:
+- [زیبال](https://www.zibal.ir/) :heavy_check_mark:
+
 - درایورهای دیگر ساخته خواهند شد یا اینکه بسازید و درخواست `merge` بدید.
 
 > در صورتی که درایور مورد نظرتون موجود نیست, میتونید برای درگاه پرداخت موردنظرتون درایور بسازید.

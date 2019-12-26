@@ -161,6 +161,14 @@ return [
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],
+        'zibal' => [
+            'apiPurchaseUrl' => 'https://gateway.zibal.ir/v1/request',
+            'apiPaymentUrl' => 'https://gateway.zibal.ir/start/',
+            'apiVerificationUrl' => 'https://gateway.zibal.ir/v1/verify',
+            'merchantId' => '',
+            'callbackUrl' => 'http://yoursite.com/path/to',
+            'description' => 'payment in '.config('app.name'),
+        ],
     ],
 
     /*
