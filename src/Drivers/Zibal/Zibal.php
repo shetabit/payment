@@ -83,17 +83,13 @@ class Zibal extends Driver
             'mobile' => $mobile, //optional for mpg
         );
 
-        $json = json_encode($data, JSON_UNESCAPED_UNICODE);
-
         $response = $this->client->request(
             'POST',
             $this->settings->apiPurchaseUrl,
-            [
-                "form_params" => $json,
-                "http_errors" => false,
-            ]
+            ["json" => $data, "http_errors" => false]
         );
-        $body = json_decode($response->getBody()->getContents(), true);
+
+        $body = json_decode($response->getBody()->getContents(), false);
 
         if ($body->result != 100) {
             // some error has happened
@@ -133,7 +129,7 @@ class Zibal extends Driver
         $orderId = request()->input('orderId');
         $transactionId = $this->invoice->getTransactionId() ?? request()->input('trackId');
 
-        if (!$successFlag != 1) {
+        if ($successFlag != 1) {
             $this->notVerified('پرداخت با شکست مواجه شد');
         }
 
@@ -143,14 +139,13 @@ class Zibal extends Driver
             "trackId" => $transactionId, //required
         );
 
-        $json = json_encode($data, JSON_UNESCAPED_LINE_TERMINATORS);
-
         $response = $this->client->request(
             'POST',
             $this->settings->apiVerificationUrl,
-            ["form_params" => $json, "http_errors" => false]
+            ["json" => $data, "http_errors" => false]
         );
-        $body = json_decode($response->getBody()->getContents(), true);
+
+        $body = json_decode($response->getBody()->getContents(), false);
 
         if ($body->result != 100) {
             $this->notVerified($body->message);
