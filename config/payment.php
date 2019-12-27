@@ -198,5 +198,6 @@ return [
         'saman' => \Shetabit\Payment\Drivers\Saman\Saman::class,
         'yekpay' => \Shetabit\Payment\Drivers\Yekpay\Yekpay::class,
         'zarinpal' => \Shetabit\Payment\Drivers\Zarinpal\Zarinpal::class,
+        'zibal' => \Shetabit\Payment\Drivers\Zibal\Zibal::class,
     ]
 ];
