@@ -109,7 +109,12 @@ class Zibal extends Driver
      */
     public function pay()
     {
-        $payUrl = $this->settings->apiPaymentUrl.$this->invoice->getTransactionId();
+        if (strtolower($this->getMode()) == 'direct') {
+            $payUrl = $this->settings->apiPaymentUrl.$this->invoice->getTransactionId().'/direct';
+        } else {
+            $payUrl = $this->settings->apiPaymentUrl.$this->invoice->getTransactionId();
+        }
+
 
         // redirect using laravel logic
         return redirect()->to($payUrl);
