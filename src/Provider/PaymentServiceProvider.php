@@ -14,7 +14,7 @@ class PaymentServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/resources/views', 'shetabitPayment');
+        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'shetabitPayment');
 
         /**
          * Configurations that needs to be done by user.
