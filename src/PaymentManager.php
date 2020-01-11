@@ -99,6 +99,21 @@ class PaymentManager
 
         return $this;
     }
+    
+    
+    /**
+     * Set description.
+     *
+     * @param $description
+     * @return $this
+     */
+
+    public function description($description)
+    {
+        $this->settings['description'] = $description;
+
+        return $this;
+    }
 
     /**
      * Reset the callbackUrl to its original that exists in configs.
