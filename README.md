@@ -295,6 +295,26 @@ try {
   );
   ```
 
+- ###### `description` : you can change the driver description  directly on the runtime.
+
+  ```php
+  # On the top of the file.
+  use Shetabit\Payment\Invoice;
+  use Shetabit\Payment\Facade\Payment;
+  ...
+  
+  # create new invoice
+  $invoice = (new Invoice)->amount(1000);
+  
+  # purchase the given invoice
+  Payment::description('runtimeDescription')->purchase(
+      $invoice, 
+      function($driver, $transactionId) {
+      // we can store $transactionId in database
+  	}
+  );
+  ```
+
 - ###### `amount`: you can set the invoice amount directly
 
   ```php
