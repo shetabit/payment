@@ -151,8 +151,6 @@ class Payping extends Driver
         );
 
         $responseBody = mb_strtolower($response->getBody()->getContents());
-        dd($responseBody);
-
         $body = @json_decode($responseBody, true);
 
         if (!empty($body['amount']) || !empty($body['refid']) || !empty($body['error'])) {
