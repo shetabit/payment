@@ -95,11 +95,16 @@ class Payping extends Driver
                     "http_errors" => false,
                 ]
             );
-        $body = json_decode($response->getBody()->getContents(), true);
 
-        if (!empty($body['Error'])) {
+        $responseBody = mb_strtolower($response->getBody()->getContents());
+        $body = @json_decode($responseBody, true);
+        $statusCode = (int) $response->getStatusCode();
+
+        if ($statusCode !== 200) {
             // some error has happened
-            throw new PurchaseFailedException($body['Error']);
+            $message = is_array($body) ? array_pop($body) : $this->convertStatusCodeToMessage($statusCode);
+
+            throw new PurchaseFailedException($message);
         }
 
         $this->invoice->transactionId($body['code']);
@@ -153,8 +158,12 @@ class Payping extends Driver
         $responseBody = mb_strtolower($response->getBody()->getContents());
         $body = @json_decode($responseBody, true);
 
-        if (!empty($body['amount']) || !empty($body['refid']) || !empty($body['error'])) {
-            $this->notVerified($body);
+        $statusCode = (int) $response->getStatusCode();
+
+        if ($statusCode !== 200) {
+            $message = is_array($body) ? array_pop($body) : $this->convertStatusCodeToMessage($statusCode);
+
+            $this->notVerified($message);
         }
 
         return $this->createReceipt($refId);
@@ -177,13 +186,35 @@ class Payping extends Driver
     /**
      * Trigger an exception
      *
-     * @param $status
+     * @param $message
+     *
      * @throws InvalidPaymentException
      */
-    private function notVerified($status)
+    private function notVerified($message)
     {
-        $message = $status['amount'] ?? $status['refid'] ?? $status['error'];
-
         throw new InvalidPaymentException($message);
+    }
+
+    /**
+     * Retrieve related message to given status code
+     *
+     * @param $statusCode
+     *
+     * @return string
+     */
+    private function convertStatusCodeToMessage(int $statusCode) : string
+    {
+        $messages = [
+            400 => 'مشکلی در ارسال درخواست وجود دارد',
+            401 => 'عدم دسترسی',
+            403 => 'دسترسی غیر مجاز',
+            404 => 'آیتم درخواستی مورد نظر موجود نمی باشد',
+            500 => 'مشکلی در سرور درگاه پرداخت رخ داده است',
+            503 => 'سرور درگاه پرداخت در حال حاضر قادر به پاسخگویی نمی باشد',
+        ];
+
+        $unknown = 'خطای ناشناخته ای در درگاه پرداخت رخ داده است';
+
+        return $messages[$statusCode] ?? $unknown;
     }
 }
