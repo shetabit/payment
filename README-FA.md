@@ -428,6 +428,30 @@ class MyDriver extends Driver
 
 <div dir="rtl">
 
+- `description` : به کمک این متد میتوانید به صورت مستقیم توضیحات صورتحساب را هنگام ارسال عوض کنید
+
+</div>
+
+```php
+  # On the top of the file.
+  use Shetabit\Payment\Invoice;
+  use Shetabit\Payment\Facade\Payment;
+  ...
+  
+  # create new invoice
+  $invoice = (new Invoice)->amount(1000);
+  
+  # purchase the given invoice
+  Payment::description("توضیحات صورتحساب")->purchase(
+      $invoice, 
+      function($driver, $transactionId) {
+      // we can store $transactionId in database
+  	}
+  );
+```
+
+<div dir="rtl">
+
 - `amount` : به کمک این متد میتوانید به صورت مستقیم هزینه صورتحساب را مشخص کنید
 
 </div>
