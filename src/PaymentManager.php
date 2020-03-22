@@ -127,6 +127,19 @@ class PaymentManager
     }
 
     /**
+     * Set description.
+     *
+     * @param $description
+     * @return $this
+     */
+    public function description($description)
+    {
+        $this->settings['description'] = $description;
+
+        return $this;
+    }
+    
+    /**
      * Set a piece of data to the details.
      *
      * @param $key
