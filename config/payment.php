@@ -88,6 +88,23 @@ return [
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],
+        'paypal' => [
+            /* normal api */
+            'apiPurchaseUrl' => 'https://www.paypal.com/cgi-bin/webscr',
+            'apiPaymentUrl' => 'https://www.zarinpal.com/pg/StartPay/',
+            'apiVerificationUrl' => 'https://ir.zarinpal.com/pg/services/WebGate/wsdl',
+
+            /* sandbox api */
+            'sandboxApiPurchaseUrl' => 'https://www.sandbox.paypal.com/cgi-bin/webscr',
+            'sandboxApiPaymentUrl' => 'https://sandbox.zarinpal.com/pg/StartPay/',
+            'sandboxApiVerificationUrl' => 'https://sandbox.zarinpal.com/pg/services/WebGate/wsdl',
+
+            'mode' => 'normal', // can be normal, sandbox
+            'currency' => '',
+            'id' => '', // Specify the email of the PayPal Business account
+            'callbackUrl' => 'http://yoursite.com/path/to',
+            'description' => 'payment in '.config('app.name'),
+        ],
         'payping' => [
             'apiPurchaseUrl' => 'https://api.payping.ir/v1/pay/',
             'apiPaymentUrl' => 'https://api.payping.ir/v1/pay/gotoipg/',
@@ -195,6 +212,7 @@ return [
         'nextpay' => \Shetabit\Payment\Drivers\Nextpay\Nextpay::class,
         'parsian' => \Shetabit\Payment\Drivers\Parsian\Parsian::class,
         'payir' => \Shetabit\Payment\Drivers\Payir\Payir::class,
+        'paypal' => \Shetabit\Payment\Drivers\Paypal\Paypal::class,
         'payping' => \Shetabit\Payment\Drivers\Payping\Payping::class,
         'paystar' => \Shetabit\Payment\Drivers\Paystar\Paystar::class,
         'poolam' => \Shetabit\Payment\Drivers\Poolam\Poolam::class,

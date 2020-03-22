@@ -1,7 +1,8 @@
 <p align="center"><img src="resources/images/payment.png?raw=true"></p>
 
-# Laravel Payment Gateway
 
+
+# Laravel Payment Gateway
 
 
 
@@ -52,6 +53,7 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - [nextpay](https://nextpay.ir/) :heavy_check_mark:
 - [parsian](https://www.pec.ir/) :heavy_check_mark:
 - [payir](https://pay.ir/) :heavy_check_mark:
+- [paypal](http://www.paypal.com/) (will be added soon in next version)
 - [payping](https://www.payping.ir/) :heavy_check_mark:
 - [paystar](http://paystar.ir/) :heavy_check_mark:
 - [poolam](https://poolam.ir/) :heavy_check_mark:
@@ -65,7 +67,6 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 **Help me to add below gateways by creating `pull requests`**
 
 - stripe
-- paypal
 - authorize
 - 2checkout
 - braintree
@@ -288,6 +289,26 @@ try {
   
   # purchase the given invoice
   Payment::callbackUrl($url)->purchase(
+      $invoice, 
+      function($driver, $transactionId) {
+      // we can store $transactionId in database
+  	}
+  );
+  ```
+  
+  - ###### `description` : you can change the driver description directly on the runtime.
+
+  ```php
+  # On the top of the file.
+  use Shetabit\Payment\Invoice;
+  use Shetabit\Payment\Facade\Payment;
+  ...
+  
+  # create new invoice
+  $invoice = (new Invoice)->amount(1000);
+  
+  # purchase the given invoice
+  Payment::description('runtimeDescription')->purchase(
       $invoice, 
       function($driver, $transactionId) {
       // we can store $transactionId in database
