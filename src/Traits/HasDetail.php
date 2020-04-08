@@ -38,7 +38,7 @@ trait HasDetail
      */
     public function getDetail($name)
     {
-        return (string) $this->details[$name] ?? null;
+        return $this->details[$name] ?? null;
     }
 
     /**
