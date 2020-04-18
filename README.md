@@ -295,7 +295,27 @@ try {
   	}
   );
   ```
+  
+- ###### `description` : you can change the driver description on the fly
 
+  ```php
+  # On the top of the file.
+  use Shetabit\Payment\Invoice;
+  use Shetabit\Payment\Facade\Payment;
+  ...
+  
+  # create new invoice
+  $invoice = (new Invoice)->amount(1000);
+  
+  # purchase the given invoice
+  Payment::description('Example.com Invoice#0001')->purchase(
+      $invoice, 
+      function($driver, $transactionId) {
+      // we can store $transactionId in database
+  	}
+  );
+  ```
+  
 - ###### `amount`: you can set the invoice amount directly
 
   ```php
