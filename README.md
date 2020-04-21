@@ -17,10 +17,10 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 
 [Donate me](https://yekpay.me/mahdikhanzadi) if you like this package :sunglasses: :bowtie:
 
-> This packages works with multiple drivers, and you can create custom drivers if there are not available in the [current drivers list](#list-of-available-drivers) (below list).
+> This packages works with multiple drivers, and you can create custom drivers if you can't find them in the [current drivers list](#list-of-available-drivers) (below list).
 
 - [داکیومنت فارسی][link-fa]
-- [english documents][link-en]
+- [English documents][link-en]
 
 # List of contents
 
@@ -64,7 +64,7 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - [zibal](https://www.zibal.ir/) :heavy_check_mark:
 - Others are under way.
 
-**Help me to add below gateways by creating `pull requests`**
+**Help me to add the gateways below by creating `pull requests`**
 
 - stripe
 - authorize
@@ -79,7 +79,7 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - saderat
 - pasargad
 
-> you can create your own custom driver if not  exists in the list , read the `Create custom drivers` section.
+> you can create your own custom drivers if it's not  exists in the list, read the `Create custom drivers` section.
 
 ## Install
 
@@ -91,25 +91,25 @@ $ composer require shetabit/payment
 
 ## Configure
 
-If you are using `Laravel 5.5` or higher then you don't need to add the provider and alias.
+If you are using `Laravel 5.5` or higher then you don't need to add the provider and alias. (Skip to b)
 
-In your `config/app.php` file add these two lines.
+a. In your `config/app.php` file add these two lines.
 
 ```php
-# In your providers array.
+// In your providers array.
 'providers' => [
     ...
     Shetabit\Payment\Provider\PaymentServiceProvider::class,
 ],
 
-# In your aliases array.
+// In your aliases array.
 'aliases' => [
     ...
     'Payment' => Shetabit\Payment\Facade\Payment::class,
 ],
 ```
 
-then run `php artisan vendor:publish` to publish `config/payment.php` file in your config directory.
+b. then run `php artisan vendor:publish` to publish `config/payment.php` file in your config directory.
 
 In the config file you can set the `default driver` to use for all your payments. But you can also change the driver at runtime.
 
@@ -125,7 +125,7 @@ Then fill the credentials for that gateway in the drivers array.
 ```php
 'drivers' => [
     'zarinpal' => [
-        // Fill all the credentials here.
+        // Fill in the credentials here.
         'apiPurchaseUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentRequest.json',
         'apiPaymentUrl' => 'https://www.zarinpal.com/pg/StartPay/',
         'apiVerificationUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentVerification.json',
@@ -139,7 +139,7 @@ Then fill the credentials for that gateway in the drivers array.
 
 ## How to use
 
-your `Invoice` holds your payment details, so we talk about `Invoice` class at first. 
+your `Invoice` holds your payment details, so initially we'll talk about `Invoice` class. 
 
 #### Working with invoices
 
@@ -149,17 +149,17 @@ before doing any thing you need to use `Invoice` class to create an invoice.
 In your code, use it like the below:
 
 ```php
-# On the top of the file.
+// At the top of the file.
 use Shetabit\Payment\Invoice;
 ...
 
-# create new invoice
+// Create new invoice.
 $invoice = new Invoice;
 
-# set invoice amount
+// Set invoice amount.
 $invoice->amount(1000);
 
-# add invoice details : we have 4 syntax
+// Add invoice details: There are 4 syntax available for this.
 // 1
 $invoice->detail(['detailName' => 'your detail goes here']);
 // 2 
@@ -173,101 +173,101 @@ $invoice->detail('detailName1','your detail1 goes here')
 ```
 available methods:
 
-- `uuid` : set the invoice's unique id
-- `getUuid` : retriev the invoice's current unique id
-- `detail` : attach some custom details into invoice
-- `getDetails` : retrieve all custom details 
-- `amount` : set the invoice's amount
-- `getAmount` : retrieve invoice's amount
-- `transactionId` : set invoice's payment transaction id
-- `getTransactionId` : retrieve payment's transaction id
-- `via` : set a driver we use to pay the invoice
-- `getDriver` : retrieve the driver
+- `uuid`: set the invoice unique id
+- `getUuid`: retrieve the invoice current unique id
+- `detail`: attach some custom details into invoice
+- `getDetails`: retrieve all custom details 
+- `amount`: set the invoice amount
+- `getAmount`: retrieve invoice amount
+- `transactionId`: set invoice payment transaction id
+- `getTransactionId`: retrieve payment transaction id
+- `via`: set a driver we use to pay the invoice
+- `getDriver`: retrieve the driver
 
 #### Purchase invoice
-in order to pay the invoice, we need the payment's transactionId.
-we purcahse the invoice to retrieve transaction id:
+In order to pay the invoice, we need the payment transactionId.
+We purchase the invoice to retrieve transaction id:
 
 ```php
-# On the top of the file.
+// At the top of the file.
 use Shetabit\Payment\Invoice;
 use Shetabit\Payment\Facade\Payment;
 ...
 
-# create new invoice
+// Create new invoice.
 $invoice = (new Invoice)->amount(1000);
 
-# purchase the given invoice
+// Purchase the given invoice.
 Payment::purchase($invoice,function($driver, $transactionId) {
-	// we can store $transactionId in database
+	// We can store $transactionId in database.
 });
 
-# purchase method accepts a callback function
+// Purchase method accepts a callback function.
 Payment::purchase($invoice, function($driver, $transactionId) {
-    // we can store $transactionId in database
+    // We can store $transactionId in database.
 });
 
-# you can specify callbackUrl
+// You can specify callbackUrl
 Payment::callbackUrl('http://yoursite.com/verify')->purchase(
     $invoice, 
     function($driver, $transactionId) {
-    	// we can store $transactionId in database
+    	// We can store $transactionId in database.
 	}
 );
 ```
 
 #### Pay invoice
 
-after purchasing the invoice, we can redirect user to the bank's payment page:
+After purchasing the invoice, we can redirect the user to the bank payment page:
 
 ```php
-# On the top of the file.
+// At the top of the file.
 use Shetabit\Payment\Invoice;
 use Shetabit\Payment\Facade\Payment;
 ...
 
-# create new invoice
+// Create new invoice.
 $invoice = (new Invoice)->amount(1000);
-# purchase and pay the given invoice
-// you should use return statement to redirect user to the bank's page.
+// Purchase and pay the given invoice.
+// You should use return statement to redirect user to the bank page.
 return Payment::purchase($invoice, function($driver, $transactionId) {
-    // store transactionId in database, we need it to verify payment in future.
+    // Store transactionId in database as we need it to verify payment in the future.
 })->pay();
 
-# do all things together a single line
+// Do all things together in a single line.
 return Payment::purchase(
     (new Invoice)->amount(1000), 
     function($driver, $transactionId) {
-    	// store transactionId in database.
-        // we need the transactionId to verify payment in future
+    	// Store transactionId in database.
+        // We need the transactionId to verify payment in the future.
 	}
 )->pay();
 ```
 
 #### Verify payment
 
-when user completes the payment, the bank redirects him/her to your website, then you need to **verify your payment** in order to insure the `invoice` has been **paid**.
+When user has completed the payment, the bank redirects them to your website, then you need to **verify your payment** in order to ensure the `invoice` has been **paid**.
 
 ```php
-# On the top of the file.
+// At the top of the file.
 use Shetabit\Payment\Facade\Payment;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
 ...
 
-# you need to verify the payment to insure the invoice has been paid successfully
-// we use transaction's id to verify payments
-// its a good practice to add invoice's amount.
+// You need to verify the payment to ensure the invoice has been paid successfully.
+// We use transaction id to verify payments
+// It is a good practice to add invoice amount as well.
 try {
 	$receipt = Payment::amount(1000)->transactionId($transaction_id)->verify();
 
-    // you can show payment's referenceId to user
+    // You can show payment referenceId to the user.
     echo $receipt->getReferenceId();
 
     ...
 } catch (InvalidPaymentException $exception) {
     /**
-    	when payment is not verified , it throw an exception.
-    	we can catch the excetion to handle invalid payments.
+    	when payment is not verified, it will throw an exception.
+    	We can catch the exception to handle invalid payments.
     	getMessage method, returns a suitable message that can be used in user interface.
     **/
     echo $exception->getMessage();
@@ -276,22 +276,22 @@ try {
 
 #### Useful methods
 
-- ###### `callbackUrl` : can be used to change callbackUrl on the runtime.
+- ###### `callbackUrl`: can be used to change callbackUrl on the runtime.
 
   ```php
-  # On the top of the file.
+  // At the top of the file.
   use Shetabit\Payment\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
-  # create new invoice
+  // Create new invoice.
   $invoice = (new Invoice)->amount(1000);
   
-  # purchase the given invoice
+  // Purchase the given invoice.
   Payment::callbackUrl($url)->purchase(
       $invoice, 
       function($driver, $transactionId) {
-      // we can store $transactionId in database
+      // We can store $transactionId in database.
   	}
   );
   ```
@@ -299,64 +299,64 @@ try {
 - ###### `amount`: you can set the invoice amount directly
 
   ```php
-  # On the top of the file.
+  // At the top of the file.
   use Shetabit\Payment\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
-  # purchase (we set invoice to null)
+  // Purchase (we set invoice to null).
   Payment::callbackUrl($url)->amount(1000)->purchase(
       null, 
       function($driver, $transactionId) {
-      // we can store $transactionId in database
+      // We can store $transactionId in database.
   	}
   );
   ```
 
-- ###### `via` : change driver on the fly
+- ###### `via`: change driver on the fly
 
   ```php
-  # On the top of the file.
+  // At the top of the file.
   use Shetabit\Payment\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
-  # create new invoice
+  // Create new invoice.
   $invoice = (new Invoice)->amount(1000);
   
-  # purchase the given invoice
+  // Purchase the given invoice.
   Payment::via('driverName')->purchase(
       $invoice, 
       function($driver, $transactionId) {
-      // we can store $transactionId in database
+      // We can store $transactionId in database.
   	}
   );
   ```
   
-- ###### `config` : set driver configs on the fly
+- ###### `config`: set driver configs on the fly
 
   ```php
-  # On the top of the file.
+  // At the top of the file.
   use Shetabit\Payment\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
-  # create new invoice
+  // Create new invoice.
   $invoice = (new Invoice)->amount(1000);
   
-  # purchase the given invoice with custom driver configs
+  // Purchase the given invoice with custom driver configs.
   Payment::config('mechandId', 'your mechand id')->purchase(
       $invoice,
       function($driver, $transactionId) {
-      // we can store $transactionId in database
+      // We can store $transactionId in database.
   	}
   );
 
-  # and we can also change multiple configs together
+  // Also we can change multiple configs at the same time.
   Payment::config(['key1' => 'value1', 'key2' => 'value2'])->purchase(
       $invoice,
       function($driver, $transactionId) {
-      // we can store $transactionId in database
+      // We can store $transactionId in database.
   	}
   );
   ```
@@ -369,7 +369,7 @@ First you have to add the name of your driver, in the drivers array and also you
 'drivers' => [
     'zarinpal' => [...],
     'my_driver' => [
-        ... # Your Config Params here.
+        ... // Your Config Params here.
     ]
 ]
 ```
@@ -377,7 +377,7 @@ First you have to add the name of your driver, in the drivers array and also you
 Now you have to create a Driver Map Class that will be used to pay invoices.
 In your driver, You just have to extend `Shetabit\Payment\Abstracts\Driver`.
 
-Ex. You created a class : `App\Packages\PaymentDriver\MyDriver`.
+Eg. You created a class: `App\Packages\PaymentDriver\MyDriver`.
 
 ```php
 namespace App\Packages\PaymentDriver;
@@ -388,19 +388,19 @@ use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class MyDriver extends Driver
 {
-    protected $invoice; // invoice
+    protected $invoice; // Invoice.
 
-    protected $settings; // driver settings
+    protected $settings; // Driver settings.
 
     public function __construct(Invoice $invoice, $settings)
     {
-        $this->invoice($invoice); // set the invoice
-        $this->settings = (object) $settings; // set settings
+        $this->invoice($invoice); // Set the invoice.
+        $this->settings = (object) $settings; // Set settings.
     }
 
-    // purchase the invoice, save its transactionId and finaly return it
+    // Purchase the invoice, save its transactionId and finaly return it.
     public function purchase() {
-        // request for a payment transaction id
+        // Request for a payment transaction id.
         ...
             
         $this->invoice->transactionId($transId);
@@ -408,20 +408,20 @@ class MyDriver extends Driver
         return $transId;
     }
     
-    // redirect into bank using transactionId, to complete the payment
+    // Redirect into bank using transactionId, to complete the payment.
     public function pay() {
-        // its better to set bankApiUrl in config/payment.php and retrieve it here:
+        // It is better to set bankApiUrl in config/payment.php and retrieve it here:
         $bankUrl = $this->settings->bankApiUrl; // bankApiUrl is the config name.
 
-        //prepare payment url
+        // Prepare payment url.
         $payUrl = $bankUrl.$this->invoice->getTransactionId();
 
-        // redirect to the bank
+        // Redirect to the bank.
         return redirect()->to($payUrl);
     }
     
-    // verify the payment (we must verify to insure that user has paid the invoice)
-    public function verify() : ReceiptInterface {
+    // Verify the payment (we must verify to ensure that user has paid the invoice).
+    public function verify(): ReceiptInterface {
         $verifyPayment = $this->settings->verifyApiUrl;
         
         $verifyUrl = $verifyPayment.$this->invoice->getTransactionId();
@@ -429,13 +429,12 @@ class MyDriver extends Driver
         ...
         
         /**
-			then we send a request to $verifyUrl and if payment is not
-			we throw an InvalidPaymentException with a suitable
+			Then we send a request to $verifyUrl and if payment is not valid we throw an InvalidPaymentException with a suitable message.
         **/
         throw new InvalidPaymentException('a suitable message');
         
         /**
-        	we create a receipt for this payment if everything goes normally.
+        	We create a receipt for this payment if everything goes normally.
         **/
         return new Receipt('driverName', 'payment_receipt_number');
     }
@@ -455,14 +454,14 @@ Once you create that class you have to specify it in the `payment.php` config fi
 
 #### Events
 
-you can listen for 2 events
+You can listen for 2 events
 
-- **InvoicePurchasedEvent** : occures when an invoice is purchased (after purchasing invoice is done successfully).
-- **InvoiceVerifiedEvent** : occures when an invoice is verified successfully.
+- **InvoicePurchasedEvent**: Occurs when an invoice is purchased (after purchasing invoice is done successfully).
+- **InvoiceVerifiedEvent**: Occurs when an invoice is verified successfully.
 
 ## Change log
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has been changed recently.
 
 ## Contributing
 
