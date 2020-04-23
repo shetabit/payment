@@ -54,11 +54,21 @@ class Zarinpal extends Driver
             $description = $this->settings->description;
         }
 
+        if (!empty($this->invoice->getDetails()['mobile'])) {
+            $mobile = $this->invoice->getDetails()['mobile'];
+        }
+
+        if (!empty($this->invoice->getDetails()['email'])) {
+            $email = $this->invoice->getDetails()['email'];
+        }
+
         $data = array(
             'MerchantID' => $this->settings->merchantId,
             'Amount' => $this->invoice->getAmount(),
             'CallbackURL' => $this->settings->callbackUrl,
             'Description' => $description,
+            'Mobile' => $mobile ?? '',
+            'Email' => $email ?? '',
             'AdditionalData' => $this->invoice->getDetails()
         );
 
