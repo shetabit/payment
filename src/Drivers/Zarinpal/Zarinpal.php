@@ -78,7 +78,7 @@ class Zarinpal extends Driver
         if ($result->Status != 100 || empty($result->Authority)) {
             // some error has happened
             $message = $this->translateStatus($result->Status);
-            throw new PurchaseFailedException($message);
+            throw new PurchaseFailedException($message, $result->Status);
         }
 
         $this->invoice->transactionId($result->Authority);
@@ -127,7 +127,7 @@ class Zarinpal extends Driver
         ];
 
         if ($status != 'OK') {
-            throw new InvalidPaymentException('عملیات پرداخت توسط کاربر لغو شد.');
+            throw new InvalidPaymentException('عملیات پرداخت توسط کاربر لغو شد.', -22);
         }
 
         $client = new \SoapClient($this->getVerificationUrl(), ['encoding' => 'UTF-8']);
@@ -135,7 +135,7 @@ class Zarinpal extends Driver
 
         if ($result->Status != 100) {
             $message = $this->translateStatus($result->Status);
-            throw new InvalidPaymentException($message);
+            throw new InvalidPaymentException($message, $result->Status);
         }
 
         return $this->createReceipt($result->RefID);
