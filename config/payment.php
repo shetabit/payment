@@ -35,10 +35,12 @@ return [
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],
+
         'behpardakht' => [
             'apiPurchaseUrl' => 'https://bpm.shaparak.ir/pgwchannel/services/pgw?wsdl',
             'apiPaymentUrl' => 'https://bpm.shaparak.ir/pgwchannel/startpay.mellat',
             'apiVerificationUrl' => 'https://bpm.shaparak.ir/pgwchannel/services/pgw?wsdl',
+            'apiNamespaceUrl' => 'http://interfaces.core.sw.bps.com/',
             'terminalId' => '',
             'username' => '',
             'password' => '',
@@ -84,7 +86,7 @@ return [
             'apiPurchaseUrl' => 'https://pay.ir/pg/send/',
             'apiPaymentUrl' => 'https://pay.ir/pg/',
             'apiVerificationUrl' => 'https://pay.ir/pg/verify/',
-            'merchantId' => '', // set it to `test` for test environments
+            'merchantId' => 'test', // set it to `test` for test environments
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],

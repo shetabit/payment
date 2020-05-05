@@ -46,8 +46,9 @@ class Behpardakht extends Driver
      * @throws PurchaseFailedException
      * @throws \SoapFault
      */
+    
     public function purchase()
-    {
+    {     
         $soap = new \SoapClient($this->settings->apiPurchaseUrl);
         $response = $soap->bpPayRequest($this->preparePurchaseData());
 
@@ -56,7 +57,8 @@ class Behpardakht extends Driver
             throw new PurchaseFailedException('پذیرنده معتبر نیست.');
         }
 
-        $data = explode(',', $response);
+
+        $data = explode(',', $response->return);
 
         // purchase was not successful
         if ($data[0] != "0") {
@@ -107,7 +109,7 @@ class Behpardakht extends Driver
         $soap = new \SoapClient($this->settings->apiVerificationUrl);
 
         // step1: verify request
-        $verifyResponse = $soap->bpVerifyRequest($data, $this->settings->apiNamespaceUrl);
+        $verifyResponse = (int)$soap->bpVerifyRequest($data, $this->settings->apiNamespaceUrl)->return;
         if ($verifyResponse != 0) {
             // rollback money and throw exception
             $soap->bpReversalRequest($data, $this->settings->apiNamespaceUrl);
@@ -115,7 +117,7 @@ class Behpardakht extends Driver
         }
 
         // step2: settle request
-        $settleResponse = $soap->bpSettleRequest($data, $this->settings->apiNamespaceUrl);
+        $settleResponse = $soap->bpSettleRequest($data, $this->settings->apiNamespaceUrl)->return;
         if ($settleResponse != 0) {
             // rollback money and throw exception
             $soap->bpReversalRequest($data, $this->settings->apiNamespaceUrl);
