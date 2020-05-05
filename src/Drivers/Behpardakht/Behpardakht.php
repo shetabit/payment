@@ -60,8 +60,6 @@ class Behpardakht extends Driver
 
         $data = explode(',', $response->return);
 
-
-
         // purchase was not successful
         if ($data[0] != "0") {
             throw new PurchaseFailedException($response);
