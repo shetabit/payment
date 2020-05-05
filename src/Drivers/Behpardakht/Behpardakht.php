@@ -46,9 +46,9 @@ class Behpardakht extends Driver
      * @throws PurchaseFailedException
      * @throws \SoapFault
      */
+    
     public function purchase()
-    {
-        error_reporting(0);
+    {     
         $soap = new \SoapClient($this->settings->apiPurchaseUrl);
         $response = $soap->bpPayRequest($this->preparePurchaseData());
 
