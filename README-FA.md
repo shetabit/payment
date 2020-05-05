@@ -48,7 +48,7 @@
 # درایورهای موجود
 
 - [آسان پرداخت](https://asanpardakht.ir/)  :warning: (تست نشده)
-- [به پرداخت ملت (بانک ملت)](http://www.behpardakht.com/)  :warning: (تست نشده)
+- [به پرداخت ملت (بانک ملت)](http://www.behpardakht.com/) :heavy_check_mark:
 - [ایدی پی](https://idpay.ir/) :heavy_check_mark:
 - [ایران کیش](http://irankish.com/) :heavy_check_mark:
 - [نکست پی](https://nextpay.ir/) :heavy_check_mark:
