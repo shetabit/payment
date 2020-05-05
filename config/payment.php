@@ -9,7 +9,7 @@ return [
     | You can switch to a different driver at runtime.
     |
     */
-    'default' => 'behpardakht',
+    'default' => 'zarinpal',
 
     /*
     |--------------------------------------------------------------------------
