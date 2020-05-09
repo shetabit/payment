@@ -52,13 +52,18 @@ class Saman extends Driver
             'MID' => $this->settings->merchantId,
             'ResNum' => $this->invoice->getUuid(),
             'Amount' => $this->invoice->getAmount() * 10, // convert to rial
+            'AdditionalData1' => $this->invoice->getDetails()[0], // used for getting reports, due to https://www.sep.ir/Data/Sites/1/media/token98.pdf
+            'AdditionalData2' => $this->invoice->getDetails()[1], // used for getting reports, due to https://www.sep.ir/Data/Sites/1/media/token98.pdf
+            'wage' => 0, // TODO, wage that should be payed by customer 
         );
 
         $soap = new \SoapClient(
             $this->settings->apiPurchaseUrl
         );
 
-        $response = $soap->RequestToken($data['MID'], $data['ResNum'], $data['Amount']);
+        $response = $soap->RequestToken($data['MID'], $data['ResNum'], $data['Amount'], 0, 0, 0, 0, 0, 0, 
+                                        $data['AdditionalData1'], $data['AdditionalData2'], $data['wage']);
+        
 
         $status = (int) $response;
 
