@@ -45,14 +45,14 @@
   - [License](#license)
 
 # 可用驱动列表
-- [asanpardakht](https://asanpardakht.ir/) :warning: (not tested)
+- [asanpardakht](https://asanpardakht.ir/) :warning: (未测试)
 - [behpardakht (mellat)](http://www.behpardakht.com/) :heavy_check_mark:
 - [idpay](https://idpay.ir/) :heavy_check_mark:
 - [irankish](http://irankish.com/) :heavy_check_mark:
 - [nextpay](https://nextpay.ir/) :heavy_check_mark:
 - [parsian](https://www.pec.ir/) :heavy_check_mark:
 - [payir](https://pay.ir/) :heavy_check_mark:
-- [paypal](http://www.paypal.com/) (will be added soon in next version)
+- [paypal](http://www.paypal.com/) (在下一个版本中很快就支持了)
 - [payping](https://www.payping.ir/) :heavy_check_mark:
 - [paystar](http://paystar.ir/) :heavy_check_mark:
 - [poolam](https://poolam.ir/) :heavy_check_mark:
@@ -61,7 +61,7 @@
 - [yekpay](https://yekpay.com/) :heavy_check_mark:
 - [zarinpal](https://www.zarinpal.com/) :heavy_check_mark:
 - [zibal](https://www.zibal.ir/) :heavy_check_mark:
-- Others are under way.
+- 其他正在进行中
 
 **您可以通过`pull requests` 帮助我创建更多的网关**
 
