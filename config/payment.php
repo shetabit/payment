@@ -82,6 +82,16 @@ return [
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
         ],
+        'pasargad' => [
+            'apiPaymentUrl' => 'https://pep.shaparak.ir/gateway.aspx',
+            'apiCheckTransactionUrl' => 'https://pep.shaparak.ir/CheckTransactionResult.aspx',
+            'apiVerificationUrl' => 'https://pep.shaparak.ir/VerifyPayment.aspx',
+            'merchantId' => '',
+            'terminalCode' => '',
+            'certificate' => '', // can be string (and set certificateType to xml_string) or an xml file path (and set cetificateType to xml_file)
+            'certificateType' => 'xml_file', // can be: xml_file, xml_string
+            'callbackUrl' => 'http://yoursite.com/path/to',
+        ],
         'payir' => [
             'apiPurchaseUrl' => 'https://pay.ir/pg/send/',
             'apiPaymentUrl' => 'https://pay.ir/pg/',
@@ -213,6 +223,7 @@ return [
         'irankish' => \Shetabit\Payment\Drivers\Irankish\Irankish::class,
         'nextpay' => \Shetabit\Payment\Drivers\Nextpay\Nextpay::class,
         'parsian' => \Shetabit\Payment\Drivers\Parsian\Parsian::class,
+        'pasargad' => \Shetabit\Payment\Drivers\Pasargad\Pasargad::class,
         'payir' => \Shetabit\Payment\Drivers\Payir\Payir::class,
         'paypal' => \Shetabit\Payment\Drivers\Paypal\Paypal::class,
         'payping' => \Shetabit\Payment\Drivers\Payping\Payping::class,

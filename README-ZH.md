@@ -51,6 +51,7 @@
 - [irankish](http://irankish.com/) :heavy_check_mark:
 - [nextpay](https://nextpay.ir/) :heavy_check_mark:
 - [parsian](https://www.pec.ir/) :heavy_check_mark:
+- [pasargad](https://bpi.ir/) :warning: (未测试)
 - [payir](https://pay.ir/) :heavy_check_mark:
 - [paypal](http://www.paypal.com/) (在下一个版本中很快就支持了)
 - [payping](https://www.payping.ir/) :heavy_check_mark:
