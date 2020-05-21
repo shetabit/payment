@@ -6,116 +6,116 @@ use Shetabit\Payment\Drivers\Pasargad\Utils\RSA;
 
 class RSAProcessor
 {
-	public const KEY_TYPE_XML_FILE = 'xml_file';
-	public const KEY_TYPE_XML_STRING = 'xml_string';
+    public const KEY_TYPE_XML_FILE = 'xml_file';
+    public const KEY_TYPE_XML_STRING = 'xml_string';
 
-	private $publicKey = null;
-	private $privateKey = null;
-	private $modulus = null;
-	private $keyLength = "1024";
+    private $publicKey = null;
+    private $privateKey = null;
+    private $modulus = null;
+    private $keyLength = "1024";
 
-	public function __construct($key, $keyType = null)
-	{
-		$xmlObject = null;
-		$keyType = is_null($keyType) ? null : strtolower($keyType);
+    public function __construct($key, $keyType = null)
+    {
+        $xmlObject = null;
+        $keyType = is_null($keyType) ? null : strtolower($keyType);
 
-		if ($keyType == null || $keyType == self::KEY_TYPE_XML_STRING) {
-			$xmlObject = simplexml_load_string($key);
-		} elseif ($keyType == self::KEY_TYPE_XML_FILE) {
-			$xmlObject = simplexml_load_file($key);
-		}
+        if ($keyType == null || $keyType == self::KEY_TYPE_XML_STRING) {
+            $xmlObject = simplexml_load_string($key);
+        } elseif ($keyType == self::KEY_TYPE_XML_FILE) {
+            $xmlObject = simplexml_load_file($key);
+        }
 
-		$this->modulus = RSA::binary_to_number(base64_decode($xmlObject->Modulus));
-		$this->publicKey = RSA::binary_to_number(base64_decode($xmlObject->Exponent));
-		$this->privateKey = RSA::binary_to_number(base64_decode($xmlObject->D));
-		$this->keyLength = strlen(base64_decode($xmlObject->Modulus)) * 8;
-	}
+        $this->modulus = RSA::binary_to_number(base64_decode($xmlObject->Modulus));
+        $this->publicKey = RSA::binary_to_number(base64_decode($xmlObject->Exponent));
+        $this->privateKey = RSA::binary_to_number(base64_decode($xmlObject->D));
+        $this->keyLength = strlen(base64_decode($xmlObject->Modulus)) * 8;
+    }
 
-	/**
-	 * Retrieve public key
-	 *
-	 * @return string|null
-	 */
-	public function getPublicKey()
-	{
-		return $this->publicKey;
-	}
+    /**
+     * Retrieve public key
+     *
+     * @return string|null
+     */
+    public function getPublicKey()
+    {
+        return $this->publicKey;
+    }
 
-	/**
-	 * Retrieve private key
-	 *
-	 * @return string|null
-	 */
-	public function getPrivateKey()
-	{
-		return $this->privateKey;
-	}
+    /**
+     * Retrieve private key
+     *
+     * @return string|null
+     */
+    public function getPrivateKey()
+    {
+        return $this->privateKey;
+    }
 
-	/**
-	 * Retrieve key length
-	 *
-	 * @return integer
-	 */
-	public function getKeyLength()
-	{
-		return $this->keyLength;
-	}
+    /**
+     * Retrieve key length
+     *
+     * @return integer
+     */
+    public function getKeyLength()
+    {
+        return $this->keyLength;
+    }
 
-	/**
-	 * Retrieve modulus
-	 *
-	 * @return string|null
-	 */
-	public function getModulus()
-	{
-		return $this->modulus;
-	}
+    /**
+     * Retrieve modulus
+     *
+     * @return string|null
+     */
+    public function getModulus()
+    {
+        return $this->modulus;
+    }
 
-	/**
-	 * Encrypt given data
-	 *
-	 * @param string $data
-	 *
-	 * @return string
-	 */
-	public function encrypt($data)
-	{
-		return base64_encode(RSA::rsa_encrypt($data,$this->publicKey,$this->modulus,$this->keyLength));
-	}
+    /**
+     * Encrypt given data
+     *
+     * @param string $data
+     *
+     * @return string
+     */
+    public function encrypt($data)
+    {
+        return base64_encode(RSA::rsa_encrypt($data, $this->publicKey, $this->modulus, $this->keyLength));
+    }
 
-	/**
-	 * Decrypt given data
-	 *
-	 * @param $data
-	 *
-	 * @return string
-	 */
-	public function dencrypt($data)
-	{
-		return RSA::rsa_decrypt($data,$this->privateKey,$this->modulus,$this->keyLength);
-	}
+    /**
+     * Decrypt given data
+     *
+     * @param $data
+     *
+     * @return string
+     */
+    public function dencrypt($data)
+    {
+        return RSA::rsa_decrypt($data, $this->privateKey, $this->modulus, $this->keyLength);
+    }
 
-	/**
-	 * Sign given data
-	 *
-	 * @param string $data
-	 *
-	 * @return string
-	 */
-	public function sign($data)
-	{
-		return RSA::rsa_sign($data,$this->privateKey,$this->modulus,$this->keyLength);
-	}
+    /**
+     * Sign given data
+     *
+     * @param string $data
+     *
+     * @return string
+     */
+    public function sign($data)
+    {
+        return RSA::rsa_sign($data, $this->privateKey, $this->modulus, $this->keyLength);
+    }
 
-	/**
-	 * Verify RSA data
-	 *
-	 * @param string $data
-	 *
-	 * @return boolean
-	 */
-	public function verify($data)
-	{
-		return RSA::rsa_verify($data,$this->publicKey,$this->modulus,$this->keyLength);
-	}
+    /**
+     * Verify RSA data
+     *
+     * @param string $data
+     *
+     * @return boolean
+     */
+    public function verify($data)
+    {
+        return RSA::rsa_verify($data, $this->publicKey, $this->modulus, $this->keyLength);
+    }
 }

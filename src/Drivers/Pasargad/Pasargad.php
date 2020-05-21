@@ -28,7 +28,7 @@ class Pasargad extends Driver
 
     /**
      * Prepared invoice's data
-     * 
+     *
      * @var array
      */
     protected $preparedData = array();
@@ -205,7 +205,7 @@ class Pasargad extends Driver
         $merchantCode = $this->settings->merchantId;
         $terminalCode = $this->settings->terminalCode;
         $amount = $this->invoice->getAmount() * 10; // convert to toman
-        $redirectAddress = $this->settings->callbackUrl; 
+        $redirectAddress = $this->settings->callbackUrl;
         $invoiceNumber = crc32($this->invoice->getUuid()).rand(0, time());
         $timeStamp = date("Y/m/d H:i:s");
 
@@ -216,7 +216,7 @@ class Pasargad extends Driver
         }
 
         $data = "#". $merchantCode ."#". $terminalCode ."#". $invoiceNumber ."#". $invoiceDate ."#". $amount ."#". $redirectAddress ."#". $action ."#". $timeStamp ."#";
-        $data = sha1($data,true);
+        $data = sha1($data, true);
         $data =  $this->sign($data);
         $signedData =  base64_encode($data);
 
@@ -242,17 +242,17 @@ class Pasargad extends Driver
      */
     protected function makeXMLTree($data)
     {
-       $ret = array();
+        $ret = array();
 
-       $parser = xml_parser_create();
-       xml_parser_set_option($parser,XML_OPTION_CASE_FOLDING,0);
-       xml_parser_set_option($parser,XML_OPTION_SKIP_WHITE,1);
-       xml_parse_into_struct($parser,$data,$values,$tags);
-       xml_parser_free($parser);
+        $parser = xml_parser_create();
+        xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
+        xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
+        xml_parse_into_struct($parser, $data, $values, $tags);
+        xml_parser_free($parser);
 
-       $hash_stack = array();
-       foreach ($values as $key => $val) {
-          switch ($val['type']) {
+        $hash_stack = array();
+        foreach ($values as $key => $val) {
+            switch ($val['type']) {
              case 'open':
                 array_push($hash_stack, $val['tag']);
              break;
@@ -267,8 +267,8 @@ class Pasargad extends Driver
                 array_pop($hash_stack);
              break;
           }
-       }
+        }
 
-       return $ret;
-    }  
+        return $ret;
+    }
 }
