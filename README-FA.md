@@ -20,6 +20,7 @@
 
 - [داکیومنت فارسی][link-fa]
 - [english documents][link-en]
+- [中文文档][link-zh]
 
 
 در صورتی که از این پکیج خوشتون آمده و ازش استفاده می‌کنید می‌تونید با پرداخت مبلغ اندکی من رو حمایت کنید تا این پکیج رو بیشتر توسعه بدم و درگاه‌های جدیدتری بهش اضافه کنم.
@@ -511,6 +512,7 @@ class MyDriver extends Driver
 
 [link-fa]: README-FA.md
 [link-en]: README.md
+[link-zh]: README-ZH.md
 [link-packagist]: https://packagist.org/packages/shetabit/payment
 [link-code-quality]: https://scrutinizer-ci.com/g/shetabit/payment
 [link-author]: https://github.com/khanzadimahdi
