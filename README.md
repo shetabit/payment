@@ -77,7 +77,6 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - payoneer
 - paysimple
 - saderat
-- pasargad
 
 > you can create your own custom drivers if it's not  exists in the list, read the `Create custom drivers` section.
 

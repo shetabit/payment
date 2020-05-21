@@ -77,7 +77,6 @@
 - payoneer
 - paysimple
 - saderat
-- pasargad
 
 > 如果找不到你需要的，您可以创建你自己的驱动，阅读`创建自定义驱动`部分，可以了解更多
 
