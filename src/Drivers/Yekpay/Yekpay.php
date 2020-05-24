@@ -139,19 +139,20 @@ class Yekpay extends Driver
         }
 
         //"Success Payment with reference: $response->Reference and message: $transaction->message";
-        return $this->createReceipt($response->Reference);
+        return $this->createReceipt($response->Reference, $data->authority);
     }
 
     /**
      * Generate the payment's receipt
      *
      * @param $referenceId
+     * @param $transactionId
      *
      * @return Receipt
      */
-    protected function createReceipt($referenceId)
+    protected function createReceipt($referenceId, $transactionId)
     {
-        $receipt = new Receipt('yekpay', $referenceId);
+        $receipt = new Receipt('yekpay', $referenceId, $transactionId);
 
         return $receipt;
     }

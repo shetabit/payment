@@ -127,19 +127,20 @@ class Irankish extends Driver
             $this->notVerified($status);
         }
 
-        return $this->createReceipt($data['referenceNumber']);
+        return $this->createReceipt($data['referenceNumber'], $this->invoice->getTransactionId());
     }
 
     /**
      * Generate the payment's receipt
      *
      * @param $referenceId
+     * @param $transactionId
      *
      * @return Receipt
      */
-    protected function createReceipt($referenceId)
+    protected function createReceipt($referenceId, $transactionId)
     {
-        $receipt = new Receipt('irankish', $referenceId);
+        $receipt = new Receipt('irankish', $referenceId, $transactionId);
 
         return $receipt;
     }

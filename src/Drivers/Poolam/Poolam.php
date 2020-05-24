@@ -129,19 +129,20 @@ class Poolam extends Driver
             $this->notVerified($message);
         }
 
-        return $this->createReceipt($body['bank_code']);
+        return $this->createReceipt($body['bank_code'], $transactionId);
     }
 
     /**
      * Generate the payment's receipt
      *
      * @param $referenceId
+     * @param $transactionId
      *
      * @return Receipt
      */
-    protected function createReceipt($referenceId)
+    protected function createReceipt($referenceId, $transactionId)
     {
-        $receipt = new Receipt('poolam', $referenceId);
+        $receipt = new Receipt('poolam', $referenceId, $transactionId);
 
         return $receipt;
     }

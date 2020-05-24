@@ -151,7 +151,7 @@ class Nextpay extends Driver
      */
     protected function createReceipt($referenceId)
     {
-        $receipt = new Receipt('nextpay', $referenceId);
+        $receipt = new Receipt('nextpay', $referenceId, $referenceId); // referenceId == transactionId
 
         return $receipt;
     }

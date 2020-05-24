@@ -166,19 +166,20 @@ class Sadad extends Driver
          * شماره مرجع : $body->RetrievalRefNo
          */
 
-        return $this->createReceipt($body->SystemTraceNo);
+        return $this->createReceipt($body->SystemTraceNo, $token);
     }
 
     /**
      * Generate the payment's receipt
      *
      * @param $referenceId
+     * @param $transactionId
      *
      * @return Receipt
      */
-    protected function createReceipt($referenceId)
+    protected function createReceipt($referenceId, $transactionId)
     {
-        $receipt = new Receipt('sadad', $referenceId);
+        $receipt = new Receipt('sadad', $referenceId, $transactionId);
 
         return $receipt;
     }

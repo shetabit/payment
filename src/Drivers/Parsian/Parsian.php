@@ -120,19 +120,20 @@ class Parsian extends Driver
             throw new InvalidPaymentException($message);
         }
 
-        return $this->createReceipt($result->RRN);
+        return $this->createReceipt($result->RRN, $token);
     }
 
     /**
      * Generate the payment's receipt
      *
      * @param $referenceId
+     * @param $transactionId
      *
      * @return Receipt
      */
-    protected function createReceipt($referenceId)
+    protected function createReceipt($referenceId, $transactionId)
     {
-        $receipt = new Receipt('parsian', $referenceId);
+        $receipt = new Receipt('parsian', $referenceId, $transactionId);
 
         return $receipt;
     }

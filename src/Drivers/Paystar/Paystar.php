@@ -150,7 +150,7 @@ class Paystar extends Driver
      */
     protected function createReceipt($referenceId)
     {
-        $receipt = new Receipt('paystar', $referenceId);
+        $receipt = new Receipt('paystar', $referenceId, $referenceId); // referenceId == transactionId
 
         return $receipt;
     }

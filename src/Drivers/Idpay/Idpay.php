@@ -176,19 +176,20 @@ class Idpay extends Driver
             $this->notVerified($errorCode);
         }
 
-        return $this->createReceipt($body['track_id']);
+        return $this->createReceipt($body['track_id'], $data['id']);
     }
 
     /**
      * Generate the payment's receipt
      *
      * @param $referenceId
+     * @param $transactionId
      *
      * @return Receipt
      */
-    protected function createReceipt($referenceId)
+    protected function createReceipt($referenceId, $transactionId)
     {
-        $receipt = new Receipt('idpay', $referenceId);
+        $receipt = new Receipt('idpay', $referenceId, $transactionId);
 
         return $receipt;
     }

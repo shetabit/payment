@@ -144,7 +144,7 @@ class Payir extends Driver
             $this->notVerified($body['errorCode']);
         }
 
-        return $this->createReceipt($body['transId']);
+        return $this->createReceipt($body['transId'], $data['token']);
     }
 
 
@@ -152,12 +152,13 @@ class Payir extends Driver
      * Generate the payment's receipt
      *
      * @param $referenceId
+     * @param $transactionId
      *
      * @return Receipt
      */
-    protected function createReceipt($referenceId)
+    protected function createReceipt($referenceId, $transactionId)
     {
-        $receipt = new Receipt('payir', $referenceId);
+        $receipt = new Receipt('payir', $referenceId, $transactionId);
 
         return $receipt;
     }

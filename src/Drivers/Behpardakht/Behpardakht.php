@@ -46,7 +46,7 @@ class Behpardakht extends Driver
      * @throws PurchaseFailedException
      * @throws \SoapFault
      */
-    
+
     public function purchase()
     {
         $soap = new \SoapClient($this->settings->apiPurchaseUrl);
@@ -124,19 +124,20 @@ class Behpardakht extends Driver
             throw new InvalidPaymentException($settleResponse ?? "خطا در ثبت درخواست واریز وجه");
         }
 
-        return $this->createReceipt($data['saleReferenceId']);
+        return $this->createReceipt($data['saleReferenceId'], $data['orderId']);
     }
 
     /**
      * Generate the payment's receipt
      *
      * @param $referenceId
+     * @param $transactionId
      *
      * @return Receipt
      */
-    protected function createReceipt($referenceId)
+    protected function createReceipt($referenceId, $transactionId)
     {
-        $receipt = new Receipt('behpardakht', $referenceId);
+        $receipt = new Receipt('behpardakht', $referenceId, $transactionId);
 
         return $receipt;
     }

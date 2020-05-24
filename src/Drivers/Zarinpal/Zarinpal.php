@@ -138,19 +138,20 @@ class Zarinpal extends Driver
             throw new InvalidPaymentException($message, $result->Status);
         }
 
-        return $this->createReceipt($result->RefID);
+        return $this->createReceipt($result->RefID, $authority);
     }
 
     /**
      * Generate the payment's receipt
      *
      * @param $referenceId
+     * @param $transactionId
      *
      * @return Receipt
      */
-    public function createReceipt($referenceId)
+    public function createReceipt($referenceId, $transactionId)
     {
-        return new Receipt('zarinpal', $referenceId);
+        return new Receipt('zarinpal', $referenceId, $transactionId);
     }
 
     /**

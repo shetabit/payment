@@ -125,7 +125,7 @@ class Asanpardakht extends Driver
         // step2: settle
         $this->settleStep($client, $params);
 
-        return $this->createReceipt($payGateTranID);
+        return $this->createReceipt($payGateTranID, $this->invoice->getTransactionId() ?? $returningParams[2]);
     }
 
     /**
@@ -176,12 +176,13 @@ class Asanpardakht extends Driver
      * Generate the payment's receipt
      *
      * @param $referenceId
+     * @param $transactionId
      *
      * @return Receipt
      */
-    protected function createReceipt($referenceId)
+    protected function createReceipt($referenceId, $transactionId)
     {
-        $receipt = new Receipt('asanpardakht', $referenceId);
+        $receipt = new Receipt('asanpardakht', $referenceId, $transactionId);
 
         return $receipt;
     }
