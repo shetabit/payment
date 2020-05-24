@@ -3,6 +3,7 @@
 namespace Shetabit\Payment\Contracts;
 
 use Carbon\Carbon;
+use Shetabit\Payment\Exceptions\NoTransactionIdException;
 
 interface ReceiptInterface
 {
@@ -19,6 +20,14 @@ interface ReceiptInterface
      * @return string
      */
     public function getReferenceId() : string;
+
+    /**
+     * Retrieve transaction's ID.
+     *
+     * @return string
+     * @throws NoTransactionIdException
+     */
+    public function getTransactionId() : string;
 
     /**
      * Retrieve payment date
