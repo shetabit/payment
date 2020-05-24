@@ -263,6 +263,9 @@ try {
     // You can show payment referenceId to the user.
     echo $receipt->getReferenceId();
 
+    // You can use the transactionId to match to your database (not supported by all gateways).
+    echo $receipt->getTransactionId();
+
     ...
 } catch (InvalidPaymentException $exception) {
     /**
