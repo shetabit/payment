@@ -25,9 +25,9 @@ class RSAProcessor
             $xmlObject = simplexml_load_file($key);
         }
 
-        $this->modulus = RSA::binary_to_number(base64_decode($xmlObject->Modulus));
-        $this->publicKey = RSA::binary_to_number(base64_decode($xmlObject->Exponent));
-        $this->privateKey = RSA::binary_to_number(base64_decode($xmlObject->D));
+        $this->modulus = RSA::binaryToNumber(base64_decode($xmlObject->Modulus));
+        $this->publicKey = RSA::binaryToNumber(base64_decode($xmlObject->Exponent));
+        $this->privateKey = RSA::binaryToNumber(base64_decode($xmlObject->D));
         $this->keyLength = strlen(base64_decode($xmlObject->Modulus)) * 8;
     }
 
@@ -80,7 +80,7 @@ class RSAProcessor
      */
     public function encrypt($data)
     {
-        return base64_encode(RSA::rsa_encrypt($data, $this->publicKey, $this->modulus, $this->keyLength));
+        return base64_encode(RSA::rsaEncrypt($data, $this->publicKey, $this->modulus, $this->keyLength));
     }
 
     /**
@@ -90,9 +90,9 @@ class RSAProcessor
      *
      * @return string
      */
-    public function dencrypt($data)
+    public function decrypt($data)
     {
-        return RSA::rsa_decrypt($data, $this->privateKey, $this->modulus, $this->keyLength);
+        return RSA::rsaDecrypt($data, $this->privateKey, $this->modulus, $this->keyLength);
     }
 
     /**
@@ -104,7 +104,7 @@ class RSAProcessor
      */
     public function sign($data)
     {
-        return RSA::rsa_sign($data, $this->privateKey, $this->modulus, $this->keyLength);
+        return RSA::rsaSign($data, $this->privateKey, $this->modulus, $this->keyLength);
     }
 
     /**
@@ -116,6 +116,6 @@ class RSAProcessor
      */
     public function verify($data)
     {
-        return RSA::rsa_verify($data, $this->publicKey, $this->modulus, $this->keyLength);
+        return RSA::rsaVerify($data, $this->publicKey, $this->modulus, $this->keyLength);
     }
 }

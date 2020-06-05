@@ -1,50 +1,51 @@
 <?php
 
 namespace Shetabit\Payment\Drivers\Pasargad\Utils;
+
 define("BCCOMP_LARGER", 1);
 
 class RSA
 {
-    public static function rsa_encrypt($message, $public_key, $modulus, $keylength)
+    public static function rsaEncrypt($message, $public_key, $modulus, $keylength)
     {
-        $padded = RSA::add_PKCS1_padding($message, true, $keylength / 8);
-        $number = RSA::binary_to_number($padded);
-        $encrypted = RSA::pow_mod($number, $public_key, $modulus);
-        $result = RSA::number_to_binary($encrypted, $keylength / 8);
+        $padded = RSA::addPKCS1Padding($message, true, $keylength / 8);
+        $number = RSA::binaryToNumber($padded);
+        $encrypted = RSA::powMod($number, $public_key, $modulus);
+        $result = RSA::numberToBinary($encrypted, $keylength / 8);
         return $result;
     }
 
-    public static function rsa_decrypt($message, $private_key, $modulus, $keylength)
+    public static function rsaDecrypt($message, $private_key, $modulus, $keylength)
     {
-        $number = RSA::binary_to_number($message);
-        $decrypted = RSA::pow_mod($number, $private_key, $modulus);
-        $result = RSA::number_to_binary($decrypted, $keylength / 8);
-        return RSA::remove_PKCS1_padding($result, $keylength / 8);
+        $number = RSA::binaryToNumber($message);
+        $decrypted = RSA::powMod($number, $private_key, $modulus);
+        $result = RSA::numberToBinary($decrypted, $keylength / 8);
+        return RSA::removePKCS1Padding($result, $keylength / 8);
     }
 
-    public static function rsa_sign($message, $private_key, $modulus, $keylength)
+    public static function rsaSign($message, $private_key, $modulus, $keylength)
     {
-        $padded = RSA::add_PKCS1_padding($message, false, $keylength / 8);
-        $number = RSA::binary_to_number($padded);
-        $signed = RSA::pow_mod($number, $private_key, $modulus);
-        $result = RSA::number_to_binary($signed, $keylength / 8);
+        $padded = RSA::addPKCS1Padding($message, false, $keylength / 8);
+        $number = RSA::binaryToNumber($padded);
+        $signed = RSA::powMod($number, $private_key, $modulus);
+        $result = RSA::numberToBinary($signed, $keylength / 8);
         return $result;
     }
 
-    public static function rsa_verify($message, $public_key, $modulus, $keylength)
+    public static function rsaVerify($message, $public_key, $modulus, $keylength)
     {
-        return RSA::rsa_decrypt($message, $public_key, $modulus, $keylength);
+        return RSA::rsaDecrypt($message, $public_key, $modulus, $keylength);
     }
 
-    public static function rsa_kyp_verify($message, $public_key, $modulus, $keylength)
+    public static function rsaKypVerify($message, $public_key, $modulus, $keylength)
     {
-        $number = RSA::binary_to_number($message);
-        $decrypted = RSA::pow_mod($number, $public_key, $modulus);
-        $result = RSA::number_to_binary($decrypted, $keylength / 8);
-        return RSA::remove_KYP_padding($result, $keylength / 8);
+        $number = RSA::binaryToNumber($message);
+        $decrypted = RSA::powMod($number, $public_key, $modulus);
+        $result = RSA::numberToBinary($decrypted, $keylength / 8);
+        return RSA::removeKYPPadding($result, $keylength / 8);
     }
 
-    public static function pow_mod($p, $q, $r)
+    public static function powMod($p, $q, $r)
     {
         $factors = array();
         $div = $q;
@@ -52,7 +53,9 @@ class RSA
         while (bccomp($div, "0") == BCCOMP_LARGER) {
             $rem = bcmod($div, 2);
             $div = bcdiv($div, 2);
-            if ($rem) array_push($factors, $power_of_two);
+            if ($rem) {
+                array_push($factors, $power_of_two);
+            }
             $power_of_two++;
         }
         $partial_results = array();
@@ -74,7 +77,7 @@ class RSA
         return $result;
     }
 
-    public static function add_PKCS1_padding($data, $isPublicKey, $blocksize)
+    public static function addPKCS1Padding($data, $isPublicKey, $blocksize)
     {
         $pad_length = $blocksize - 3 - strlen($data);
         if ($isPublicKey) {
@@ -91,25 +94,27 @@ class RSA
         return "\x00" . $block_type . $padding . "\x00" . $data;
     }
 
-    public static function remove_PKCS1_padding($data, $blocksize)
+    public static function removePKCS1Padding($data, $blocksize)
     {
         assert(strlen($data) == $blocksize);
         $data = substr($data, 1);
-        if ($data{0} == '\0')
+        if ($data{0} == '\0') {
             die("Block type 0 not implemented.");
+        }
+
         assert(($data{0} == "\x01") || ($data{0} == "\x02"));
         $offset = strpos($data, "\0", 1);
         return substr($data, $offset + 1);
     }
 
-    public static function remove_KYP_padding($data, $blocksize)
+    public static function removeKYPPadding($data, $blocksize)
     {
         assert(strlen($data) == $blocksize);
         $offset = strpos($data, "\0");
         return substr($data, 0, $offset);
     }
 
-    public static function binary_to_number($data)
+    public static function binaryToNumber($data)
     {
         $base = "256";
         $radix = "1";
@@ -123,7 +128,7 @@ class RSA
         return $result;
     }
 
-    public static function number_to_binary($number, $blocksize)
+    public static function numberToBinary($number, $blocksize)
     {
         $base = "256";
         $result = "";
