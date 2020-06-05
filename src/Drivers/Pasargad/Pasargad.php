@@ -2,6 +2,7 @@
 
 namespace Shetabit\Payment\Drivers\Pasargad;
 
+use GuzzleHttp\Client;
 use Shetabit\Payment\Abstracts\Driver;
 use Shetabit\Payment\Exceptions\InvalidPaymentException;
 use Shetabit\Payment\Exceptions\PurchaseFailedException;
@@ -12,6 +13,13 @@ use Shetabit\Payment\Receipt;
 
 class Pasargad extends Driver
 {
+    /**
+     * Guzzle client
+     *
+     * @var object
+     */
+    protected $client;
+
     /**
      * Invoice
      *
@@ -44,6 +52,7 @@ class Pasargad extends Driver
     {
         $this->invoice($invoice);
         $this->settings = (object) $settings;
+        $this->client = new Client();
     }
 
     /**
@@ -55,7 +64,7 @@ class Pasargad extends Driver
     {
         $invoiceData = $this->getPreparedInvoiceData();
 
-        $this->invoice->transactionId($invoiceData['signed']);
+        $this->invoice->transactionId($invoiceData['sign']);
 
         // return the transaction's id
         return $this->invoice->getTransactionId();
@@ -85,17 +94,14 @@ class Pasargad extends Driver
      */
     public function verify() : ReceiptInterface
     {
-        $client = new Client();
-
-        $response = $client
-            ->request(
-                'POST',
-                $this->settings->apiCheckTransactionUrl,
-                [
-                    "form_params" => ['invoiceUID' => request()->input('tref')],
-                    "http_errors" => false,
-                ]
-            );
+        $response = $this->client->request(
+            'POST',
+            $this->settings->apiCheckTransactionUrl,
+            [
+                "form_params" => ['invoiceUID' => request()->input('tref')],
+                "http_errors" => false,
+            ]
+        );
 
         $invoiceDetails = $this->makeXMLTree($response->getBody()->getContents());
         $referenceId = $invoiceDetails['resultObj']['transactionReferenceID'];
@@ -113,16 +119,14 @@ class Pasargad extends Driver
             'sign' => $invoiceData['sign']
         );
 
-
-        $response = $client
-            ->request(
-                'POST',
-                $this->settings->apiVerificationUrl,
-                [
-                    "form_params" => $fields,
-                    "http_errors" => false,
-                ]
-            );
+        $response = $this->client->request(
+            'POST',
+            $this->settings->apiVerificationUrl,
+            [
+                "form_params" => $fields,
+                "http_errors" => false,
+            ]
+        );
         $verifyResult = $this->makeXMLTree($response->getBody()->getContents());
 
         if (empty($verifyResult['actionResult']) || is_null($verifyResult['actionResult']['result'])) {
@@ -130,7 +134,9 @@ class Pasargad extends Driver
         }
 
         if ($verifyResult['actionResult']['result'] === false) {
-            throw new InvalidPaymentException($verifyResult['actionResult']['resultMessage'] ?? $this->getDefaultExceptionMessage());
+            throw new InvalidPaymentException(
+                $verifyResult['actionResult']['resultMessage'] ?? $this->getDefaultExceptionMessage()
+            );
         }
 
         return $this->createReceipt($referenceId, $traceNumber, $referenceNumber);
@@ -201,21 +207,31 @@ class Pasargad extends Driver
      */
     protected function prepareInvoiceData()
     {
-        $action = "1003"; 	// 1003 : for buy request (bank standard)
+        $action = "1003"; // 1003 : for buy request (bank standard)
         $merchantCode = $this->settings->merchantId;
         $terminalCode = $this->settings->terminalCode;
         $amount = $this->invoice->getAmount() * 10; // convert to toman
         $redirectAddress = $this->settings->callbackUrl;
-        $invoiceNumber = crc32($this->invoice->getUuid()).rand(0, time());
+        $invoiceNumber = crc32($this->invoice->getUuid()) . rand(0, time());
         $timeStamp = date("Y/m/d H:i:s");
+        $invoiceDate = date("Y/m/d H:i:s");
 
         if (!empty($this->invoice->getDetails()['date'])) {
             $invoiceDate = $this->invoice->getDetails()['date'];
-        } else {
-            $invoiceDate = date("Y/m/d H:i:s");
         }
 
-        $data = "#". $merchantCode ."#". $terminalCode ."#". $invoiceNumber ."#". $invoiceDate ."#". $amount ."#". $redirectAddress ."#". $action ."#". $timeStamp ."#";
+        $data = sprintf(
+            "#%s#%s#%s#%s#%s#%s#%s#%s#",
+            $merchantCode,
+            $terminalCode,
+            $invoiceNumber,
+            $invoiceDate,
+            $amount,
+            $redirectAddress,
+            $action,
+            $timeStamp
+        );
+
         $data = sha1($data, true);
         $data =  $this->sign($data);
         $signedData =  base64_encode($data);
@@ -229,7 +245,7 @@ class Pasargad extends Driver
             'redirectAddress' => $redirectAddress,
             'timeStamp' => $timeStamp,
             'action' => $action,
-            'signed' => $signedData,
+            'sign' => $signedData,
         ];
     }
 
@@ -253,20 +269,20 @@ class Pasargad extends Driver
         $hash_stack = array();
         foreach ($values as $key => $val) {
             switch ($val['type']) {
-             case 'open':
-                array_push($hash_stack, $val['tag']);
-             break;
-             case 'close':
-                array_pop($hash_stack);
-             break;
-             case 'complete':
-                array_push($hash_stack, $val['tag']);
-                // uncomment to see what this function is doing
-                // echo("\$ret[" . implode($hash_stack, "][") . "] = '{$val[value]}';\n");
-                eval("\$ret[" . implode($hash_stack, "][") . "] = '{$val[value]}';");
-                array_pop($hash_stack);
-             break;
-          }
+                case 'open':
+                    array_push($hash_stack, $val['tag']);
+                    break;
+                case 'close':
+                    array_pop($hash_stack);
+                    break;
+                case 'complete':
+                    array_push($hash_stack, $val['tag']);
+                    // uncomment to see what this function is doing
+                    // echo("\$ret[" . implode($hash_stack, "][") . "] = '{$val[value]}';\n");
+                    eval("\$ret[" . implode($hash_stack, "][") . "] = '{$val[value]}';");
+                    array_pop($hash_stack);
+                    break;
+            }
         }
 
         return $ret;
