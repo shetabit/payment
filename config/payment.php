@@ -83,9 +83,10 @@ return [
             'description' => 'payment in '.config('app.name'),
         ],
         'pasargad' => [
-            'apiPaymentUrl' => 'https://pep.shaparak.ir/gateway.aspx',
-            'apiCheckTransactionUrl' => 'https://pep.shaparak.ir/CheckTransactionResult.aspx',
-            'apiVerificationUrl' => 'https://pep.shaparak.ir/VerifyPayment.aspx',
+            'apiPaymentUrl' => 'https://pep.shaparak.ir/payment.aspx',
+            'apiGetToken' => 'https://pep.shaparak.ir/Api/v1/Payment/GetToken',
+            'apiCheckTransactionUrl' => 'https://pep.shaparak.ir/Api/v1/Payment/CheckTransactionResult',
+            'apiVerificationUrl' => 'https://pep.shaparak.ir/Api/v1/Payment/VerifyPayment',
             'merchantId' => '',
             'terminalCode' => '',
             'certificate' => '', // can be string (and set certificateType to xml_string) or an xml file path (and set cetificateType to xml_file)

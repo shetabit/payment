@@ -2,16 +2,23 @@
 
 namespace Shetabit\Payment\Drivers\Pasargad;
 
-use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
-use Shetabit\Payment\Exceptions\PurchaseFailedException;
-use Shetabit\Payment\Contracts\ReceiptInterface;
-use Shetabit\Payment\Drivers\Pasargad\Utils\RSAProcessor;
+use GuzzleHttp\Client;
 use Shetabit\Payment\Invoice;
 use Shetabit\Payment\Receipt;
+use Shetabit\Payment\Abstracts\Driver;
+use Shetabit\Payment\Contracts\ReceiptInterface;
+use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Payment\Drivers\Pasargad\Utils\RSAProcessor;
 
 class Pasargad extends Driver
 {
+    /**
+     * Guzzle client
+     *
+     * @var object
+     */
+    protected $client;
+
     /**
      * Invoice
      *
@@ -44,6 +51,7 @@ class Pasargad extends Driver
     {
         $this->invoice($invoice);
         $this->settings = (object) $settings;
+        $this->client = new Client();
     }
 
     /**
@@ -55,7 +63,7 @@ class Pasargad extends Driver
     {
         $invoiceData = $this->getPreparedInvoiceData();
 
-        $this->invoice->transactionId($invoiceData['signed']);
+        $this->invoice->transactionId($invoiceData['InvoiceNumber']);
 
         // return the transaction's id
         return $this->invoice->getTransactionId();
@@ -69,10 +77,11 @@ class Pasargad extends Driver
     public function pay()
     {
         $paymentUrl = $this->settings->apiPaymentUrl;
-        $data = array_merge($this->getPreparedInvoiceData(), ['submit' => 'Checkout']);
+        $getTokenUrl = $this->settings->apiGetToken;
+        $tokenData = $this->request($getTokenUrl, $this->getPreparedInvoiceData());
 
         // redirect using HTML form
-        return $this->redirectWithForm($paymentUrl, $data, 'POST');
+        return $this->redirectWithForm($paymentUrl, $tokenData, 'POST');
     }
 
     /**
@@ -85,55 +94,25 @@ class Pasargad extends Driver
      */
     public function verify() : ReceiptInterface
     {
-        $client = new Client();
-
-        $response = $client
-            ->request(
-                'POST',
-                $this->settings->apiCheckTransactionUrl,
-                [
-                    "form_params" => ['invoiceUID' => request()->input('tref')],
-                    "http_errors" => false,
-                ]
-            );
-
-        $invoiceDetails = $this->makeXMLTree($response->getBody()->getContents());
-        $referenceId = $invoiceDetails['resultObj']['transactionReferenceID'];
-        $traceNumber = $invoiceDetails['resultObj']['traceNumber'];
-        $referenceNumber = $invoiceDetails['resultObj']['referenceNumber'];
-
-        $invoiceData = $this->getPreparedInvoiceData();
-        $fields = array(
-            'InvoiceNumber' => request()->input('iN'),
-            'InvoiceDate' => request()->input('tref'),
-            'MerchantCode' => $invoiceData['merchantCode'],
-            'TerminalCode' => $invoiceData['terminalCode'],
-            'amount' => $invoiceData['amount'],
-            'TimeStamp' => $invoiceData['timeStamp'],
-            'sign' => $invoiceData['sign']
+        $invoiceDetails = $this->request(
+            $this->settings->apiCheckTransactionUrl,
+            [
+                'TransactionReferenceID' => request()->input('tref')
+            ]
         );
 
+        $fields = [
+            'MerchantCode' => $invoiceDetails['MerchantCode'],
+            'TerminalCode' => $invoiceDetails['TerminalCode'],
+            'InvoiceNumber' => $invoiceDetails['InvoiceNumber'],
+            'InvoiceDate' => $invoiceDetails['InvoiceDate'],
+            'Amount' => $invoiceDetails['Amount'],
+            'Timestamp' => date("Y/m/d H:i:s"),
+        ];
 
-        $response = $client
-            ->request(
-                'POST',
-                $this->settings->apiVerificationUrl,
-                [
-                    "form_params" => $fields,
-                    "http_errors" => false,
-                ]
-            );
-        $verifyResult = $this->makeXMLTree($response->getBody()->getContents());
+        $verifyResult = $this->request($this->settings->apiVerificationUrl, $fields);
 
-        if (empty($verifyResult['actionResult']) || is_null($verifyResult['actionResult']['result'])) {
-            throw new InvalidPaymentException($this->getDefaultExceptionMessage());
-        }
-
-        if ($verifyResult['actionResult']['result'] === false) {
-            throw new InvalidPaymentException($verifyResult['actionResult']['resultMessage'] ?? $this->getDefaultExceptionMessage());
-        }
-
-        return $this->createReceipt($referenceId, $traceNumber, $referenceNumber);
+        return $this->createReceipt($verifyResult, $invoiceDetails);
     }
 
     /**
@@ -143,12 +122,18 @@ class Pasargad extends Driver
      *
      * @return Receipt
      */
-    protected function createReceipt($referenceId, $traceNumber, $referenceNumber)
+    protected function createReceipt($verifyResult, $invoiceDetails)
     {
+        $referenceId = $invoiceDetails['TransactionReferenceID'];
+        $traceNumber = $invoiceDetails['TraceNumber'];
+        $referenceNumber = $invoiceDetails['ReferenceNumber'];
+
         $reciept = new Receipt('Pasargad', $referenceId);
 
-        $reciept->detail('trace_number', $traceNumber);
-        $reciept->detail('reference_number', $referenceNumber);
+        $reciept->detail('TraceNumber', $traceNumber);
+        $reciept->detail('ReferenceNumber', $referenceNumber);
+        $reciept->detail('MaskedCardNumber', $verifyResult['MaskedCardNumber']);
+        $reciept->detail('ShaparakRefNumber', $verifyResult['ShaparakRefNumber']);
 
         return $reciept;
     }
@@ -199,76 +184,76 @@ class Pasargad extends Driver
      *
      * @return array
      */
-    protected function prepareInvoiceData()
+    protected function prepareInvoiceData(): array
     {
-        $action = "1003"; 	// 1003 : for buy request (bank standard)
+        $action = 1003; // 1003 : for buy request (bank standard)
         $merchantCode = $this->settings->merchantId;
         $terminalCode = $this->settings->terminalCode;
-        $amount = $this->invoice->getAmount() * 10; // convert to toman
+        $amount = $this->invoice->getAmount(); //rial
         $redirectAddress = $this->settings->callbackUrl;
-        $invoiceNumber = crc32($this->invoice->getUuid()).rand(0, time());
+        $invoiceNumber = crc32($this->invoice->getUuid()) . rand(0, time());
         $timeStamp = date("Y/m/d H:i:s");
+        $invoiceDate = date("Y/m/d H:i:s");
 
         if (!empty($this->invoice->getDetails()['date'])) {
             $invoiceDate = $this->invoice->getDetails()['date'];
-        } else {
-            $invoiceDate = date("Y/m/d H:i:s");
         }
 
-        $data = "#". $merchantCode ."#". $terminalCode ."#". $invoiceNumber ."#". $invoiceDate ."#". $amount ."#". $redirectAddress ."#". $action ."#". $timeStamp ."#";
-        $data = sha1($data, true);
-        $data =  $this->sign($data);
-        $signedData =  base64_encode($data);
-
         return [
-            'invoiceNumber' => $invoiceNumber,
-            'invoiceDate' => $invoiceDate,
-            'amount' => $amount,
-            'terminalCode' => $terminalCode,
-            'merchantCode' => $merchantCode,
-            'redirectAddress' => $redirectAddress,
-            'timeStamp' => $timeStamp,
-            'action' => $action,
-            'signed' => $signedData,
+            'InvoiceNumber' => $invoiceNumber,
+            'InvoiceDate' => $invoiceDate,
+            'Amount' => $amount,
+            'TerminalCode' => $terminalCode,
+            'MerchantCode' => $merchantCode,
+            'RedirectAddress' => $redirectAddress,
+            'Timestamp' => $timeStamp,
+            'Action' => $action,
         ];
     }
 
     /**
-     * Convert XML tree to array
+     * Prepare signature based on Pasargad document
      *
-     * @param $data
+     * @param string $data
+     * @return string
+     */
+    public function prepareSignature(string $data): string
+    {
+        return base64_encode($this->sign(sha1($data, true)));
+    }
+
+    /**
+     * Make request to pasargad's Api
      *
+     * @param string $url
+     * @param array $body
+     * @param string $method
      * @return array
      */
-    protected function makeXMLTree($data)
+    protected function request(string $url, array $body, $method = 'POST'): array
     {
-        $ret = array();
+        $body = json_encode($body);
+        $sign = $this->prepareSignature($body);
 
-        $parser = xml_parser_create();
-        xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
-        xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
-        xml_parse_into_struct($parser, $data, $values, $tags);
-        xml_parser_free($parser);
+        $response = $this->client->request(
+            'POST',
+            $url,
+            [
+                'body' => $body,
+                'headers' => [
+                    'content-type' => 'application/json',
+                    'Sign' => $sign
+                ],
+                "http_errors" => false,
+            ]
+        );
 
-        $hash_stack = array();
-        foreach ($values as $key => $val) {
-            switch ($val['type']) {
-             case 'open':
-                array_push($hash_stack, $val['tag']);
-             break;
-             case 'close':
-                array_pop($hash_stack);
-             break;
-             case 'complete':
-                array_push($hash_stack, $val['tag']);
-                // uncomment to see what this function is doing
-                // echo("\$ret[" . implode($hash_stack, "][") . "] = '{$val[value]}';\n");
-                eval("\$ret[" . implode($hash_stack, "][") . "] = '{$val[value]}';");
-                array_pop($hash_stack);
-             break;
-          }
+        $result = json_decode($response->getBody(), true);
+
+        if ($result['IsSuccess'] === false) {
+            throw new InvalidPaymentException($result['Message']);
         }
 
-        return $ret;
+        return $result;
     }
 }
