@@ -51,7 +51,7 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 - [irankish](http://irankish.com/) :heavy_check_mark:
 - [nextpay](https://nextpay.ir/) :heavy_check_mark:
 - [parsian](https://www.pec.ir/) :heavy_check_mark:
-- [pasargad](https://bpi.ir/) :warning: (not tested)
+- [pasargad](https://bpi.ir/) :heavy_check_mark:
 - [payir](https://pay.ir/) :heavy_check_mark:
 - [paypal](http://www.paypal.com/) (will be added soon in next version)
 - [payping](https://www.payping.ir/) :heavy_check_mark:

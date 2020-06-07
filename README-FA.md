@@ -54,7 +54,7 @@
 - [ایرانکیش](http://irankish.com/) :heavy_check_mark:
 - [نکست پی](https://nextpay.ir/) :heavy_check_mark:
 - [پارسیان](https://www.pec.ir/) :heavy_check_mark:
-- [پاسارگاد](https://www.bpi.ir/) :warning: (تست نشده)
+- [پاسارگاد](https://www.bpi.ir/) :heavy_check_mark:
 - [پی آی ار](https://pay.ir/) :heavy_check_mark:
 - [پی پال](http://www.paypal.com/) (به زودی در ورژن بعدی اظافه میشود)
 - [پی پینگ](https://www.payping.ir/) :heavy_check_mark:
