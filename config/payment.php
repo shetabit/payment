@@ -119,9 +119,9 @@ return [
             'description' => 'payment in '.config('app.name'),
         ],
         'payping' => [
-            'apiPurchaseUrl' => 'https://api.payping.ir/v1/pay/',
-            'apiPaymentUrl' => 'https://api.payping.ir/v1/pay/gotoipg/',
-            'apiVerificationUrl' => 'https://api.payping.ir/v1/pay/verify/',
+            'apiPurchaseUrl' => 'https://api.payping.ir/v2/pay/',
+            'apiPaymentUrl' => 'https://api.payping.ir/v2/pay/gotoipg/',
+            'apiVerificationUrl' => 'https://api.payping.ir/v2/pay/verify/',
             'merchantId' => '',
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment in '.config('app.name'),
