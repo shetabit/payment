@@ -17,6 +17,8 @@
 
 [捐赠我](https://yekpay.me/mahdikhanzadi) 如果你喜欢这个包:sunglasses: :bowtie:
 
+For PHP integration you can use [shetabit/multipay](https://github.com/shetabit/multipay) package.
+
 > 此软件包可用于多个驱动程序，如果在[当前驱动程序列表](#list-of-available-drivers)中找不到驱动程序，则可以创建它们
 
 - [داکیومنت فارسی][link-fa]

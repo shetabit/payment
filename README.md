@@ -17,6 +17,8 @@ This is a Laravel Package for Payment Gateway Integration. This package supports
 
 [Donate me](https://yekpay.me/mahdikhanzadi) if you like this package :sunglasses: :bowtie:
 
+For PHP integration you can use [shetabit/multipay](https://github.com/shetabit/multipay) package.
+
 > This packages works with multiple drivers, and you can create custom drivers if you can't find them in the [current drivers list](#list-of-available-drivers) (below list).
 
 - [داکیومنت فارسی][link-fa]
