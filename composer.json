@@ -87,7 +87,7 @@
         "php": ">=7.2",
         "illuminate/broadcasting": "^5.8|^6.0|^7.0",
         "illuminate/support": "^5.8|^6.0|^7.0",
-        "shetabit/multipay": "dev-master"
+        "shetabit/multipay": "^1.0"
     },
     "require-dev": {
         "orchestra/testbench": "^4.3|^5.0",

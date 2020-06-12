@@ -58,7 +58,7 @@ class PaymentServiceProvider extends ServiceProvider
         $this->registerEvents();
 
         // use blade to render redirection form
-        Payment::setRedirectionFormViewRenderer(function($view, $action, $inputs, $method) {
+        Payment::setRedirectionFormViewRenderer(function ($view, $action, $inputs, $method) {
             return view('shetabitPayment::redirectForm')->with(
                 [
                     'action' => $action,
@@ -76,11 +76,11 @@ class PaymentServiceProvider extends ServiceProvider
      */
     public function registerEvents()
     {
-        Payment::addPurchaseListener(function($driver, $invoice) {
+        Payment::addPurchaseListener(function ($driver, $invoice) {
             event(new InvoicePurchasedEvent($driver, $invoice));
         });
 
-        Payment::addVerifyListener(function($reciept, $driver, $invoice) {
+        Payment::addVerifyListener(function ($reciept, $driver, $invoice) {
             event(new InvoiceVerifiedEvent($reciept, $driver, $invoice));
         });
     }
