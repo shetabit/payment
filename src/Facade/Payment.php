@@ -5,10 +5,9 @@ namespace Shetabit\Payment\Facade;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * Class Sms
+ * Class Payment
  *
  * @package Shetabit\Payment\Facade
- * @see \Shetabit\Payment\PaymentManager
  */
 class Payment extends Facade
 {
