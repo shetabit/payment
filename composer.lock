@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "78fb3a1621dda69cff806c4b9813b30d",
+    "content-hash": "610438792fb722230a3a077d8598c1c4",
     "packages": [
         {
             "name": "brick/math",
@@ -1602,16 +1602,16 @@
         },
         {
             "name": "shetabit/multipay",
-            "version": "dev-master",
+            "version": "v1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/shetabit/multipay.git",
-                "reference": "30ccf7e6ed65362f8c9812071b471eb288647e10"
+                "reference": "9b8ddc50e5f312843790c2a455471b781caac2cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shetabit/multipay/zipball/30ccf7e6ed65362f8c9812071b471eb288647e10",
-                "reference": "30ccf7e6ed65362f8c9812071b471eb288647e10",
+                "url": "https://api.github.com/repos/shetabit/multipay/zipball/9b8ddc50e5f312843790c2a455471b781caac2cc",
+                "reference": "9b8ddc50e5f312843790c2a455471b781caac2cc",
                 "shasum": ""
             },
             "require": {
@@ -1715,7 +1715,7 @@
                 "zarinpal",
                 "zarinpal payment gateway"
             ],
-            "time": "2020-06-12T20:02:19+00:00"
+            "time": "2020-06-13T17:43:16+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -5971,9 +5971,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "shetabit/multipay": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
