@@ -233,7 +233,7 @@ $invoice = (new Invoice)->amount(1000);
 // You should use return statement to redirect user to the bank page.
 return Payment::purchase($invoice, function($driver, $transactionId) {
     // Store transactionId in database as we need it to verify payment in the future.
-})->pay();
+})->pay()->render();
 
 // Do all things together in a single line.
 return Payment::purchase(
@@ -242,7 +242,16 @@ return Payment::purchase(
     	// Store transactionId in database.
         // We need the transactionId to verify payment in the future.
 	}
-)->pay();
+)->pay()->render();
+
+// Retrieve json format of Redirection (in this case you can handle redirection to bank gateway)
+return Payment::purchase(
+    (new Invoice)->amount(1000), 
+    function($driver, $transactionId) {
+    	// Store transactionId in database.
+        // We need the transactionId to verify payment in the future.
+	}
+)->pay()->toJson();
 ```
 
 #### Verify payment

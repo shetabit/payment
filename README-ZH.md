@@ -234,7 +234,7 @@ $invoice = (new Invoice)->amount(1000);
 // You should use return statement to redirect user to the bank page.
 return Payment::purchase($invoice, function($driver, $transactionId) {
     // Store transactionId in database as we need it to verify payment in the future.
-})->pay();
+})->pay()->render();
 
 // Do all things together in a single line.
 return Payment::purchase(
@@ -243,7 +243,16 @@ return Payment::purchase(
         // 把交易ID保存到数据库.
         // 在接下来的付款中，我们需要验证交易ID
 	}
-)->pay();
+)->pay()->render();
+
+// Retrieve json format of Redirection (in this case you can handle redirection to bank gateway)
+return Payment::purchase(
+    (new Invoice)->amount(1000), 
+    function($driver, $transactionId) {
+        // 把交易ID保存到数据库.
+        // 在接下来的付款中，我们需要验证交易ID
+	}
+)->pay()->toJson();
 ```
 
 #### 验证付款
