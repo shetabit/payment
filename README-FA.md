@@ -156,7 +156,7 @@ $ composer require shetabit/payment
 
 ```php
 // At the top of the file.
-use Shetabit\Payment\Invoice;
+use Shetabit\Multipay\Invoice;
 ...
 
 // Create new invoice.
@@ -201,7 +201,7 @@ $invoice->detail('detailName1','your detail1 goes here')
 
 ```php
 // At the top of the file.
-use Shetabit\Payment\Invoice;
+use Shetabit\Multipay\Invoice;
 use Shetabit\Payment\Facade\Payment;
 ...
 
@@ -237,7 +237,7 @@ Payment::callbackUrl('http://yoursite.com/verify')->purchase(
 
 ```php
 // At the top of the file.
-use Shetabit\Payment\Invoice;
+use Shetabit\Multipay\Invoice;
 use Shetabit\Payment\Facade\Payment;
 ...
 
@@ -280,7 +280,7 @@ return Payment::purchase(
 ```php
 // At the top of the file.
 use Shetabit\Payment\Facade\Payment;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Multipay\Exceptions\InvalidPaymentException;
 ...
 
 // You need to verify the payment to ensure the invoice has been paid successfully.
@@ -335,9 +335,9 @@ try {
 ```php
 namespace App\Packages\PaymentDriver;
 
-use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
-use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
+use Shetabit\Multipay\Abstracts\Driver;
+use Shetabit\Multipay\Exceptions\InvalidPaymentException;
+use Shetabit\Multipay\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class MyDriver extends Driver
 {
@@ -421,7 +421,7 @@ class MyDriver extends Driver
 
   ```php
   // At the top of the file.
-  use Shetabit\Payment\Invoice;
+  use Shetabit\Multipay\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
@@ -445,7 +445,7 @@ class MyDriver extends Driver
 
   ```php
   // At the top of the file.
-  use Shetabit\Payment\Invoice;
+  use Shetabit\Multipay\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
@@ -466,7 +466,7 @@ class MyDriver extends Driver
 
   ```php
   // At the top of the file.
-  use Shetabit\Payment\Invoice;
+  use Shetabit\Multipay\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   

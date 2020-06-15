@@ -152,7 +152,7 @@ b. 然后运行 `php artisan vendor:publish` 来发布 `config/payment.php` 文�
 
 ```php
 // At the top of the file.
-use Shetabit\Payment\Invoice;
+use Shetabit\Multipay\Invoice;
 ...
 
 // Create new invoice.
@@ -192,7 +192,7 @@ $invoice->detail('detailName1','your detail1 goes here')
 
 ```php
 // At the top of the file.
-use Shetabit\Payment\Invoice;
+use Shetabit\Multipay\Invoice;
 use Shetabit\Payment\Facade\Payment;
 ...
 
@@ -224,7 +224,7 @@ Payment::callbackUrl('http://yoursite.com/verify')->purchase(
 
 ```php
 // At the top of the file.
-use Shetabit\Payment\Invoice;
+use Shetabit\Multipay\Invoice;
 use Shetabit\Payment\Facade\Payment;
 ...
 
@@ -262,7 +262,7 @@ return Payment::purchase(
 ```php
 // At the top of the file.
 use Shetabit\Payment\Facade\Payment;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Multipay\Exceptions\InvalidPaymentException;
 ...
 
 // 您需要验证支付机构的回传数据，以确保付款成功
@@ -293,7 +293,7 @@ getMessage方法，返回可在用户界面中使用的适当消息。
 
   ```php
   // At the top of the file.
-  use Shetabit\Payment\Invoice;
+  use Shetabit\Multipay\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
@@ -313,7 +313,7 @@ getMessage方法，返回可在用户界面中使用的适当消息。
 
   ```php
   // At the top of the file.
-  use Shetabit\Payment\Invoice;
+  use Shetabit\Multipay\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
@@ -330,7 +330,7 @@ getMessage方法，返回可在用户界面中使用的适当消息。
 
   ```php
   // At the top of the file.
-  use Shetabit\Payment\Invoice;
+  use Shetabit\Multipay\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
@@ -350,7 +350,7 @@ getMessage方法，返回可在用户界面中使用的适当消息。
 
   ```php
   // At the top of the file.
-  use Shetabit\Payment\Invoice;
+  use Shetabit\Multipay\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
@@ -395,9 +395,9 @@ getMessage方法，返回可在用户界面中使用的适当消息。
 ```php
 namespace App\Packages\PaymentDriver;
 
-use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
-use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
+use Shetabit\Multipay\Abstracts\Driver;
+use Shetabit\Multipay\Exceptions\InvalidPaymentException;
+use Shetabit\Multipay\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class MyDriver extends Driver
 {

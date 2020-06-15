@@ -151,7 +151,7 @@ In your code, use it like the below:
 
 ```php
 // At the top of the file.
-use Shetabit\Payment\Invoice;
+use Shetabit\Multipay\Invoice;
 ...
 
 // Create new invoice.
@@ -191,7 +191,7 @@ We purchase the invoice to retrieve transaction id:
 
 ```php
 // At the top of the file.
-use Shetabit\Payment\Invoice;
+use Shetabit\Multipay\Invoice;
 use Shetabit\Payment\Facade\Payment;
 ...
 
@@ -223,7 +223,7 @@ After purchasing the invoice, we can redirect the user to the bank payment page:
 
 ```php
 // At the top of the file.
-use Shetabit\Payment\Invoice;
+use Shetabit\Multipay\Invoice;
 use Shetabit\Payment\Facade\Payment;
 ...
 
@@ -261,7 +261,7 @@ When user has completed the payment, the bank redirects them to your website, th
 ```php
 // At the top of the file.
 use Shetabit\Payment\Facade\Payment;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Multipay\Exceptions\InvalidPaymentException;
 ...
 
 // You need to verify the payment to ensure the invoice has been paid successfully.
@@ -290,7 +290,7 @@ try {
 
   ```php
   // At the top of the file.
-  use Shetabit\Payment\Invoice;
+  use Shetabit\Multipay\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
@@ -310,7 +310,7 @@ try {
 
   ```php
   // At the top of the file.
-  use Shetabit\Payment\Invoice;
+  use Shetabit\Multipay\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
@@ -327,7 +327,7 @@ try {
 
   ```php
   // At the top of the file.
-  use Shetabit\Payment\Invoice;
+  use Shetabit\Multipay\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
@@ -347,7 +347,7 @@ try {
 
   ```php
   // At the top of the file.
-  use Shetabit\Payment\Invoice;
+  use Shetabit\Multipay\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
@@ -392,9 +392,9 @@ Eg. You created a class: `App\Packages\PaymentDriver\MyDriver`.
 ```php
 namespace App\Packages\PaymentDriver;
 
-use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
-use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
+use Shetabit\Multipay\Abstracts\Driver;
+use Shetabit\Multipay\Exceptions\InvalidPaymentException;
+use Shetabit\Multipay\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class MyDriver extends Driver
 {
