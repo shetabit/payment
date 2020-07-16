@@ -9,9 +9,9 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Shetabit\Payment\Contracts\DriverInterface;
-use Shetabit\Payment\Contracts\ReceiptInterface;
-use Shetabit\Payment\Invoice;
+use Shetabit\Multipay\Contracts\DriverInterface;
+use Shetabit\Multipay\Contracts\ReceiptInterface;
+use Shetabit\Multipay\Invoice;
 
 class InvoiceVerifiedEvent
 {

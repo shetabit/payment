@@ -2,8 +2,10 @@
 
 namespace Shetabit\Payment\Provider;
 
-use Shetabit\Payment\PaymentManager;
+use Shetabit\Multipay\Payment;
 use Illuminate\Support\ServiceProvider;
+use Shetabit\Payment\Events\InvoicePurchasedEvent;
+use Shetabit\Payment\Events\InvoiceVerifiedEvent;
 
 class PaymentServiceProvider extends ServiceProvider
 {
@@ -21,7 +23,7 @@ class PaymentServiceProvider extends ServiceProvider
          */
         $this->publishes(
             [
-                __DIR__.'/../../config/payment.php' => config_path('payment.php'),
+                Payment::getDefaultConfigPath() => config_path('payment.php'),
             ],
             'config'
         );
@@ -48,7 +50,38 @@ class PaymentServiceProvider extends ServiceProvider
          * Bind to service container.
          */
         $this->app->bind('shetabit-payment', function () {
-            return new PaymentManager(config('payment'));
+            $config = config('payment') ?? [];
+
+            return new Payment($config);
+        });
+
+        $this->registerEvents();
+
+        // use blade to render redirection form
+        Payment::setRedirectionFormViewRenderer(function ($view, $action, $inputs, $method) {
+            return view('shetabitPayment::redirectForm')->with(
+                [
+                    'action' => $action,
+                    'inputs' => $inputs,
+                    'method' => $method,
+                ]
+            );
+        });
+    }
+
+    /**
+     * Register Laravel events.
+     *
+     * @return void
+     */
+    public function registerEvents()
+    {
+        Payment::addPurchaseListener(function ($driver, $invoice) {
+            event(new InvoicePurchasedEvent($driver, $invoice));
+        });
+
+        Payment::addVerifyListener(function ($reciept, $driver, $invoice) {
+            event(new InvoiceVerifiedEvent($reciept, $driver, $invoice));
         });
     }
 }

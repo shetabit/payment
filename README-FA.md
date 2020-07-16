@@ -12,17 +12,19 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/e6a80b17298cb4fcb56d/maintainability)](https://codeclimate.com/github/shetabit/payment/maintainability)
 [![Quality Score][ico-code-quality]][link-code-quality]
 
-این پکیج برای پرداخت انلاین توسط درگاه های ملختف در لاراول ایجاد شده است.
+این پکیج برای پرداخت آنلاین توسط درگاه‌های مختلف در لاراول ایجاد شده است.
 
 
-> این پکیج با درگاه های پرداخت مختلفی کار میکنه. در صورتی که درگاه مورد نظرتون رو در لیست درایورهای موجود پیدا نکردید میتونید برای درگاهی که استفاده میکنید درایور مورد نظرتون رو بسازید.
+> این پکیج با درگاه‌های پرداخت مختلفی کار میکنه. در صورتی که درگاه مورد نظرتون رو در لیست درایورهای موجود پیدا نکردید می‌تونید برای درگاهی که استفاده می‌کنید درایور مورد نظرتون رو بسازید.
 
+درصورتی که از PHP استفاده میکنید میتونید از پکیج [shetabit/multipay](https://github.com/shetabit/multipay) استفاده کنید.
 
 - [داکیومنت فارسی][link-fa]
 - [english documents][link-en]
+- [中文文档][link-zh]
 
 
-در صورتی که از این پکیج خوشتون آمده و ازش استفاده میکنید میتونید با پرداخت مبلغ اندکی من رو حمایت کنید تا این پکیج رو بیشتر توسعه بدم و درگاه های جدیدتری بهش اظافه کنم
+در صورتی که از این پکیج خوشتون آمده و ازش استفاده می‌کنید می‌تونید با پرداخت مبلغ اندکی من رو حمایت کنید تا این پکیج رو بیشتر توسعه بدم و درگاه‌های جدیدتری بهش اضافه کنم.
 
 [به منظور کمک مالی کلیک کنید](https://zarinp.al/@mahdikhanzadi) :sunglasses: :bowtie:
 
@@ -47,26 +49,27 @@
 
 # درایورهای موجود
 
-- [آسان پرداخت](https://asanpardakht.ir/)  :warning: (تست نشده)
-- [به پرداخت ملت (بانک ملت)](http://www.behpardakht.com/)  :warning: (تست نشده)
+- [اسان پرداخت](https://asanpardakht.ir/) :warning: (تست نشده)
+- [به‌پرداخت (mellat)](http://www.behpardakht.com/) :heavy_check_mark:
 - [ایدی پی](https://idpay.ir/) :heavy_check_mark:
-- [ایران کیش](http://irankish.com/) :heavy_check_mark:
+- [ایرانکیش](http://irankish.com/) :heavy_check_mark:
 - [نکست پی](https://nextpay.ir/) :heavy_check_mark:
-- [پی ای ار](https://pay.ir/) :heavy_check_mark:
-- [بانک پارسیان](https://www.pec.ir/) :heavy_check_mark:
-- [بانک پاسارگاد](https://www.bpi.ir/) :heavy_check_mark:
+- [پارسیان](https://www.pec.ir/) :heavy_check_mark:
+- [پاسارگاد](https://www.bpi.ir/) :heavy_check_mark:
+- [پی آی ار](https://pay.ir/) :heavy_check_mark:
+- [پی پال](http://www.paypal.com/) (به زودی در ورژن بعدی اظافه میشود)
 - [پی پینگ](https://www.payping.ir/) :heavy_check_mark:
 - [پی استار](http://paystar.ir/) :heavy_check_mark:
 - [پولام](https://poolam.ir/) :heavy_check_mark:
 - [سداد (بانک ملی)](https://sadadpsp.ir/) :heavy_check_mark:
-- [بانک سامان](https://www.sep.ir) :heavy_check_mark:
+- [سامان](https://www.sep.ir) :heavy_check_mark:
 - [یک پی](https://yekpay.com/) :heavy_check_mark:
 - [زرین پال](https://www.zarinpal.com/) :heavy_check_mark:
 - [زیبال](https://www.zibal.ir/) :heavy_check_mark:
 
 - درایورهای دیگر ساخته خواهند شد یا اینکه بسازید و درخواست `merge` بدید.
 
-> در صورتی که درایور مورد نظرتون موجود نیست, میتونید برای درگاه پرداخت موردنظرتون درایور بسازید.
+> در صورتی که درایور مورد نظرتون موجود نیست, می‌تونید برای درگاه پرداخت موردنظرتون درایور بسازید.
 
 ## نصب
 
@@ -82,20 +85,20 @@ $ composer require shetabit/payment
 
 ## تنظیمات
 
-درصورتی که از `Laravel 5.5` یا ورژن های بالاتر استفاده میکنید نیازی به انجام تنظیمات `providers` و `alias` نخواهید داشت.
+درصورتی که از `Laravel 5.5` یا ورژن های بالاتر استفاده می‌کنید نیازی به انجام تنظیمات `providers` و `alias` نخواهید داشت.
 
 درون فایل `config/app.php` دستورات زیر را وارد کنید
 
 </div>
 
 ```php
-# In your providers array.
+// In your providers array.
 'providers' => [
     ...
     Shetabit\Payment\Provider\PaymentServiceProvider::class,
 ],
 
-# In your aliases array.
+// In your aliases array.
 'aliases' => [
     ...
     'Payment' => Shetabit\Payment\Facade\Payment::class,
@@ -106,7 +109,7 @@ $ composer require shetabit/payment
 
 سپس دستور `php artisan vendor:publish` را اجرا کنید تا فایل `config/payment.php` درون دایرکتوری تنظیمات لاراول قرار بگیرد.
 
-درون فایل تنظیمات در قسمت `default driver` میتوانید درایوری که قصد استفاده از ان را دارید قرار دهید تا تمامی پرداخت ها از آن طریق انجام شود.
+درون فایل تنظیمات در قسمت `default driver` می‌توانید درایوری که قصد استفاده از ان را دارید قرار دهید تا تمامی پرداخت ها از آن طریق انجام شود.
 
 
 </div>
@@ -145,24 +148,24 @@ $ composer require shetabit/payment
 
 #### کار با صورتحساب ها
 
-قبل از انجام هرکاری نیاز به ایجاد یک صورتحساب دارید. برای ایجاد صورتحساب میتوانید از کلاس `Invoice` استفاده کنید.
+قبل از انجام هرکاری نیاز به ایجاد یک صورتحساب دارید. برای ایجاد صورتحساب می‌توانید از کلاس `Invoice` استفاده کنید.
 
 درون کد خودتون به شکل زیر عمل کنید:
 
 </div>
 
 ```php
-# On the top of the file.
-use Shetabit\Payment\Invoice;
+// At the top of the file.
+use Shetabit\Multipay\Invoice;
 ...
 
-# create new invoice
+// Create new invoice.
 $invoice = new Invoice;
 
-# set invoice amount
+// Set invoice amount.
 $invoice->amount(1000);
 
-# add invoice details : we have 4 syntax
+// Add invoice details: There are 4 syntax available for this.
 // 1
 $invoice->detail(['detailName' => 'your detail goes here']);
 // 2 
@@ -179,16 +182,16 @@ $invoice->detail('detailName1','your detail1 goes here')
 
 متدهای موجود برای کار با صورتحساب ها:
 
-- `uuid` : یک ایدی یونیک برای صورتحساب تنظیم میکند
-- `getUuid` : ایدی یونیک صورتحساب را برمیگرداند
-- `detail` : توضیحات یا مواردی که مرتبط به صورتحساب است را به صورتحساب اظافه میکند
-- `getDetails` : تمامی موارد مرتبطی که به صورتحساب افزوده شده است را برمیگرداند
-- `amount` : مقدار هزینه ای که باید پرداخت شود را مشخص میکند
-- `getAmount` : هزینه ی صورتحساب را برمیگرداند
-- `transactionId` : شماره تراکنش صورتحساب را مشخص میکند
-- `getTransactionId` : شماره تراکنش صورتحساب را برمیگرداند
-- `via` : درایوری که قصد پرداخت صورتحساب با آن را داریم مشخص میکند
-- `getDriver` : درایور انتخاب شده را برمیگرداند
+- `uuid`: یک ایدی یونیک برای صورتحساب تنظیم می‌کند
+- `getUuid`: ایدی یونیک صورتحساب را برمی‌گرداند
+- `detail`: توضیحات یا مواردی که مرتبط به صورتحساب است را به صورتحساب اضافه می‌کند
+- `getDetails`: تمامی موارد مرتبطی که به صورتحساب افزوده شده است را برمی‌گرداند
+- `amount`: مقدار هزینه‌ای که باید پرداخت شود را مشخص می‌کند
+- `getAmount`: هزینه‌ی صورتحساب را برمی‌گرداند
+- `transactionId`: شماره تراکنش صورتحساب را مشخص می‌کند
+- `getTransactionId`: شماره تراکنش صورتحساب را برمی‌گرداند
+- `via`: درایوری که قصد پرداخت صورتحساب با آن را داریم مشخص می‌کند
+- `getDriver`: درایور انتخاب شده را برمی‌گرداند
 
 #### ثبت درخواست برای پرداخت صورتحساب
 به منظور پرداخت تمامی صورتحساب ها به یک شماره تراکنش بانکی یا `transactionId` نیاز خواهیم داشت.
@@ -197,29 +200,29 @@ $invoice->detail('detailName1','your detail1 goes here')
 </div>
 
 ```php
-# On the top of the file.
-use Shetabit\Payment\Invoice;
+// At the top of the file.
+use Shetabit\Multipay\Invoice;
 use Shetabit\Payment\Facade\Payment;
 ...
 
-# create new invoice
+// Create new invoice.
 $invoice = (new Invoice)->amount(1000);
 
-# purchase the given invoice
+// Purchase the given invoice.
 Payment::purchase($invoice,function($driver, $transactionId) {
-	// we can store $transactionId in database
+	// We can store $transactionId in database.
 });
 
-# purchase method accepts a callback function
+// Purchase method accepts a callback function.
 Payment::purchase($invoice, function($driver, $transactionId) {
-    // we can store $transactionId in database
+    // We can store $transactionId in database.
 });
 
-# you can specify callbackUrl
+// You can specify callbackUrl
 Payment::callbackUrl('http://yoursite.com/verify')->purchase(
     $invoice, 
     function($driver, $transactionId) {
-    	// we can store $transactionId in database
+    	// We can store $transactionId in database.
 	}
 );
 ```
@@ -233,27 +236,36 @@ Payment::callbackUrl('http://yoursite.com/verify')->purchase(
 </div>
 
 ```php
-# On the top of the file.
-use Shetabit\Payment\Invoice;
+// At the top of the file.
+use Shetabit\Multipay\Invoice;
 use Shetabit\Payment\Facade\Payment;
 ...
 
-# create new invoice
+// Create new invoice.
 $invoice = (new Invoice)->amount(1000);
-# purchase and pay the given invoice
-// you should use return statement to redirect user to the bank's page.
+// Purchase and pay the given invoice.
+// You should use return statement to redirect user to the bank page.
 return Payment::purchase($invoice, function($driver, $transactionId) {
-    // store transactionId in database, we need it to verify payment in future.
-})->pay();
+    // Store transactionId in database as we need it to verify payment in the future.
+})->pay()->render();
 
-# do all things together a single line
+// Do all things together in a single line.
 return Payment::purchase(
     (new Invoice)->amount(1000), 
     function($driver, $transactionId) {
-    	// store transactionId in database.
-        // we need the transactionId to verify payment in future
+    	// Store transactionId in database.
+        // We need the transactionId to verify payment in the future.
 	}
-)->pay();
+)->pay()->render();
+
+// Retrieve json format of Redirection (in this case you can handle redirection to bank gateway)
+return Payment::purchase(
+    (new Invoice)->amount(1000), 
+    function($driver, $transactionId) {
+    	// Store transactionId in database.
+        // We need the transactionId to verify payment in the future.
+	}
+)->pay()->toJson();
 ```
 
 <div dir="rtl">
@@ -266,25 +278,25 @@ return Payment::purchase(
 </div>
 
 ```php
-# On the top of the file.
+// At the top of the file.
 use Shetabit\Payment\Facade\Payment;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
+use Shetabit\Multipay\Exceptions\InvalidPaymentException;
 ...
 
-# you need to verify the payment to insure the invoice has been paid successfully
-// we use transaction's id to verify payments
-// its a good practice to add invoice's amount.
+// You need to verify the payment to ensure the invoice has been paid successfully.
+// We use transaction id to verify payments
+// It is a good practice to add invoice amount as well.
 try {
 	$receipt = Payment::amount(1000)->transactionId($transaction_id)->verify();
 
-    // you can show payment's referenceId to user
-    echo $receipt->getReferenceId();    
+    // You can show payment referenceId to the user.
+    echo $receipt->getReferenceId();
 
     ...
 } catch (InvalidPaymentException $exception) {
     /**
-    	when payment is not verified , it throw an exception.
-    	we can catch the excetion to handle invalid payments.
+    	when payment is not verified, it will throw an exception.
+    	We can catch the exception to handle invalid payments.
     	getMessage method, returns a suitable message that can be used in user interface.
     **/
     echo $exception->getMessage();
@@ -298,7 +310,7 @@ try {
 
 #### ایجاد درایور دلخواه:
 
- برای ایجاد درایور جدید ابتدا نام (اسم) درایوری که قراره بسازید رو به لیست درایور ها اظافه کنید و لیست تنظیات مورد نیاز را نیز مشخص کنید.
+ برای ایجاد درایور جدید ابتدا نام (اسم) درایوری که قراره بسازید رو به لیست درایور ها اضافه کنید و لیست تنظیات مورد نیاز را نیز مشخص کنید.
 
 </div>
 
@@ -306,7 +318,7 @@ try {
 'drivers' => [
     'zarinpal' => [...],
     'my_driver' => [
-        ... # Your Config Params here.
+        ... // Your Config Params here.
     ]
 ]
 ```
@@ -323,25 +335,25 @@ try {
 ```php
 namespace App\Packages\PaymentDriver;
 
-use Shetabit\Payment\Abstracts\Driver;
-use Shetabit\Payment\Exceptions\InvalidPaymentException;
-use Shetabit\Payment\{Contracts\ReceiptInterface, Invoice, Receipt};
+use Shetabit\Multipay\Abstracts\Driver;
+use Shetabit\Multipay\Exceptions\InvalidPaymentException;
+use Shetabit\Multipay\{Contracts\ReceiptInterface, Invoice, Receipt};
 
 class MyDriver extends Driver
 {
-    protected $invoice; // invoice
+    protected $invoice; // Invoice.
 
-    protected $settings; // driver settings
+    protected $settings; // Driver settings.
 
     public function __construct(Invoice $invoice, $settings)
     {
-        $this->invoice($invoice); // set the invoice
-        $this->settings = (object) $settings; // set settings
+        $this->invoice($invoice); // Set the invoice.
+        $this->settings = (object) $settings; // Set settings.
     }
 
-    // purchase the invoice, save its transactionId and finaly return it
+    // Purchase the invoice, save its transactionId and finaly return it.
     public function purchase() {
-        // request for a payment transaction id
+        // Request for a payment transaction id.
         ...
             
         $this->invoice->transactionId($transId);
@@ -349,20 +361,20 @@ class MyDriver extends Driver
         return $transId;
     }
     
-    // redirect into bank using transactionId, to complete the payment
+    // Redirect into bank using transactionId, to complete the payment.
     public function pay() {
-        // its better to set bankApiUrl in config/payment.php and retrieve it here:
+        // It is better to set bankApiUrl in config/payment.php and retrieve it here:
         $bankUrl = $this->settings->bankApiUrl; // bankApiUrl is the config name.
 
-        //prepare payment url
+        // Prepare payment url.
         $payUrl = $bankUrl.$this->invoice->getTransactionId();
 
-        // redirect to the bank
+        // Redirect to the bank.
         return redirect()->to($payUrl);
     }
     
-    // verify the payment (we must verify to insure that user has paid the invoice)
-    public function verify() : ReceiptInterface {
+    // Verify the payment (we must verify to ensure that user has paid the invoice).
+    public function verify(): ReceiptInterface {
         $verifyPayment = $this->settings->verifyApiUrl;
         
         $verifyUrl = $verifyPayment.$this->invoice->getTransactionId();
@@ -370,15 +382,14 @@ class MyDriver extends Driver
         ...
         
         /**
-			then we send a request to $verifyUrl and if payment is not
-			we throw an InvalidPaymentException with a suitable
+			Then we send a request to $verifyUrl and if payment is not valid we throw an InvalidPaymentException with a suitable message.
         **/
         throw new InvalidPaymentException('a suitable message');
         
         /**
-        	we create a receipt for this payment if everything goes normally.
+        	We create a receipt for this payment if everything goes normally.
         **/
-        return new Receipt('driverName', 'payment_receipt_number');        
+        return new Receipt('driverName', 'payment_receipt_number');
     }
 }
 ```
@@ -386,7 +397,7 @@ class MyDriver extends Driver
 <div dir="rtl">
 
 
-بعد از اینکه کلاس درایور خودتون رو ایجاد کردید به فایل `Config/payment.php` برید و درایور خودتون رو در قسمت `map` اظافه کنید.
+بعد از اینکه کلاس درایور خودتون رو ایجاد کردید به فایل `Config/payment.php` برید و درایور خودتون رو در قسمت `map` اضافه کنید.
 
 </div>
 
@@ -404,82 +415,82 @@ class MyDriver extends Driver
 
 #### متدهای سودمند
 
-- `callbackUrl` : با استفاده از این متد به صورت داینامیک میتوانید ادرس صفحه ای که بعد از پرداخت انلاین کاربر به ان هدایت میشود را مشخص کنید
+- `callbackUrl`: با استفاده از این متد به صورت داینامیک می‌توانید ادرس صفحه ای که بعد از پرداخت آنلاین کاربر به ان هدایت میشود را مشخص کنید
 
 </div>
 
-```php
-  # On the top of the file.
-  use Shetabit\Payment\Invoice;
+  ```php
+  // At the top of the file.
+  use Shetabit\Multipay\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
-  # create new invoice
+  // Create new invoice.
   $invoice = (new Invoice)->amount(1000);
   
-  # purchase the given invoice
+  // Purchase the given invoice.
   Payment::callbackUrl($url)->purchase(
       $invoice, 
       function($driver, $transactionId) {
-      // we can store $transactionId in database
+      // We can store $transactionId in database.
   	}
   );
-```
+  ```
 
 <div dir="rtl">
 
-- `amount` : به کمک این متد میتوانید به صورت مستقیم هزینه صورتحساب را مشخص کنید
+- `amount`: به کمک این متد می‌توانید به صورت مستقیم هزینه صورتحساب را مشخص کنید
 
 </div>
 
-```php
-  # On the top of the file.
-  use Shetabit\Payment\Invoice;
+  ```php
+  // At the top of the file.
+  use Shetabit\Multipay\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
-  # purchase (we set invoice to null)
+  // Purchase (we set invoice to null).
   Payment::callbackUrl($url)->amount(1000)->purchase(
       null, 
       function($driver, $transactionId) {
-      // we can store $transactionId in database
+      // We can store $transactionId in database.
   	}
   );
-```
+  ```
 
 <div dir="rtl">
 
-- `via` : به منظور تغییر درایور در هنگام اجرای برنامه مورد استفاده قرار میگیرد
+- `via`: به منظور تغییر درایور در هنگام اجرای برنامه مورد استفاده قرار میگیرد
 
 </div>
 
-```php
-  # On the top of the file.
-  use Shetabit\Payment\Invoice;
+  ```php
+  // At the top of the file.
+  use Shetabit\Multipay\Invoice;
   use Shetabit\Payment\Facade\Payment;
   ...
   
-  # create new invoice
+  // Create new invoice.
   $invoice = (new Invoice)->amount(1000);
   
-  # purchase the given invoice
+  // Purchase the given invoice.
   Payment::via('driverName')->purchase(
       $invoice, 
       function($driver, $transactionId) {
-      // we can store $transactionId in database
+      // We can store $transactionId in database.
   	}
   );
-```
+  ```
 
 <div dir="rtl">
 
 
 #### رویدادها
 
-شما میتوانید درون برنامه خود دو رویداد را ثبت و ضبط کنید
+شما می‌توانید درون برنامه خود دو رویداد را ثبت و ضبط کنید
 
-- **InvoicePurchasedEvent** : هنگامی که یک پرداخت به درستی ثبت شود این رویداد اتفاق میافتد.
-- **InvoiceVerifiedEvent** : هنگامی که یک پرداخت به درستی وریفای شود این رویداد اتفاق میافتد
+- **InvoicePurchasedEvent**: هنگامی که یک پرداخت به درستی ثبت شود این رویداد اتفاق می‌افتد.
+- **InvoiceVerifiedEvent**: هنگامی که یک پرداخت به درستی وریفای شود این رویداد اتفاق می‌افتد
 
 
 ## تغییرات
@@ -512,6 +523,7 @@ class MyDriver extends Driver
 
 [link-fa]: README-FA.md
 [link-en]: README.md
+[link-zh]: README-ZH.md
 [link-packagist]: https://packagist.org/packages/shetabit/payment
 [link-code-quality]: https://scrutinizer-ci.com/g/shetabit/payment
 [link-author]: https://github.com/khanzadimahdi

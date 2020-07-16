@@ -15,7 +15,7 @@ class TestCase extends BaseTestCase
     protected function getPackageAliases($app)
     {
         return [
-            'Sms' => 'Shetabit\Payment\Facade\Payment',
+            'Payment' => 'Shetabit\Payment\Facade\Payment',
         ];
     }
 

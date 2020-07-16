@@ -87,15 +87,14 @@
         "php": ">=7.2",
 
         "ext-soap": "*",
-
-        "illuminate/broadcasting": "^5.8|^6.0|^7.0",
-        "illuminate/support": "^5.8|^6.0|^7.0",
-        "guzzlehttp/guzzle": ">=6.2",
-        "ramsey/uuid": "^3.7|^3.8|^3.9|^4.0"
+        
+        "illuminate/broadcasting": "^5.0|^6.0|^7.0",
+        "illuminate/support": "^5.0|^6.0|^7.0",
+        "shetabit/multipay": "^1.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^4.3|^5.0",
-        "phpunit/phpunit": "^8.0|^9.0",
+        "orchestra/testbench": "^3.0|^4.0|^5.0",
+        "phpunit/phpunit": "^6.0|^7.0|^8.0|^9.0",
         "squizlabs/php_codesniffer": "^3.5"
     },
     "autoload": {
