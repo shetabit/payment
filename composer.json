@@ -85,6 +85,9 @@
     ],
     "require": {
         "php": ">=7.2",
+
+        "ext-soap": "*",
+
         "illuminate/broadcasting": "^5.8|^6.0|^7.0",
         "illuminate/support": "^5.8|^6.0|^7.0",
         "guzzlehttp/guzzle": ">=6.2",
