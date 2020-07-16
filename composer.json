@@ -85,6 +85,9 @@
     ],
     "require": {
         "php": ">=7.2",
+
+        "ext-soap": "*",
+        
         "illuminate/broadcasting": "^5.0|^6.0|^7.0",
         "illuminate/support": "^5.0|^6.0|^7.0",
         "shetabit/multipay": "^1.0"
