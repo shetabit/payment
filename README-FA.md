@@ -57,7 +57,7 @@
 - [پارسیان](https://www.pec.ir/) :heavy_check_mark:
 - [پاسارگاد](https://www.bpi.ir/) :heavy_check_mark:
 - [پی آی ار](https://pay.ir/) :heavy_check_mark:
-- [پی پال](http://www.paypal.com/) (به زودی در ورژن بعدی اظافه میشود)
+- [پی پال](http://www.paypal.com/) (به زودی در ورژن بعدی اضافه میشود)
 - [پی پینگ](https://www.payping.ir/) :heavy_check_mark:
 - [پی استار](http://paystar.ir/) :heavy_check_mark:
 - [پولام](https://poolam.ir/) :heavy_check_mark:
