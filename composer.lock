@@ -8,26 +8,26 @@
     "packages": [
         {
             "name": "brick/math",
-            "version": "0.9.1",
+            "version": "0.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brick/math.git",
-                "reference": "283a40c901101e66de7061bd359252c013dcc43c"
+                "reference": "dff976c2f3487d42c1db75a3b180e2b9f0e72ce0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brick/math/zipball/283a40c901101e66de7061bd359252c013dcc43c",
-                "reference": "283a40c901101e66de7061bd359252c013dcc43c",
+                "url": "https://api.github.com/repos/brick/math/zipball/dff976c2f3487d42c1db75a3b180e2b9f0e72ce0",
+                "reference": "dff976c2f3487d42c1db75a3b180e2b9f0e72ce0",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": "^7.1|^8.0"
+                "php": "^7.1 || ^8.0"
             },
             "require-dev": {
                 "php-coveralls/php-coveralls": "^2.2",
-                "phpunit/phpunit": "^7.5.15|^8.5",
-                "vimeo/psalm": "^3.5"
+                "phpunit/phpunit": "^7.5.15 || ^8.5 || ^9.0",
+                "vimeo/psalm": "4.3.2"
             },
             "type": "library",
             "autoload": {
@@ -52,7 +52,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brick/math/issues",
-                "source": "https://github.com/brick/math/tree/master"
+                "source": "https://github.com/brick/math/tree/0.9.2"
             },
             "funding": [
                 {
@@ -60,7 +60,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-08-18T23:57:15+00:00"
+            "time": "2021-01-20T22:51:39+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -603,16 +603,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v7.30.3",
+            "version": "v7.30.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "28481951106e75cf8c5a8b24100059fa327df1ef"
+                "reference": "9dd38140dc2924daa1a020a3d7a45f9ceff03df3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/28481951106e75cf8c5a8b24100059fa327df1ef",
-                "reference": "28481951106e75cf8c5a8b24100059fa327df1ef",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/9dd38140dc2924daa1a020a3d7a45f9ceff03df3",
+                "reference": "9dd38140dc2924daa1a020a3d7a45f9ceff03df3",
                 "shasum": ""
             },
             "require": {
@@ -761,7 +761,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2021-01-15T15:38:30+00:00"
+            "time": "2021-01-21T14:10:48+00:00"
         },
         {
             "name": "league/commonmark",
@@ -1693,16 +1693,16 @@
         },
         {
             "name": "ramsey/collection",
-            "version": "1.1.1",
+            "version": "1.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/collection.git",
-                "reference": "24d93aefb2cd786b7edd9f45b554aea20b28b9b1"
+                "reference": "28a5c4ab2f5111db6a60b2b4ec84057e0f43b9c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/collection/zipball/24d93aefb2cd786b7edd9f45b554aea20b28b9b1",
-                "reference": "24d93aefb2cd786b7edd9f45b554aea20b28b9b1",
+                "url": "https://api.github.com/repos/ramsey/collection/zipball/28a5c4ab2f5111db6a60b2b4ec84057e0f43b9c1",
+                "reference": "28a5c4ab2f5111db6a60b2b4ec84057e0f43b9c1",
                 "shasum": ""
             },
             "require": {
@@ -1712,19 +1712,19 @@
                 "captainhook/captainhook": "^5.3",
                 "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
                 "ergebnis/composer-normalize": "^2.6",
-                "fzaninotto/faker": "^1.5",
+                "fakerphp/faker": "^1.5",
                 "hamcrest/hamcrest-php": "^2",
-                "jangregor/phpstan-prophecy": "^0.6",
+                "jangregor/phpstan-prophecy": "^0.8",
                 "mockery/mockery": "^1.3",
                 "phpstan/extension-installer": "^1",
                 "phpstan/phpstan": "^0.12.32",
                 "phpstan/phpstan-mockery": "^0.12.5",
                 "phpstan/phpstan-phpunit": "^0.12.11",
-                "phpunit/phpunit": "^8.5",
+                "phpunit/phpunit": "^8.5 || ^9",
                 "psy/psysh": "^0.10.4",
                 "slevomat/coding-standard": "^6.3",
                 "squizlabs/php_codesniffer": "^3.5",
-                "vimeo/psalm": "^3.12.2"
+                "vimeo/psalm": "^4.4"
             },
             "type": "library",
             "autoload": {
@@ -1754,15 +1754,19 @@
             ],
             "support": {
                 "issues": "https://github.com/ramsey/collection/issues",
-                "source": "https://github.com/ramsey/collection/tree/1.1.1"
+                "source": "https://github.com/ramsey/collection/tree/1.1.3"
             },
             "funding": [
                 {
                     "url": "https://github.com/ramsey",
                     "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/ramsey/collection",
+                    "type": "tidelift"
                 }
             ],
-            "time": "2020-09-10T20:58:17+00:00"
+            "time": "2021-01-21T17:40:04+00:00"
         },
         {
             "name": "ramsey/uuid",
@@ -1858,16 +1862,16 @@
         },
         {
             "name": "shetabit/multipay",
-            "version": "v1.1.6",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/shetabit/multipay.git",
-                "reference": "676c4530778bd1671433e6bfb210e28cc46ffab9"
+                "reference": "5082b1e8dae15d64b622e0ef223cec17f14245cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shetabit/multipay/zipball/676c4530778bd1671433e6bfb210e28cc46ffab9",
-                "reference": "676c4530778bd1671433e6bfb210e28cc46ffab9",
+                "url": "https://api.github.com/repos/shetabit/multipay/zipball/5082b1e8dae15d64b622e0ef223cec17f14245cd",
+                "reference": "5082b1e8dae15d64b622e0ef223cec17f14245cd",
                 "shasum": ""
             },
             "require": {
@@ -1973,9 +1977,9 @@
             ],
             "support": {
                 "issues": "https://github.com/shetabit/multipay/issues",
-                "source": "https://github.com/shetabit/multipay/tree/v1.1.6"
+                "source": "https://github.com/shetabit/multipay/tree/v1.2.0"
             },
-            "time": "2021-01-20T14:27:59+00:00"
+            "time": "2021-01-24T10:01:28+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -4276,16 +4280,16 @@
         },
         {
             "name": "vlucas/phpdotenv",
-            "version": "v4.1.8",
+            "version": "v4.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/phpdotenv.git",
-                "reference": "572af79d913627a9d70374d27a6f5d689a35de32"
+                "reference": "da64796370fc4eb03cc277088f6fede9fde88482"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/572af79d913627a9d70374d27a6f5d689a35de32",
-                "reference": "572af79d913627a9d70374d27a6f5d689a35de32",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/da64796370fc4eb03cc277088f6fede9fde88482",
+                "reference": "da64796370fc4eb03cc277088f6fede9fde88482",
                 "shasum": ""
             },
             "require": {
@@ -4297,7 +4301,7 @@
                 "bamarni/composer-bin-plugin": "^1.4.1",
                 "ext-filter": "*",
                 "ext-pcre": "*",
-                "phpunit/phpunit": "^4.8.35 || ^5.7.27 || ^6.5.6 || ^7.0"
+                "phpunit/phpunit": "^4.8.36 || ^5.7.27 || ^6.5.14 || ^7.5.20"
             },
             "suggest": {
                 "ext-filter": "Required to use the boolean validator.",
@@ -4338,7 +4342,7 @@
             ],
             "support": {
                 "issues": "https://github.com/vlucas/phpdotenv/issues",
-                "source": "https://github.com/vlucas/phpdotenv/tree/4.1"
+                "source": "https://github.com/vlucas/phpdotenv/tree/v4.2.0"
             },
             "funding": [
                 {
@@ -4350,7 +4354,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-07-14T19:22:52+00:00"
+            "time": "2021-01-20T15:11:48+00:00"
         },
         {
             "name": "voku/portable-ascii",
@@ -4852,16 +4856,16 @@
         },
         {
             "name": "orchestra/testbench-core",
-            "version": "v5.14.1",
+            "version": "v5.14.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/orchestral/testbench-core.git",
-                "reference": "a26a080eb5a334c68804de292c32473127d2e6b8"
+                "reference": "74b593d1a63e03c23844298673dadbba461b6e31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/orchestral/testbench-core/zipball/a26a080eb5a334c68804de292c32473127d2e6b8",
-                "reference": "a26a080eb5a334c68804de292c32473127d2e6b8",
+                "url": "https://api.github.com/repos/orchestral/testbench-core/zipball/74b593d1a63e03c23844298673dadbba461b6e31",
+                "reference": "74b593d1a63e03c23844298673dadbba461b6e31",
                 "shasum": ""
             },
             "require": {
@@ -4933,7 +4937,7 @@
                     "type": "liberapay"
                 }
             ],
-            "time": "2021-01-17T23:03:34+00:00"
+            "time": "2021-01-21T01:06:16+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -6842,12 +6846,12 @@
             "version": "1.9.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webmozart/assert.git",
+                "url": "https://github.com/webmozarts/assert.git",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "shasum": ""
             },
@@ -6885,8 +6889,8 @@
                 "validate"
             ],
             "support": {
-                "issues": "https://github.com/webmozart/assert/issues",
-                "source": "https://github.com/webmozart/assert/tree/master"
+                "issues": "https://github.com/webmozarts/assert/issues",
+                "source": "https://github.com/webmozarts/assert/tree/1.9.1"
             },
             "time": "2020-07-08T17:02:28+00:00"
         }
