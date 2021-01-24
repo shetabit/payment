@@ -47,7 +47,8 @@ For PHP integration you can use [shetabit/multipay](https://github.com/shetabit/
   - [License](#license)
 
 # 可用驱动列表
-- [asanpardakht](https://asanpardakht.ir/) :warning: (未测试)
+
+- [asanpardakht](https://asanpardakht.ir/) :heavy_check_mark:
 - [behpardakht (mellat)](http://www.behpardakht.com/) :heavy_check_mark:
 - [idpay](https://idpay.ir/) :heavy_check_mark:
 - [irankish](http://irankish.com/) :heavy_check_mark:
@@ -61,6 +62,7 @@ For PHP integration you can use [shetabit/multipay](https://github.com/shetabit/
 - [poolam](https://poolam.ir/) :heavy_check_mark:
 - [sadad (melli)](https://sadadpsp.ir/) :heavy_check_mark:
 - [saman](https://www.sep.ir) :heavy_check_mark:
+- [sepehr (saderat)](https://www.sepehrpay.com/) :heavy_check_mark:
 - [yekpay](https://yekpay.com/) :heavy_check_mark:
 - [zarinpal](https://www.zarinpal.com/) :heavy_check_mark:
 - [zibal](https://www.zibal.ir/) :heavy_check_mark:
@@ -78,7 +80,6 @@ For PHP integration you can use [shetabit/multipay](https://github.com/shetabit/
 - wepay
 - payoneer
 - paysimple
-- saderat
 
 > 如果找不到你需要的，您可以创建你自己的驱动，阅读`创建自定义驱动`部分，可以了解更多
 
