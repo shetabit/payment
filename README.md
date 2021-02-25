@@ -81,7 +81,7 @@ For PHP integration you can use [shetabit/multipay](https://github.com/shetabit/
 - payoneer
 - paysimple
 
-> you can create your own custom drivers if it's not  exists in the list, read the `Create custom drivers` section.
+> you can create your own custom drivers if it does not exist in the list, read the `Create custom drivers` section.
 
 ## Install
 
