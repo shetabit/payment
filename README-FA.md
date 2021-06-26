@@ -29,6 +29,10 @@
 [به منظور کمک مالی کلیک کنید](https://zarinp.al/@mahdikhanzadi) :sunglasses: :bowtie:
 
 
+در صورتی که نیاز به آموزش دارید میتونید یه نگاهی به لینک زیر بندازید
+
+- [آموزش ویدیویی پرداخت و خرید در لاراول](https://ditty.ir/videos/laravel-online-payment-installation/nM4Y5)
+
 # لیست محتوا
 
 - [درایور های موجود](#درایورهای-موجود)
