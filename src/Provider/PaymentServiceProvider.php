@@ -4,6 +4,7 @@ namespace Shetabit\Payment\Provider;
 
 use Shetabit\Multipay\Payment;
 use Illuminate\Support\ServiceProvider;
+use Shetabit\Multipay\Request;
 use Shetabit\Payment\Events\InvoicePurchasedEvent;
 use Shetabit\Payment\Events\InvoiceVerifiedEvent;
 
@@ -46,6 +47,10 @@ class PaymentServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        Request::overwrite('input', function ($key) {
+            return \request($key);
+        });
+
         /**
          * Bind to service container.
          */
