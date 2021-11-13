@@ -67,6 +67,7 @@ For PHP integration you can use [shetabit/multipay](https://github.com/shetabit/
 - [yekpay](https://yekpay.com/) :heavy_check_mark:
 - [zarinpal](https://www.zarinpal.com/) :heavy_check_mark:
 - [zibal](https://www.zibal.ir/) :heavy_check_mark:
+- [sepordeh](https://sepordeh.com/) :heavy_check_mark:
 - 其他正在进行中
 
 **您可以通过`pull requests` 帮助我创建更多的网关**
