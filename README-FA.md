@@ -54,6 +54,7 @@
 # درایورهای موجود
 
 - [اسان پرداخت](https://asanpardakht.ir/) :heavy_check_mark:
+- [آتی‌پی](https://www.atipay.net/) :heavy_check_mark:
 - [به‌پرداخت (mellat)](http://www.behpardakht.com/) :heavy_check_mark:
 - [دیجی پی](https://www.mydigipay.com/) :heavy_check_mark:
 - [ایدی پی](https://idpay.ir/) :heavy_check_mark:
