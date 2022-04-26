@@ -69,6 +69,7 @@ For PHP integration you can use [shetabit/multipay](https://github.com/shetabit/
 - [zarinpal](https://www.zarinpal.com/) :heavy_check_mark:
 - [zibal](https://www.zibal.ir/) :heavy_check_mark:
 - [sepordeh](https://sepordeh.com/) :heavy_check_mark:
+- [sizpay](https://www.sizpay.ir/) :heavy_check_mark:
 - Others are under way.
 
 **Help me to add the gateways below by creating `pull requests`**
