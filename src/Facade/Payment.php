@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Facade;
  * Class Payment
  *
  * @package Shetabit\Payment\Facade
+ *
+ * @see \Shetabit\Multipay\Payment
  */
 class Payment extends Facade
 {
