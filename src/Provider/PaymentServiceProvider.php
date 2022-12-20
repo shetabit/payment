@@ -26,7 +26,7 @@ class PaymentServiceProvider extends ServiceProvider
             [
                 Payment::getDefaultConfigPath() => config_path('payment.php'),
             ],
-            'config'
+            'payment-config'
         );
 
         /**
