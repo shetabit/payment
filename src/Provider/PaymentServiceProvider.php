@@ -5,7 +5,6 @@ namespace Shetabit\Payment\Provider;
 use Shetabit\Multipay\Payment;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Str;
 use Shetabit\Multipay\Request;
 use Shetabit\Payment\Events\InvoicePurchasedEvent;
 use Shetabit\Payment\Events\InvoiceVerifiedEvent;
@@ -67,7 +66,7 @@ class PaymentServiceProvider extends ServiceProvider
         // use blade to render redirection form
         Payment::setRedirectionFormViewRenderer(function ($view, $action, $inputs, $method) {
             return Blade::render(
-                Str::replace('</form>', '@csrf</form>', file_get_contents($view)),
+                str_replace('</form>', '@csrf</form>', file_get_contents($view)),
                 [
                     'action' => $action,
                     'inputs' => $inputs,
