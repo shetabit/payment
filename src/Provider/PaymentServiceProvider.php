@@ -2,8 +2,11 @@
 
 namespace Shetabit\Payment\Provider;
 
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\View;
 use Shetabit\Multipay\Payment;
 use Shetabit\Multipay\Request;
 use Shetabit\Payment\Events\InvoicePurchasedEvent;
@@ -66,13 +69,7 @@ class PaymentServiceProvider extends ServiceProvider
         // use blade to render redirection form
         Payment::setRedirectionFormViewRenderer(function ($view, $action, $inputs, $method) {
             if ($this->existCustomRedirectFormView()) {
-                return view('shetabitPayment::redirectForm')->with(
-                    [
-                        'action' => $action,
-                        'inputs' => $inputs,
-                        'method' => $method,
-                    ]
-                );
+                return $this->loadNormalRedirectForm($action, $inputs, $method);
             }
             return Blade::render(
                 str_replace('</form>', '@csrf</form>', file_get_contents($view)),
@@ -109,5 +106,22 @@ class PaymentServiceProvider extends ServiceProvider
     private function existCustomRedirectFormView()
     {
         return file_exists(resource_path('views/vendor/shetabitPayment') . '/redirectForm.blade.php');
+    }
+
+    /**
+     * @param $action
+     * @param $inputs
+     * @param $method
+     * @return Application|Factory|View
+     */
+    function loadNormalRedirectForm($action, $inputs, $method)
+    {
+        return view('shetabitPayment::redirectForm')->with(
+            [
+                'action' => $action,
+                'inputs' => $inputs,
+                'method' => $method,
+            ]
+        );
     }
 }
