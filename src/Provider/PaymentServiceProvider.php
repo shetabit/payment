@@ -114,7 +114,7 @@ class PaymentServiceProvider extends ServiceProvider
      * @param $method
      * @return Application|Factory|View
      */
-    function loadNormalRedirectForm($action, $inputs, $method)
+    private function loadNormalRedirectForm($action, $inputs, $method)
     {
         return view('shetabitPayment::redirectForm')->with(
             [
