@@ -95,6 +95,18 @@ Via Composer
 $ composer require shetabit/payment
 ```
 
+## Publish Vendor Files
+
+- **publish configuration files:**
+``` bash
+php artisan vendor:publish --tag=payment-config
+```
+
+ - **publish views for customization:**
+``` bash
+php artisan vendor:publish --tag=payment-views
+```
+
 ## Configure
 
 If you are using `Laravel 5.5` or higher then you don't need to add the provider and alias. (Skip to b)
@@ -114,8 +126,6 @@ a. In your `config/app.php` file add these two lines.
     'Payment' => Shetabit\Payment\Facade\Payment::class,
 ],
 ```
-
-b. then run `php artisan vendor:publish` to publish `config/payment.php` file in your config directory.
 
 In the config file you can set the `default driver` to use for all your payments. But you can also change the driver at runtime.
 
