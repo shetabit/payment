@@ -2,9 +2,12 @@
 
 namespace Shetabit\Payment\Provider;
 
-use Shetabit\Multipay\Payment;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\View\View;
+use Shetabit\Multipay\Payment;
 use Shetabit\Multipay\Request;
 use Shetabit\Payment\Events\InvoicePurchasedEvent;
 use Shetabit\Payment\Events\InvoiceVerifiedEvent;
@@ -18,7 +21,7 @@ class PaymentServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'shetabitPayment');
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'shetabitPayment');
 
         /**
          * Configurations that needs to be done by user.
@@ -35,9 +38,9 @@ class PaymentServiceProvider extends ServiceProvider
          */
         $this->publishes(
             [
-                __DIR__.'/../../resources/views' => resource_path('views/vendor/shetabitPayment')
+                __DIR__ . '/../../resources/views' => resource_path('views/vendor/shetabitPayment'),
             ],
-            'views'
+            'payment-views'
         );
     }
 
@@ -65,6 +68,9 @@ class PaymentServiceProvider extends ServiceProvider
 
         // use blade to render redirection form
         Payment::setRedirectionFormViewRenderer(function ($view, $action, $inputs, $method) {
+            if ($this->existCustomRedirectFormView()) {
+                return $this->loadNormalRedirectForm($action, $inputs, $method);
+            }
             return Blade::render(
                 str_replace('</form>', '@csrf</form>', file_get_contents($view)),
                 [
@@ -90,5 +96,32 @@ class PaymentServiceProvider extends ServiceProvider
         Payment::addVerifyListener(function ($reciept, $driver, $invoice) {
             event(new InvoiceVerifiedEvent($reciept, $driver, $invoice));
         });
+    }
+
+    /**
+     * Checks whether the user has customized the view file called `redirectForm.blade.php` or not
+     *
+     * @return bool
+     */
+    private function existCustomRedirectFormView()
+    {
+        return file_exists(resource_path('views/vendor/shetabitPayment') . '/redirectForm.blade.php');
+    }
+
+    /**
+     * @param $action
+     * @param $inputs
+     * @param $method
+     * @return Application|Factory|View
+     */
+    private function loadNormalRedirectForm($action, $inputs, $method)
+    {
+        return view('shetabitPayment::redirectForm')->with(
+            [
+                'action' => $action,
+                'inputs' => $inputs,
+                'method' => $method,
+            ]
+        );
     }
 }
