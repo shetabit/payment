@@ -14,7 +14,7 @@ use Shetabit\Multipay\Invoice;
 
 class InvoicePurchasedEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use InteractsWithSockets, SerializesModels;
 
     public $driver;
     public $invoice;
