@@ -517,3 +517,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [link-code-quality]: https://scrutinizer-ci.com/g/shetabit/payment
 [link-author]: https://github.com/khanzadimahdi
 [link-contributors]: ../../contributors
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=shetabit/payment&type=Date)](https://star-history.com/#shetabit/payment&Date)
