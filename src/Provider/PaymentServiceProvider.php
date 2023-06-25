@@ -51,6 +51,9 @@ class PaymentServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        // Merge default config with user's config
+        $this->mergeConfigFrom(Payment::getDefaultConfigPath(), 'payment');
+
         Request::overwrite('input', function ($key) {
             return \request($key);
         });
