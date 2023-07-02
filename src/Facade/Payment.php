@@ -4,20 +4,22 @@ namespace Shetabit\Payment\Facade;
 
 use Illuminate\Support\Facades\Facade;
 use Shetabit\Multipay\Invoice;
+use Shetabit\Multipay\Contracts\ReceiptInterface;
+use Shetabit\Multipay\Payment as MultipayPayment;
 
 /**
  * Class Payment
  *
- * @method static config($key, $value = null)
- * @method static callbackUrl($url = null)
- * @method static resetCallbackUrl()
- * @method static amount($amount)
- * @method static detail($key, $value = null)
- * @method static transactionId($id)
- * @method static via($driver)
- * @method static purchase(Invoice $invoice = null, $finalizeCallback = null)
- * @method static pay($initializeCallback = null)
- * @method static verify($finalizeCallback = null)
+ * @method static MultipayPayment config($key, $value = null)
+ * @method static MultipayPayment callbackUrl($url = null)
+ * @method static MultipayPayment resetCallbackUrl()
+ * @method static MultipayPayment amount($amount)
+ * @method static MultipayPayment detail($key, $value = null)
+ * @method static MultipayPayment transactionId($id)
+ * @method static MultipayPayment via($driver)
+ * @method static MultipayPayment purchase(Invoice $invoice = null, $finalizeCallback = null)
+ * @method static mixed pay($initializeCallback = null)
+ * @method static ReceiptInterface verify($finalizeCallback = null)
  *
  * @package Shetabit\Payment\Facade
  * @see \Shetabit\Multipay\Payment
