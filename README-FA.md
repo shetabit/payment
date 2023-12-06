@@ -53,28 +53,41 @@
 
 # درایورهای موجود
 
-- [اسان پرداخت](https://asanpardakht.ir/) :heavy_check_mark:
 - [آتی‌پی](https://www.atipay.net/) :heavy_check_mark:
-- [به‌پرداخت (mellat)](http://www.behpardakht.com/) :heavy_check_mark:
-- [دیجی پی](https://www.mydigipay.com/) :heavy_check_mark:
-- [ایدی پی](https://idpay.ir/) :heavy_check_mark:
-- [ایرانکیش](http://irankish.com/) :heavy_check_mark:
-- [نکست پی](https://nextpay.ir/) :heavy_check_mark:
+- [آقای پرداخت](https://aqayepardakht.ir/) :heavy_check_mark:
+- [ازکی‌وام (پرداخت اقساطی)](https://www.azkivam.com/) :heavy_check_mark:
+- [آسان‌پرداخت](https://asanpardakht.ir/) :heavy_check_mark:
+- [اعتبارینو (پرداخت اقساطی)](https://etebarino.com/) :heavy_check_mark:
+- [امیدپی](https://sayancard.ir/) :heavy_check_mark:
+- [آی‌دی‌پی](https://idpay.ir/) :heavy_check_mark:
+- [ایران‌کیش](http://irankish.com/) :heavy_check_mark:
+- [به‌پرداخت (ملت)](http://www.behpardakht.com/) :heavy_check_mark:
+- [بیت‌پی](https://bitpay.ir/) :heavy_check_mark:
+- [دیجی‌پی](https://www.mydigipay.com/) :heavy_check_mark:
+- [فن‌آوا‌کارت](https://www.fanava.com/) :heavy_check_mark:
+- [لوکال](#local-driver) :heavy_check_mark:
+- [نکست‌پی](https://nextpay.ir/) :heavy_check_mark:
 - [پارسیان](https://www.pec.ir/) :heavy_check_mark:
-- [پاسارگاد](https://www.bpi.ir/) :heavy_check_mark:
-- [پی آی ار](https://pay.ir/) :heavy_check_mark:
-- [پی پال](http://www.paypal.com/) (به زودی در ورژن بعدی اضافه میشود)
-- [پی پینگ](https://www.payping.ir/) :heavy_check_mark:
-- [پی استار](http://paystar.ir/) :heavy_check_mark:
+- [پاسارگاد](https://bpi.ir/) :heavy_check_mark:
+- [پی‌آی‌آر](https://pay.ir/) :heavy_check_mark:
+- [پی‌فا](https://payfa.com/) :heavy_check_mark:
+- [پی‌پال](http://www.paypal.com/) (به زودی در ورژن بعدی اضافه می‌شود)
+- [پی‌پینگ](https://www.payping.ir/) :heavy_check_mark:
+- [پی‌استار](http://paystar.ir/) :heavy_check_mark:
 - [پولام](https://poolam.ir/) :heavy_check_mark:
-- [سداد (بانک ملی)](https://sadadpsp.ir/) :heavy_check_mark:
+- [رایان‌پی](https://rayanpay.com/) :heavy_check_mark:
+- [سداد (ملی)](https://sadadpsp.ir/) :heavy_check_mark:
 - [سامان](https://www.sep.ir) :heavy_check_mark:
+- [سپ (درگاه الکترونیک سامان) کشاورزی و صادرات](https://www.sep.ir) :heavy_check_mark:
 - [سپهر (صادرات)](https://www.sepehrpay.com/) :heavy_check_mark:
-- [یک پی](https://yekpay.com/) :heavy_check_mark:
-- [زرین پال](https://www.zarinpal.com/) :heavy_check_mark:
-- [زیبال](https://www.zibal.ir/) :heavy_check_mark:
 - [سپرده](https://sepordeh.com/) :heavy_check_mark:
 - [سیزپی](https://www.sizpay.ir/) :heavy_check_mark:
+- [تومن](https://tomanpay.net/) :heavy_check_mark:
+- [وندار](https://vandar.io/) :heavy_check_mark:
+- [والتا](https://walleta.ir/) :heavy_check_mark:
+- [یک‌پی](https://yekpay.com/) :heavy_check_mark:
+- [زرین‌پال](https://www.zarinpal.com/) :heavy_check_mark:
+- [زیبال](https://www.zibal.ir/) :heavy_check_mark:
 
 - درایورهای دیگر ساخته خواهند شد یا اینکه بسازید و درخواست `merge` بدید.
 
