@@ -58,7 +58,7 @@
 - [ازکی‌وام (پرداخت اقساطی)](https://www.azkivam.com/) :heavy_check_mark:
 - [آسان‌پرداخت](https://asanpardakht.ir/) :heavy_check_mark:
 - [اعتبارینو (پرداخت اقساطی)](https://etebarino.com/) :heavy_check_mark:
-- [امیدپی](omidpayment.ir) :heavy_check_mark:
+- [امیدپی](https://omidpayment.ir/) :heavy_check_mark:
 - [آی‌دی‌پی](https://idpay.ir/) :heavy_check_mark:
 - [ایران‌کیش](http://irankish.com/) :heavy_check_mark:
 - [به‌پرداخت (ملت)](http://www.behpardakht.com/) :heavy_check_mark:
