@@ -3,7 +3,7 @@
 namespace Shetabit\Payment\Tests;
 
 use Orchestra\Testbench\TestCase as BaseTestCase;
-use Shetabit\Payment\Tests\Mocks\Drivers\BarDriver;
+use Shetabit\Multipay\Tests\Drivers\BarDriver;
 
 class TestCase extends BaseTestCase
 {
