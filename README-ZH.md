@@ -60,6 +60,7 @@ For PHP integration you can use [shetabit/multipay](https://github.com/shetabit/
 - [idpay](https://idpay.ir/) :heavy_check_mark:
 - [irankish](http://irankish.com/) :heavy_check_mark:
 - [local](#local-driver) :heavy_check_mark:
+- [jibit](https://jibit.ir/) :heavy_check_mark:
 - [nextpay](https://nextpay.ir/) :heavy_check_mark:
 - [omidpay](https://omidpayment.ir/) :heavy_check_mark:
 - [parsian](https://www.pec.ir/) :heavy_check_mark:
