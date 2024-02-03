@@ -66,6 +66,7 @@
 - [دیجی‌پی](https://www.mydigipay.com/) :heavy_check_mark:
 - [فن‌آوا‌کارت](https://www.fanava.com/) :heavy_check_mark:
 - [لوکال](#local-driver) :heavy_check_mark:
+- [جیبیت](https://jibit.ir/) :heavy_check_mark:
 - [نکست‌پی](https://nextpay.ir/) :heavy_check_mark:
 - [پارسیان](https://www.pec.ir/) :heavy_check_mark:
 - [پاسارگاد](https://bpi.ir/) :heavy_check_mark:
