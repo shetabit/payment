@@ -106,7 +106,7 @@ For PHP integration you can use [shetabit/multipay](https://github.com/shetabit/
 通过 Composer
 
 ``` bash
-$ composer require shetabit/payment
+composer require shetabit/payment
 ```
 
 ## 配置

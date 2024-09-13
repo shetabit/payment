@@ -101,7 +101,7 @@
 </div>
 
 ``` bash
-$ composer require shetabit/payment
+composer require shetabit/payment
 ```
 
 <div dir="rtl">
