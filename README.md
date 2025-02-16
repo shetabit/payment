@@ -106,7 +106,7 @@ For PHP integration you can use [shetabit/multipay](https://github.com/shetabit/
 Via Composer
 
 ``` bash
-$ composer require shetabit/payment
+composer require shetabit/payment
 ```
 
 ## Publish Vendor Files
@@ -141,7 +141,7 @@ a. In your `config/app.php` file add these two lines.
 ],
 ```
 
-In the config file you can set the `default driver` to use for all your payments. But you can also change the driver at runtime.
+b. In the config file you can set the `default driver` to use for all your payments. But you can also change the driver at runtime.
 
 Choose what gateway you would like to use in your application. Then make that as default driver so that you don't have to specify that everywhere. But, you can also use multiple gateways in a project.
 
