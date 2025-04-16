@@ -57,3 +57,5 @@ vendor/
 
 # Composer.lock file
 composer.lock
+
+.phpunit.result.cache
