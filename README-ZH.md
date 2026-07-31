@@ -54,6 +54,7 @@ For PHP integration you can use [shetabit/multipay](https://github.com/shetabit/
 - [azkiVam (Installment payment)](https://www.azkivam.com/) :heavy_check_mark:
 - [behpardakht (mellat)](http://www.behpardakht.com/) :heavy_check_mark:
 - [bitpay](https://bitpay.ir/) :heavy_check_mark:
+- [digify](https://digify.shop/) :heavy_check_mark:
 - [digipay](https://www.mydigipay.com/) :heavy_check_mark:
 - [etebarino (Installment payment)](https://etebarino.com/) :heavy_check_mark:
 - [fanavacard](https://www.fanava.com/) :heavy_check_mark:
