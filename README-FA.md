@@ -53,40 +53,50 @@
 
 # درایورهای موجود
 
-- [آتی‌پی](https://www.atipay.net/) :heavy_check_mark:
 - [آقای پرداخت](https://aqayepardakht.ir/) :heavy_check_mark:
-- [ازکی‌وام (پرداخت اقساطی)](https://www.azkivam.com/) :heavy_check_mark:
 - [آسان‌پرداخت](https://asanpardakht.ir/) :heavy_check_mark:
-- [اعتبارینو (پرداخت اقساطی)](https://etebarino.com/) :heavy_check_mark:
-- [امیدپی](https://omidpayment.ir/) :heavy_check_mark:
-- [آی‌دی‌پی](https://idpay.ir/) :heavy_check_mark:
-- [ایران‌کیش](http://irankish.com/) :heavy_check_mark:
+- [آتی‌پی](https://www.atipay.net/) :heavy_check_mark:
+- [ازکی‌وام (پرداخت اقساطی)](https://www.azkivam.com/) :heavy_check_mark:
 - [به‌پرداخت (ملت)](http://www.behpardakht.com/) :heavy_check_mark:
 - [بیت‌پی](https://bitpay.ir/) :heavy_check_mark:
-- [دیجیفای](https://digify.shop/) :heavy_check_mark:
+- [داراکارت](https://daracard.co/) :heavy_check_mark:
 - [دیجی‌پی](https://www.mydigipay.com/) :heavy_check_mark:
+- [اعتبارینو (پرداخت اقساطی)](https://etebarino.com/) :heavy_check_mark:
 - [فن‌آوا‌کارت](https://www.fanava.com/) :heavy_check_mark:
-- [لوکال](#local-driver) :heavy_check_mark:
+- [گویاپـــی](https://gooyapay.ir/) :heavy_check_mark:
+- [ایران‌درگاه](https://irandargah.com/) :heavy_check_mark:
+- [ایران‌کیش](http://irankish.com/) :heavy_check_mark:
 - [جیبیت](https://jibit.ir/) :heavy_check_mark:
+- [لوکال](#local-driver) :heavy_check_mark:
+- [مینی پی](https://minipay.me/) :heavy_check_mark:
 - [نکست‌پی](https://nextpay.ir/) :heavy_check_mark:
+- [نوینوپی](https://novinopay.com/) :heavy_check_mark:
+- [امیدپی](https://omidpayment.ir/) :heavy_check_mark:
+- [پاناپال](https://panapal.ir/) :heavy_check_mark:
 - [پارسیان](https://www.pec.ir/) :heavy_check_mark:
+- [پارس‌پال](https://parspal.com/) :heavy_check_mark:
 - [پاسارگاد](https://bpi.ir/) :heavy_check_mark:
-- [پی‌آی‌آر](https://pay.ir/) :heavy_check_mark:
 - [پی‌فا](https://payfa.com/) :heavy_check_mark:
 - [پی‌پال](http://www.paypal.com/) (به زودی در ورژن بعدی اضافه می‌شود)
 - [پی‌پینگ](https://www.payping.ir/) :heavy_check_mark:
 - [پی‌استار](http://paystar.ir/) :heavy_check_mark:
+- [پرداخت نوین](https://www.pna.co.ir/) :heavy_check_mark:
 - [پولام](https://poolam.ir/) :heavy_check_mark:
 - [رایان‌پی](https://rayanpay.com/) :heavy_check_mark:
+- [رفاه](https://kh-poshtibani.ir/) :heavy_check_mark:
 - [سداد (ملی)](https://sadadpsp.ir/) :heavy_check_mark:
 - [سامان](https://www.sep.ir) :heavy_check_mark:
 - [سپ (درگاه الکترونیک سامان) کشاورزی و صادرات](https://www.sep.ir) :heavy_check_mark:
 - [سپهر (صادرات)](https://www.sepehrpay.com/) :heavy_check_mark:
 - [سپرده](https://sepordeh.com/) :heavy_check_mark:
+- [شپا](https://shepa.com/) :heavy_check_mark:
 - [سیزپی](https://www.sizpay.ir/) :heavy_check_mark:
+- [اسنپ‌پی](https://snapppay.ir/) :heavy_check_mark:
+- [استرایپ](https://stripe.com/) :heavy_check_mark:
 - [تومن](https://tomanpay.net/) :heavy_check_mark:
+- [ترب‌پی (پرداخت اقساطی)](https://torobpay.com/) :heavy_check_mark:
 - [وندار](https://vandar.io/) :heavy_check_mark:
-- [والتا](https://walleta.ir/) :heavy_check_mark:
+- [زندیت](https://xendit.co/) :heavy_check_mark:
 - [یک‌پی](https://yekpay.com/) :heavy_check_mark:
 - [زرین‌پال](https://www.zarinpal.com/) :heavy_check_mark:
 - [زیبال](https://www.zibal.ir/) :heavy_check_mark:
