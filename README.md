@@ -546,4 +546,4 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=shetabit/payment&type=Date)](https://star-history.com/#shetabit/payment&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=shetabit/payment&type=Date)](https://star-history.dera.page/#shetabit/payment&Date)
