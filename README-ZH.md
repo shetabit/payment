@@ -14,7 +14,7 @@
 [![Static Analysis][ico-static-analysis]][link-static-analysis]
 [![Code Coverage][ico-coverage]][link-coverage]
 
-这是一个用于整合支付网关的Laravel包。这个包需要 `PHP 8.4+`，并支持 `Laravel 12` 和 `Laravel 13`。
+这是一个用于整合支付网关的Laravel包。这个包需要 `PHP 8.4+`，并支持 `Laravel 12+`。
 
 [捐赠我](https://yekpay.me/mahdikhanzadi) 如果你喜欢这个包:sunglasses: :bowtie:
 
