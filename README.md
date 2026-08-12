@@ -14,8 +14,7 @@
 [![Static Analysis][ico-static-analysis]][link-static-analysis]
 [![Code Coverage][ico-coverage]][link-coverage]
 
-This is a Laravel Package for Payment Gateway Integration. This package requires `PHP 8.4+` and supports `Laravel 12`
-and `Laravel 13`.
+This is a Laravel Package for Payment Gateway Integration. This package requires `PHP 8.4+` and supports `Laravel 12+`.
 
 [Donate me](https://yekpay.me/mahdikhanzadi) if you like this package :sunglasses: :bowtie:
 
