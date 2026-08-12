@@ -3,36 +3,39 @@
 namespace Shetabit\Payment\Facade;
 
 use Illuminate\Support\Facades\Facade;
-use Shetabit\Multipay\Invoice;
 use Shetabit\Multipay\Contracts\ReceiptInterface;
+use Shetabit\Multipay\Invoice;
 use Shetabit\Multipay\Payment as MultipayPayment;
+use Shetabit\Multipay\RedirectionForm;
 
 /**
- * Class Payment
+ * The payment manager of the `shetabit/multipay` package, as a Laravel facade.
  *
- * @method static MultipayPayment config($key, $value = null)
- * @method static MultipayPayment callbackUrl($url = null)
+ * @method static MultipayPayment config(array<string, mixed>|string $key, mixed $value = null)
+ * @method static MultipayPayment callbackUrl(string|null $url = null)
  * @method static MultipayPayment resetCallbackUrl()
- * @method static MultipayPayment amount($amount)
- * @method static MultipayPayment detail($key, $value = null)
- * @method static MultipayPayment transactionId($id)
- * @method static MultipayPayment via($driver)
- * @method static MultipayPayment purchase(Invoice $invoice = null, $finalizeCallback = null)
- * @method static mixed pay($initializeCallback = null)
- * @method static ReceiptInterface verify($finalizeCallback = null)
+ * @method static MultipayPayment amount(mixed $amount)
+ * @method static MultipayPayment detail(array<string, mixed>|string $key, mixed $value = null)
+ * @method static MultipayPayment transactionId(string|int|null $id)
+ * @method static MultipayPayment via(string $driver)
+ * @method static MultipayPayment purchase(Invoice|null $invoice = null, callable|null $finalizeCallback = null)
+ * @method static RedirectionForm pay(callable|null $initializeCallback = null)
+ * @method static ReceiptInterface verify(callable|null $finalizeCallback = null)
  *
- * @package Shetabit\Payment\Facade
- * @see \Shetabit\Multipay\Payment
+ * @see MultipayPayment
  */
 class Payment extends Facade
 {
     /**
-     * Get the registered name of the component.
-     *
-     * @return string
+     * The name the payment manager is bound to in the service container.
      */
-    public static function getFacadeAccessor()
+    public const string SERVICE_NAME = 'shetabit-payment';
+
+    /**
+     * Get the registered name of the component.
+     */
+    public static function getFacadeAccessor() : string
     {
-        return 'shetabit-payment';
+        return self::SERVICE_NAME;
     }
 }

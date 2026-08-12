@@ -1,0 +1,8 @@
+.git
+.github
+.idea
+.phpunit.cache
+.phpunit.result.cache
+.vscode
+resources/images
+vendor

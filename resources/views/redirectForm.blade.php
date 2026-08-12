@@ -73,10 +73,11 @@
             @endforeach
 
             <button type="submit">Click here</button>
+            @csrf
         </form>
         <script>
             // Total seconds to wait
-            var seconds = 10;
+            let seconds = 10;
 
             function submitForm() {
                 document.forms[0].submit();
@@ -89,9 +90,9 @@
                     submitForm();
                 } else {
                     // Update remaining seconds
-                    document.getElementById("countdown").innerHTML = seconds;
+                    document.getElementById("countdown").textContent = seconds;
                     // Count down using javascript
-                    window.setTimeout("countdown()", 1000);
+                    window.setTimeout(countdown, 1000);
                 }
             }
 

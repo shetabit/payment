@@ -8,9 +8,10 @@
 [![Software License][ico-license]](LICENSE.md)
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads on Packagist][ico-download]][link-packagist]
-[![StyleCI](https://github.styleci.io/repos/169948762/shield?branch=master)](https://github.styleci.io/repos/169948762)
-[![Maintainability](https://api.codeclimate.com/v1/badges/e6a80b17298cb4fcb56d/maintainability)](https://codeclimate.com/github/shetabit/payment/maintainability)
-[![Quality Score][ico-code-quality]][link-code-quality]
+[![Tests][ico-tests]][link-tests]
+[![Code Style][ico-code-style]][link-code-style]
+[![Static Analysis][ico-static-analysis]][link-static-analysis]
+[![Code Coverage][ico-coverage]][link-coverage]
 
 این پکیج برای پرداخت آنلاین توسط درگاه‌های مختلف در لاراول ایجاد شده است.
 
@@ -119,29 +120,9 @@ composer require shetabit/payment
 
 ## تنظیمات
 
-درصورتی که از `Laravel 5.5` یا ورژن های بالاتر استفاده می‌کنید نیازی به انجام تنظیمات `providers` و `alias` نخواهید داشت.
+سرویس پروایدر و نام اختصاری (alias) با استفاده از package discovery لاراول به صورت خودکار ثبت می‌شوند، بنابراین نیازی به تغییر فایل `config/app.php` (یا `bootstrap/providers.php`) ندارید.
 
-درون فایل `config/app.php` دستورات زیر را وارد کنید
-
-</div>
-
-```php
-// In your providers array.
-'providers' => [
-    ...
-    Shetabit\Payment\Provider\PaymentServiceProvider::class,
-],
-
-// In your aliases array.
-'aliases' => [
-    ...
-    'Payment' => Shetabit\Payment\Facade\Payment::class,
-],
-```
-
-<div dir="rtl">
-
-سپس دستور `php artisan vendor:publish` را اجرا کنید تا فایل `config/payment.php` درون دایرکتوری تنظیمات لاراول قرار بگیرد.
+دستور `php artisan vendor:publish` را اجرا کنید تا فایل `config/payment.php` درون دایرکتوری تنظیمات لاراول قرار بگیرد.
 
 درون فایل تنظیمات در قسمت `default driver` می‌توانید درایوری که قصد استفاده از ان را دارید قرار دهید تا تمامی پرداخت ها از آن طریق انجام شود.
 
@@ -371,22 +352,21 @@ namespace App\Packages\PaymentDriver;
 
 use Shetabit\Multipay\Abstracts\Driver;
 use Shetabit\Multipay\Exceptions\InvalidPaymentException;
-use Shetabit\Multipay\{Contracts\ReceiptInterface, Invoice, Receipt};
+use Shetabit\Multipay\{Contracts\ReceiptInterface, Invoice, Receipt, RedirectionForm};
 
 class MyDriver extends Driver
 {
-    protected $invoice; // Invoice.
+    // The invoice and the settings are declared by the Driver class already,
+    // do not redeclare them here.
 
-    protected $settings; // Driver settings.
-
-    public function __construct(Invoice $invoice, $settings)
+    public function __construct(Invoice $invoice, array|object $settings)
     {
         $this->invoice($invoice); // Set the invoice.
         $this->settings = (object) $settings; // Set settings.
     }
 
     // Purchase the invoice, save its transactionId and finaly return it.
-    public function purchase() {
+    public function purchase() : string|int|null {
         // Request for a payment transaction id.
         ...
             
@@ -396,15 +376,16 @@ class MyDriver extends Driver
     }
     
     // Redirect into bank using transactionId, to complete the payment.
-    public function pay() {
+    public function pay() : RedirectionForm {
         // It is better to set bankApiUrl in config/payment.php and retrieve it here:
         $bankUrl = $this->settings->bankApiUrl; // bankApiUrl is the config name.
 
         // Prepare payment url.
         $payUrl = $bankUrl.$this->invoice->getTransactionId();
 
-        // Redirect to the bank.
-        return redirect()->to($payUrl);
+        // Redirect to the bank. The form is rendered with blade, so it is sent
+        // with a CSRF field.
+        return $this->redirectWithForm($payUrl, [], 'GET');
     }
     
     // Verify the payment (we must verify to ensure that user has paid the invoice).
@@ -526,6 +507,60 @@ class MyDriver extends Driver
 - **InvoicePurchasedEvent**: هنگامی که یک پرداخت به درستی ثبت شود این رویداد اتفاق می‌افتد.
 - **InvoiceVerifiedEvent**: هنگامی که یک پرداخت به درستی وریفای شود این رویداد اتفاق می‌افتد
 
+هر دو رویداد، درایور و صورتحساب مربوطه را به صورت پراپرتی‌های `readonly` در اختیار شما می‌گذارند و رویداد وریفای، رسید پرداخت را هم اضافه می‌کند:
+
+</div>
+
+```php
+public function handle(InvoiceVerifiedEvent $event): void
+{
+    $event->receipt->getReferenceId();
+    $event->invoice->getTransactionId();
+    $event->driver->getInvoice();
+}
+```
+
+<div dir="rtl">
+
+## تست‌ها
+
+هر pull request و هر push روی برنچ `master` توسط [GitHub Actions][link-actions] بررسی می‌شود: تست‌ها روی PHP 8.4 و 8.5، روی لاراول ۱۲ و ۱۳ و همچنین با کمترین و بیشترین نسخه‌ی وابستگی‌ها اجرا می‌شوند، استایل کد با PHP_CodeSniffer بررسی می‌شود، کد با PHPStan آنالیز می‌شود و پوشش تست‌ها (code coverage) اندازه‌گیری می‌شود و باید بالای ۹۵ درصد باقی بماند.
+
+در صورتی که PHP و Composer روی سیستم شما نصب است، می‌توانید همین بررسی‌ها را به صورت محلی اجرا کنید:
+
+</div>
+
+```bash
+composer install
+
+composer test           # اجرای تست‌ها
+composer test-coverage  # اجرای تست‌ها همراه با گزارش پوشش تست
+composer check-style    # بررسی استایل کد
+composer fix-style      # اصلاح استایل کد در حدی که ممکن باشد
+composer analyse        # آنالیز استاتیک کد
+composer ci             # اجرای تمام بررسی‌های بالا
+```
+
+<div dir="rtl">
+
+اگر ترجیح می‌دهید PHP را روی سیستم خود نصب نکنید، `Dockerfile` و `Makefile` موجود در پکیج همه‌ی این دستورات را داخل یک کانتینر اجرا می‌کنند:
+
+</div>
+
+```bash
+make test              # اجرای تست‌ها
+make coverage          # اجرای تست‌ها همراه با گزارش پوشش تست
+make check-style       # بررسی استایل کد
+make fix-style         # اصلاح استایل کد در حدی که ممکن باشد
+make analyse           # آنالیز استاتیک کد
+make ci                # اجرای تمام بررسی‌های بالا
+make shell             # اجرای یک شل داخل کانتینر
+make help              # نمایش تمام دستورات موجود
+```
+
+<div dir="rtl">
+
+با `make test PHP_VERSION=8.5` می‌توانید نسخه‌ی دیگری از PHP و با `make test-laravel LARAVEL=12` می‌توانید یک نسخه‌ی مشخص از لاراول را تست کنید.
 
 ## تغییرات
 
@@ -553,12 +588,19 @@ class MyDriver extends Driver
 [ico-version]: https://img.shields.io/packagist/v/shetabit/payment.svg?style=flat-square
 [ico-download]: https://img.shields.io/packagist/dt/shetabit/payment.svg?color=%23F18&style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/shetabit/payment.svg?label=Code%20Quality&style=flat-square
+[ico-tests]: https://img.shields.io/github/actions/workflow/status/shetabit/payment/tests.yml?branch=master&label=Tests&style=flat-square
+[ico-code-style]: https://img.shields.io/github/actions/workflow/status/shetabit/payment/code-style.yml?branch=master&label=Code%20Style&style=flat-square
+[ico-static-analysis]: https://img.shields.io/github/actions/workflow/status/shetabit/payment/static-analysis.yml?branch=master&label=Static%20Analysis&style=flat-square
+[ico-coverage]: https://img.shields.io/codecov/c/github/shetabit/payment/master?label=Coverage&style=flat-square
 
 [link-fa]: README-FA.md
 [link-en]: README.md
 [link-zh]: README-ZH.md
 [link-packagist]: https://packagist.org/packages/shetabit/payment
-[link-code-quality]: https://scrutinizer-ci.com/g/shetabit/payment
+[link-actions]: https://github.com/shetabit/payment/actions
+[link-tests]: https://github.com/shetabit/payment/actions/workflows/tests.yml
+[link-code-style]: https://github.com/shetabit/payment/actions/workflows/code-style.yml
+[link-static-analysis]: https://github.com/shetabit/payment/actions/workflows/static-analysis.yml
+[link-coverage]: https://codecov.io/gh/shetabit/payment
 [link-author]: https://github.com/khanzadimahdi
 [link-contributors]: ../../contributors

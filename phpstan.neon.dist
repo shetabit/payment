@@ -1,0 +1,12 @@
+parameters:
+    level: 7
+    paths:
+        - src
+        - tests
+
+    # The views are rendered with the variables of the redirection form
+    # extracted into their scope, which static analysis can not know about.
+    excludePaths:
+        - tests/Fixtures/views
+
+    reportUnmatchedIgnoredErrors: true

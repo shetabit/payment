@@ -2,26 +2,47 @@
 
 namespace Shetabit\Payment\Provider;
 
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\View\View;
+use RuntimeException;
+use Shetabit\Multipay\Contracts\DriverInterface;
+use Shetabit\Multipay\Contracts\ReceiptInterface;
+use Shetabit\Multipay\Invoice;
 use Shetabit\Multipay\Payment;
 use Shetabit\Multipay\Request;
 use Shetabit\Payment\Events\InvoicePurchasedEvent;
 use Shetabit\Payment\Events\InvoiceVerifiedEvent;
+use Shetabit\Payment\Facade\Payment as PaymentFacade;
 
 class PaymentServiceProvider extends ServiceProvider
 {
     /**
-     * Perform post-registration booting of services.
-     *
-     * @return void
+     * The namespace the views of the package are registered under.
      */
-    public function boot()
+    public const string VIEW_NAMESPACE = 'shetabitPayment';
+
+    /**
+     * The name of the redirection form's view.
+     */
+    public const string REDIRECTION_FORM_VIEW = 'redirectForm';
+
+    /**
+     * Whether the payment events were already registered.
+     *
+     * The payment manager keeps its listeners in a static property, so they
+     * outlive the application they were registered from. Registering them
+     * again — which happens as soon as a second application is booted in the
+     * same process, like the test suite does — would dispatch every event
+     * twice.
+     */
+    protected static bool $eventsRegistered = false;
+
+    /**
+     * Perform post-registration booting of services.
+     */
+    public function boot() : void
     {
-        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'shetabitPayment');
+        $this->loadViewsFrom($this->packageViewsPath(), self::VIEW_NAMESPACE);
 
         /**
          * Configurations that needs to be done by user.
@@ -38,7 +59,7 @@ class PaymentServiceProvider extends ServiceProvider
          */
         $this->publishes(
             [
-                __DIR__ . '/../../resources/views' => resource_path('views/vendor/shetabitPayment'),
+                $this->packageViewsPath() => $this->publishedViewsPath(),
             ],
             'payment-views'
         );
@@ -46,85 +67,147 @@ class PaymentServiceProvider extends ServiceProvider
 
     /**
      * Register any package services.
-     *
-     * @return void
      */
-    public function register()
+    public function register() : void
     {
         // Merge default config with user's config
         $this->mergeConfigFrom(Payment::getDefaultConfigPath(), 'payment');
 
-        Request::overwrite('input', function ($key) {
-            return \request($key);
-        });
+        // Read the gateways' callback data from Laravel's request
+        Request::overwrite('input', static fn (string $key): mixed => request($key));
 
         /**
          * Bind to service container.
          */
-        $this->app->bind('shetabit-payment', function () {
-            $config = config('payment') ?? [];
+        $this->app->bind(
+            PaymentFacade::SERVICE_NAME,
+            static fn (): Payment => new Payment((array) config('payment', []))
+        );
 
-            return new Payment($config);
-        });
+        // Allow the manager to be resolved and injected by its class name too
+        $this->app->alias(PaymentFacade::SERVICE_NAME, Payment::class);
 
         $this->registerEvents();
-
-        // use blade to render redirection form
-        Payment::setRedirectionFormViewRenderer(function ($view, $action, $inputs, $method) {
-            if ($this->existCustomRedirectFormView()) {
-                return $this->loadNormalRedirectForm($action, $inputs, $method);
-            }
-            return Blade::render(
-                str_replace('</form>', '@csrf</form>', file_get_contents($view)),
-                [
-                    'action' => $action,
-                    'inputs' => $inputs,
-                    'method' => $method,
-                ]
-            );
-        });
+        $this->registerRedirectionFormRenderer();
     }
 
     /**
      * Register Laravel events.
-     *
-     * @return void
      */
-    public function registerEvents()
+    protected function registerEvents() : void
     {
-        Payment::addPurchaseListener(function ($driver, $invoice) {
+        if (static::$eventsRegistered) {
+            return;
+        }
+
+        static::$eventsRegistered = true;
+
+        Payment::addPurchaseListener(static function (DriverInterface $driver, Invoice $invoice): void {
             event(new InvoicePurchasedEvent($driver, $invoice));
         });
 
-        Payment::addVerifyListener(function ($reciept, $driver, $invoice) {
-            event(new InvoiceVerifiedEvent($reciept, $driver, $invoice));
-        });
+        Payment::addVerifyListener(
+            static function (ReceiptInterface $receipt, DriverInterface $driver, Invoice $invoice): void {
+                event(new InvoiceVerifiedEvent($receipt, $driver, $invoice));
+            }
+        );
+    }
+
+    /**
+     * Render the redirection form with blade instead of plain PHP.
+     */
+    protected function registerRedirectionFormRenderer() : void
+    {
+        /**
+         * The renderer is called with named arguments, so its parameters have to
+         * keep the names the payment manager passes them under.
+         */
+        Payment::setRedirectionFormViewRenderer(
+            fn (string $view, string $action, array $inputs, string $method): string => $this->renderRedirectionForm(
+                $view,
+                $action,
+                $inputs,
+                $method
+            )
+        );
+    }
+
+    /**
+     * Render the redirection form that sends the customer to the gateway.
+     *
+     * @param string               $view   path of the view of the payment manager
+     * @param string               $action url of the gateway
+     * @param array<string, mixed> $inputs fields the gateway expects
+     * @param string               $method http method the form is submitted with
+     */
+    protected function renderRedirectionForm(string $view, string $action, array $inputs, string $method) : string
+    {
+        $data = [
+            'action' => $action,
+            'inputs' => $inputs,
+            'method' => $method,
+        ];
+
+        if ($this->existCustomRedirectFormView()) {
+            return $this->loadNormalRedirectForm($data);
+        }
+
+        return Blade::render($this->addCsrfField($this->readView($view)), $data);
     }
 
     /**
      * Checks whether the user has customized the view file called `redirectForm.blade.php` or not
-     *
-     * @return bool
      */
-    private function existCustomRedirectFormView()
+    protected function existCustomRedirectFormView() : bool
     {
-        return file_exists(resource_path('views/vendor/shetabitPayment') . '/redirectForm.blade.php');
+        return file_exists($this->publishedViewsPath().'/'.self::REDIRECTION_FORM_VIEW.'.blade.php');
     }
 
     /**
-     * @param $action
-     * @param $inputs
-     * @param $method
-     * @return Application|Factory|View
+     * Render the redirection form's view the user has published.
+     *
+     * @param array<string, mixed> $data
      */
-    private function loadNormalRedirectForm($action, $inputs, $method)
+    protected function loadNormalRedirectForm(array $data) : string
     {
-        return view('shetabitPayment::redirectForm')->with(
-            [
-                'action' => $action,
-                'inputs' => $inputs,
-                'method' => $method,
-            ]
-        );
+        return view(self::VIEW_NAMESPACE.'::'.self::REDIRECTION_FORM_VIEW)->with($data)->render();
+    }
+
+    /**
+     * Path of the views that ship with the package.
+     */
+    protected function packageViewsPath() : string
+    {
+        return dirname(__DIR__, 2).'/resources/views';
+    }
+
+    /**
+     * Path the views of the package are published to.
+     */
+    protected function publishedViewsPath() : string
+    {
+        return resource_path('views/vendor/'.self::VIEW_NAMESPACE);
+    }
+
+    /**
+     * Add a CSRF field to every form of the given view.
+     */
+    private function addCsrfField(string $view) : string
+    {
+        return str_replace('</form>', '@csrf</form>', $view);
+    }
+
+    /**
+     * Read the source of the given view.
+     */
+    private function readView(string $view) : string
+    {
+        $source = is_file($view) ? file_get_contents($view) : false;
+
+        if ($source === false) {
+            throw new RuntimeException("The redirection form's view [{$view}] could not be read.");
+        }
+
+        return $source;
     }
 }

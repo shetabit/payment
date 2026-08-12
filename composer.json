@@ -84,18 +84,22 @@
         }
     ],
     "require": {
-        "php": "^8.0",
-        "illuminate/broadcasting": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-        "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-        "shetabit/multipay": "^2.4"
+        "php": "^8.4",
+        "illuminate/broadcasting": "^12.0|^13.0",
+        "illuminate/contracts": "^12.0|^13.0",
+        "illuminate/support": "^12.0|^13.0",
+        "illuminate/view": "^12.0|^13.0",
+        "shetabit/multipay": "^3.0.1"
     },
     "suggest": {
         "ext-soap": "Needed to support some drivers that required SOAP"
     },
     "require-dev": {
-        "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
-        "phpunit/phpunit": ">=9.0",
-        "squizlabs/php_codesniffer": "^3.5|^4.0"
+        "orchestra/testbench": "^10.0|^11.0",
+        "phpcsstandards/php_codesniffer": "^4.0",
+        "phpstan/phpstan": "^2.2",
+        "phpunit/phpunit": "^11.5|^12.0|^13.0",
+        "rector/rector": "^2.6"
     },
     "autoload": {
         "psr-4": {
@@ -109,8 +113,25 @@
     },
     "scripts": {
         "test": "phpunit",
-        "check-style": "phpcs -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests",
-        "fix-style": "phpcbf -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests"
+        "test-coverage": "phpunit --coverage-text",
+        "check-style": "phpcs",
+        "fix-style": "phpcbf",
+        "analyse": "phpstan analyse --memory-limit=1G",
+        "rector": "rector process --dry-run",
+        "ci": [
+            "@check-style",
+            "@analyse",
+            "@test"
+        ]
+    },
+    "scripts-descriptions": {
+        "test": "Run the test suite.",
+        "test-coverage": "Run the test suite and report code coverage.",
+        "check-style": "Check the coding style of src and tests.",
+        "fix-style": "Fix the coding style of src and tests where possible.",
+        "analyse": "Run static analysis on src and tests.",
+        "rector": "Show the refactorings Rector would apply.",
+        "ci": "Run every check the CI pipeline runs."
     },
     "extra": {
         "laravel": {

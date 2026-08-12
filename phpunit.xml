@@ -1,16 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" backupStaticAttributes="false" bootstrap="vendor/autoload.php" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" processIsolation="false" stopOnFailure="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-  <coverage>
-    <include>
-      <directory>./src/</directory>
-    </include>
-  </coverage>
-  <testsuites>
-    <testsuite name="Test Suite">
-      <directory suffix="Test.php">./tests/</directory>
-    </testsuite>
-  </testsuites>
-  <php>
-    <env name="APP_ENV" value="testing"/>
-  </php>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         cacheDirectory=".phpunit.cache"
+         colors="true"
+         testdox="true"
+         displayDetailsOnTestsThatTriggerDeprecations="true"
+         displayDetailsOnTestsThatTriggerErrors="true"
+         displayDetailsOnTestsThatTriggerNotices="true"
+         displayDetailsOnTestsThatTriggerWarnings="true"
+         failOnDeprecation="true"
+         failOnNotice="true"
+         failOnRisky="true"
+         failOnWarning="true"
+         beStrictAboutOutputDuringTests="true"
+         backupGlobals="false"
+>
+    <testsuites>
+        <testsuite name="Payment Test Suite">
+            <directory suffix="Test.php">tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <!--
+        A deprecation that `src/` triggers fails the build, one that a dependency
+        triggers on its own does not: those are out of the hands of this package
+        and every new PHP version brings a fresh batch of them. The database
+        configuration of Testbench 10 for instance reads the deprecated
+        `PDO::MYSQL_ATTR_SSL_CA` constant when PHP 8.5 runs the test suite.
+    -->
+    <source ignoreIndirectDeprecations="true">
+        <include>
+            <directory>src</directory>
+        </include>
+    </source>
+
+    <php>
+        <env name="APP_ENV" value="testing"/>
+    </php>
 </phpunit>

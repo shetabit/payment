@@ -9,11 +9,12 @@
 [![Software License][ico-license]](LICENSE.md)
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads on Packagist][ico-download]][link-packagist]
-[![StyleCI](https://github.styleci.io/repos/169948762/shield?branch=master)](https://github.styleci.io/repos/169948762)
-[![Maintainability](https://api.codeclimate.com/v1/badges/e6a80b17298cb4fcb56d/maintainability)](https://codeclimate.com/github/shetabit/payment/maintainability)
-[![Quality Score][ico-code-quality]][link-code-quality]
+[![Tests][ico-tests]][link-tests]
+[![Code Style][ico-code-style]][link-code-style]
+[![Static Analysis][ico-static-analysis]][link-static-analysis]
+[![Code Coverage][ico-coverage]][link-coverage]
 
-这是一个用于整合支付网关的Laravel包。这个包依赖 `Laravel 5.8+`.
+这是一个用于整合支付网关的Laravel包。这个包需要 `PHP 8.4+`，并支持 `Laravel 12` 和 `Laravel 13`。
 
 [捐赠我](https://yekpay.me/mahdikhanzadi) 如果你喜欢这个包:sunglasses: :bowtie:
 
@@ -40,6 +41,7 @@ For PHP integration you can use [shetabit/multipay](https://github.com/shetabit/
       - [有用的方法](#%e6%9c%89%e7%94%a8%e7%9a%84%e6%96%b9%e6%b3%95)
       - [创建自定义驱动:](#%e5%88%9b%e5%bb%ba%e8%87%aa%e5%ae%9a%e4%b9%89%e9%a9%b1%e5%8a%a8)
       - [事件](#%e4%ba%8b%e4%bb%b6)
+  - [测试](#%e6%b5%8b%e8%af%95)
   - [Change log](#change-log)
   - [贡献](#%e8%b4%a1%e7%8c%ae)
   - [安全](#%e5%ae%89%e5%85%a8)
@@ -122,25 +124,9 @@ composer require shetabit/payment
 
 ## 配置
 
-如果你使用`Laravel 5.5`或更高版本，你不需要手动设置 `provider` 和 `alias`,可以直接看b步骤
+服务提供者和 `Payment` 别名由 Laravel 的包自动发现机制注册，因此无需修改 `config/app.php`（或 `bootstrap/providers.php`）。
 
-a. 在你的 `config/app.php` 文件中，添加如下两行
-
-```php
-// In your providers array.
-'providers' => [
-    ...
-    Shetabit\Payment\Provider\PaymentServiceProvider::class,
-],
-
-// In your aliases array.
-'aliases' => [
-    ...
-    'Payment' => Shetabit\Payment\Facade\Payment::class,
-],
-```
-
-b. 然后运行 `php artisan vendor:publish` 来发布 `config/payment.php` 文件到你的项目中
+运行 `php artisan vendor:publish` 来发布 `config/payment.php` 文件到你的项目中
 
 在配置文件中，您可以将 `default`设置项设置为你希望的付款方式。但也可以在运行时更改驱动。
 
@@ -427,22 +413,21 @@ namespace App\Packages\PaymentDriver;
 
 use Shetabit\Multipay\Abstracts\Driver;
 use Shetabit\Multipay\Exceptions\InvalidPaymentException;
-use Shetabit\Multipay\{Contracts\ReceiptInterface, Invoice, Receipt};
+use Shetabit\Multipay\{Contracts\ReceiptInterface, Invoice, Receipt, RedirectionForm};
 
 class MyDriver extends Driver
 {
-    protected $invoice; // Invoice.
+    // The invoice and the settings are declared by the Driver class already,
+    // do not redeclare them here.
 
-    protected $settings; // Driver settings.
-
-    public function __construct(Invoice $invoice, $settings)
+    public function __construct(Invoice $invoice, array|object $settings)
     {
         $this->invoice($invoice); // Set the invoice.
         $this->settings = (object) $settings; // Set settings.
     }
 
     // Purchase the invoice, save its transactionId and finaly return it.
-    public function purchase() {
+    public function purchase() : string|int|null {
         // Request for a payment transaction id.
         ...
             
@@ -452,15 +437,16 @@ class MyDriver extends Driver
     }
     
     // Redirect into bank using transactionId, to complete the payment.
-    public function pay() {
+    public function pay() : RedirectionForm {
         // It is better to set bankApiUrl in config/payment.php and retrieve it here:
         $bankUrl = $this->settings->bankApiUrl; // bankApiUrl is the config name.
 
         // Prepare payment url.
         $payUrl = $bankUrl.$this->invoice->getTransactionId();
 
-        // Redirect to the bank.
-        return redirect()->to($payUrl);
+        // Redirect to the bank. The form is rendered with blade, so it is sent
+        // with a CSRF field.
+        return $this->redirectWithForm($payUrl, [], 'GET');
     }
     
     // Verify the payment (we must verify to ensure that user has paid the invoice).
@@ -501,6 +487,51 @@ class MyDriver extends Driver
 - **InvoicePurchasedEvent**: 在获取清单后执行
 - **InvoiceVerifiedEvent**: 在验证交易成功后执行
 
+两个事件都以 `readonly` 属性的形式提供对应的驱动和费用清单，验证事件还会提供支付回执：
+
+```php
+public function handle(InvoiceVerifiedEvent $event): void
+{
+    $event->receipt->getReferenceId();
+    $event->invoice->getTransactionId();
+    $event->driver->getInvoice();
+}
+```
+
+## 测试
+
+每一个 pull request 以及每一次推送到 `master` 分支都会由 [GitHub Actions][link-actions] 进行检查：测试会在 PHP 8.4 和 8.5 上、
+针对 Laravel 12 和 13、并且分别针对最低和最高版本的依赖运行，代码风格由 PHP_CodeSniffer 检查，源码由 PHPStan 进行静态分析，
+测试覆盖率也会被统计并且必须保持在 95% 以上。
+
+如果你的机器上已经安装了 PHP 和 Composer，可以在本地运行同样的检查：
+
+```bash
+composer install
+
+composer test           # 运行测试
+composer test-coverage  # 运行测试并统计覆盖率
+composer check-style    # 检查代码风格
+composer fix-style      # 尽可能自动修复代码风格
+composer analyse        # 运行静态分析
+composer ci             # 运行以上所有检查
+```
+
+如果你不想在机器上安装 PHP，包中自带的 `Dockerfile` 和 `Makefile` 会在容器中运行这一切：
+
+```bash
+make test              # 运行测试
+make coverage          # 运行测试并统计覆盖率
+make check-style       # 检查代码风格
+make fix-style         # 尽可能自动修复代码风格
+make analyse           # 运行静态分析
+make ci                # 运行以上所有检查
+make shell             # 在容器中打开一个 shell
+make help              # 列出所有可用的命令
+```
+
+使用 `make test PHP_VERSION=8.5` 可以切换 PHP 版本，使用 `make test-laravel LARAVEL=12` 可以只测试某一个 Laravel 版本。
+
 ## Change log
 
 请查看 [CHANGELOG](CHANGELOG.md) 来获取更多关于版本更新的信息
@@ -525,12 +556,19 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-version]: https://img.shields.io/packagist/v/shetabit/payment.svg?style=flat-square
 [ico-download]: https://img.shields.io/packagist/dt/shetabit/payment.svg?color=%23F18&style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/shetabit/payment.svg?label=Code%20Quality&style=flat-square
+[ico-tests]: https://img.shields.io/github/actions/workflow/status/shetabit/payment/tests.yml?branch=master&label=Tests&style=flat-square
+[ico-code-style]: https://img.shields.io/github/actions/workflow/status/shetabit/payment/code-style.yml?branch=master&label=Code%20Style&style=flat-square
+[ico-static-analysis]: https://img.shields.io/github/actions/workflow/status/shetabit/payment/static-analysis.yml?branch=master&label=Static%20Analysis&style=flat-square
+[ico-coverage]: https://img.shields.io/codecov/c/github/shetabit/payment/master?label=Coverage&style=flat-square
 
 [link-fa]: README-FA.md
 [link-en]: README.md
 [link-zh]: README-ZH.md
 [link-packagist]: https://packagist.org/packages/shetabit/payment
-[link-code-quality]: https://scrutinizer-ci.com/g/shetabit/payment
+[link-actions]: https://github.com/shetabit/payment/actions
+[link-tests]: https://github.com/shetabit/payment/actions/workflows/tests.yml
+[link-code-style]: https://github.com/shetabit/payment/actions/workflows/code-style.yml
+[link-static-analysis]: https://github.com/shetabit/payment/actions/workflows/static-analysis.yml
+[link-coverage]: https://codecov.io/gh/shetabit/payment
 [link-author]: https://github.com/khanzadimahdi
 [link-contributors]: ../../contributors

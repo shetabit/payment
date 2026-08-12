@@ -9,11 +9,13 @@
 [![Software License][ico-license]](LICENSE.md)
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads on Packagist][ico-download]][link-packagist]
-[![StyleCI](https://github.styleci.io/repos/169948762/shield?branch=master)](https://github.styleci.io/repos/169948762)
-[![Maintainability](https://api.codeclimate.com/v1/badges/e6a80b17298cb4fcb56d/maintainability)](https://codeclimate.com/github/shetabit/payment/maintainability)
-[![Quality Score][ico-code-quality]][link-code-quality]
+[![Tests][ico-tests]][link-tests]
+[![Code Style][ico-code-style]][link-code-style]
+[![Static Analysis][ico-static-analysis]][link-static-analysis]
+[![Code Coverage][ico-coverage]][link-coverage]
 
-This is a Laravel Package for Payment Gateway Integration. This package supports `Laravel 5.8+`.
+This is a Laravel Package for Payment Gateway Integration. This package requires `PHP 8.4+` and supports `Laravel 12`
+and `Laravel 13`.
 
 [Donate me](https://yekpay.me/mahdikhanzadi) if you like this package :sunglasses: :bowtie:
 
@@ -40,6 +42,7 @@ For PHP integration you can use [shetabit/multipay](https://github.com/shetabit/
       - [Useful methods](#useful-methods)
       - [Create custom drivers:](#create-custom-drivers)
       - [Events](#events)
+  - [Testing](#testing)
   - [Change log](#change-log)
   - [Contributing](#contributing)
   - [Security](#security)
@@ -135,25 +138,10 @@ php artisan vendor:publish --tag=payment-views
 
 ## Configure
 
-If you are using `Laravel 5.5` or higher then you don't need to add the provider and alias. (Skip to b)
+The service provider and the `Payment` alias are registered by Laravel's package discovery, so there is nothing to add
+to `config/app.php` (or to `bootstrap/providers.php`).
 
-a. In your `config/app.php` file add these two lines.
-
-```php
-// In your providers array.
-'providers' => [
-    ...
-    Shetabit\Payment\Provider\PaymentServiceProvider::class,
-],
-
-// In your aliases array.
-'aliases' => [
-    ...
-    'Payment' => Shetabit\Payment\Facade\Payment::class,
-],
-```
-
-b. In the config file you can set the `default driver` to use for all your payments. But you can also change the driver at runtime.
+In the config file you can set the `default driver` to use for all your payments. But you can also change the driver at runtime.
 
 Choose what gateway you would like to use in your application. Then make that as default driver so that you don't have to specify that everywhere. But, you can also use multiple gateways in a project.
 
@@ -435,22 +423,21 @@ namespace App\Packages\PaymentDriver;
 
 use Shetabit\Multipay\Abstracts\Driver;
 use Shetabit\Multipay\Exceptions\InvalidPaymentException;
-use Shetabit\Multipay\{Contracts\ReceiptInterface, Invoice, Receipt};
+use Shetabit\Multipay\{Contracts\ReceiptInterface, Invoice, Receipt, RedirectionForm};
 
 class MyDriver extends Driver
 {
-    protected $invoice; // Invoice.
+    // The invoice and the settings are declared by the Driver class already,
+    // do not redeclare them here.
 
-    protected $settings; // Driver settings.
-
-    public function __construct(Invoice $invoice, $settings)
+    public function __construct(Invoice $invoice, array|object $settings)
     {
         $this->invoice($invoice); // Set the invoice.
         $this->settings = (object) $settings; // Set settings.
     }
 
     // Purchase the invoice, save its transactionId and finaly return it.
-    public function purchase() {
+    public function purchase() : string|int|null {
         // Request for a payment transaction id.
         ...
             
@@ -460,15 +447,16 @@ class MyDriver extends Driver
     }
     
     // Redirect into bank using transactionId, to complete the payment.
-    public function pay() {
+    public function pay() : RedirectionForm {
         // It is better to set bankApiUrl in config/payment.php and retrieve it here:
         $bankUrl = $this->settings->bankApiUrl; // bankApiUrl is the config name.
 
         // Prepare payment url.
         $payUrl = $bankUrl.$this->invoice->getTransactionId();
 
-        // Redirect to the bank.
-        return redirect()->to($payUrl);
+        // Redirect to the bank. The form is rendered with blade, so it is sent
+        // with a CSRF field.
+        return $this->redirectWithForm($payUrl, [], 'GET');
     }
     
     // Verify the payment (we must verify to ensure that user has paid the invoice).
@@ -510,6 +498,55 @@ You can listen for 2 events
 - **InvoicePurchasedEvent**: Occurs when an invoice is purchased (after purchasing invoice is done successfully).
 - **InvoiceVerifiedEvent**: Occurs when an invoice is verified successfully.
 
+Both events expose the driver and the invoice they were dispatched for as `readonly` properties, and the verification
+event exposes the receipt as well:
+
+```php
+public function handle(InvoiceVerifiedEvent $event): void
+{
+    $event->receipt->getReferenceId();
+    $event->invoice->getTransactionId();
+    $event->driver->getInvoice();
+}
+```
+
+## Testing
+
+Every pull request and every push to `master` is checked by [GitHub Actions][link-actions]: the test suite runs on
+PHP 8.4 and 8.5, against Laravel 12 and 13 and against both the lowest and the highest supported dependencies, the
+coding style is checked with PHP_CodeSniffer, the sources are analysed with PHPStan and the code coverage of the test
+suite is measured and has to stay above 95%.
+
+You can run the same checks locally. With PHP and Composer installed on your machine:
+
+```bash
+composer install
+
+composer test           # run the test suite
+composer test-coverage  # run the test suite and report code coverage
+composer check-style    # check the coding style
+composer fix-style      # fix the coding style where possible
+composer analyse        # run static analysis
+composer ci             # run all of the checks above
+```
+
+If you would rather not install PHP on your machine, the shipped `Dockerfile` and `Makefile` run everything inside a
+container:
+
+```bash
+make test              # run the test suite
+make coverage          # run the test suite and report code coverage
+make check-style       # check the coding style
+make fix-style         # fix the coding style where possible
+make analyse           # run static analysis
+make ci                # run all of the checks above
+make shell             # open a shell inside the container
+make help              # list every available target
+```
+
+Another PHP version can be used with `make test PHP_VERSION=8.5`, and a single Laravel version with
+`make test-laravel LARAVEL=12`.
+
 ## Change log
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has been changed recently.
@@ -534,13 +571,20 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-version]: https://img.shields.io/packagist/v/shetabit/payment.svg?style=flat-square
 [ico-download]: https://img.shields.io/packagist/dt/shetabit/payment.svg?color=%23F18&style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/shetabit/payment.svg?label=Code%20Quality&style=flat-square
+[ico-tests]: https://img.shields.io/github/actions/workflow/status/shetabit/payment/tests.yml?branch=master&label=Tests&style=flat-square
+[ico-code-style]: https://img.shields.io/github/actions/workflow/status/shetabit/payment/code-style.yml?branch=master&label=Code%20Style&style=flat-square
+[ico-static-analysis]: https://img.shields.io/github/actions/workflow/status/shetabit/payment/static-analysis.yml?branch=master&label=Static%20Analysis&style=flat-square
+[ico-coverage]: https://img.shields.io/codecov/c/github/shetabit/payment/master?label=Coverage&style=flat-square
 
 [link-fa]: README-FA.md
 [link-en]: README.md
 [link-zh]: README-ZH.md
 [link-packagist]: https://packagist.org/packages/shetabit/payment
-[link-code-quality]: https://scrutinizer-ci.com/g/shetabit/payment
+[link-actions]: https://github.com/shetabit/payment/actions
+[link-tests]: https://github.com/shetabit/payment/actions/workflows/tests.yml
+[link-code-style]: https://github.com/shetabit/payment/actions/workflows/code-style.yml
+[link-static-analysis]: https://github.com/shetabit/payment/actions/workflows/static-analysis.yml
+[link-coverage]: https://codecov.io/gh/shetabit/payment
 [link-author]: https://github.com/khanzadimahdi
 [link-contributors]: ../../contributors
 
