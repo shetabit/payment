@@ -15,3 +15,33 @@
 *.PDF diff=astextplain
 *.rtf diff=astextplain
 *.RTF diff=astextplain
+
+# ---------------------------------------------------------
+# Files and directories excluded from Composer dist archive
+# ---------------------------------------------------------
+
+# Git & GitHub
+/.github/ export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
+.editorconfig export-ignore
+.dockerignore export-ignore
+
+# Tests
+/tests/ export-ignore
+phpunit.xml export-ignore
+
+# Code quality tools
+phpcs.xml.dist export-ignore
+phpstan.neon.dist export-ignore
+rector.php export-ignore
+
+# Docker & Make
+Dockerfile export-ignore
+Makefile export-ignore
+
+# Development documentation
+CONTRIBUTING.md export-ignore
+CONDUCT.md export-ignore
+ISSUE_TEMPLATE.md export-ignore
+PULL_REQUEST_TEMPLATE.md export-ignore
